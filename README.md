@@ -1,2 +1,3 @@
 # cqnode-alpha
-酷Q node
+酷Q的Node框架
+WIP
