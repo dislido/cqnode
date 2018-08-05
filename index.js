@@ -2,7 +2,7 @@
 const CQNodeModule = require('./module-register');
 const PluginManager = require('./plugin-manager');
 
-const conn = require('../connector-cq-lemoc');
+const conn = require('./connector-cq-lemoc');
 const winrobot = require('./utils/winrobot');
 
 const robot = conn.getRobot();
