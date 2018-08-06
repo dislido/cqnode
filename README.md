@@ -9,3 +9,7 @@ WIP
 - websocket依赖
 - log
 - 更好的多群支持
+- 插件monorepo
+- 多重人格支持
+- 权限机制
+- websocket断开连接时的处理
