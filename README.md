@@ -1,5 +1,5 @@
 # cqnode-alpha
-酷Q的Node框架
+酷Q的Node开发框架
 WIP
 舰群机器人@191107040
 
