@@ -1,13 +1,12 @@
 # cqnode-alpha
 酷Q的Node开发框架  
 未稳定
-舰群机器人@191107040
 
 # todo
 - 替换node-schedule依赖
 - log
 - 更好的多群支持
-- 插件 (应该会用monorepo)
+- 插件
 - 权限机制
 - websocket断开连接时的处理
 - test
@@ -21,11 +20,11 @@ const config = {
   // 管理员账号列表
   admin: ['1145141919'],
   // 在使用广播API时推送消息的群号码
-  listenGroups: ['177720545', '609582499'],
+  listenGroups: ['123456'],
   // 加载的模块
   modules: [
     new Core(),
-    new KcTwitter({ imageableGroup: '177720545' }),
+    new KcTwitter({ imageableGroup: '123456' }),
     new JSVM(),
     new ChatHistory({ imgPath: 'C:/Users/Administrator/Desktop/酷Q Air/data/image' }),
     new Admin(),
@@ -33,11 +32,11 @@ const config = {
     new Repeat(),
     new TimeCall({
       use: [
-        { group: '177720545', use: 'kiyoshimo' },
-        { group: '609582499', use: 'tokitsukaze' },
+        { group: '123456', use: 'kiyoshimo' },
+        { group: '123456123', use: 'tokitsukaze' },
       ],
     }),
-    new Tuling({ apikey: 'b2ee42dc07834b169198f235ec2a89c1' }),
+    new Tuling({ apikey: 'tcee43dc07834b269198f245ac2a19c1' }),
   ],
   // 加载的插件
   plugins: [
