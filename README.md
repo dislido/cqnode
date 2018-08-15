@@ -4,7 +4,7 @@
 
 # todo
 - 替换node-schedule依赖
-- log
+- log 或许由插件来完成
 - 更好的多群支持
 - 插件
 - 权限机制
@@ -45,16 +45,15 @@ const config = {
   ],
   // lemoc接口url
   lemocURL: 'ws://127.0.0.1:25303',
+  // 机器人atme触发字符串 以该字符串开头的群消息会被认为发送给机器人，为null时表示使用@触发
+  prompt: null,
 
   // [未实现]
-  prompt: null,
   workpath: '.cqnode',
 };
 ```
 
 ## todo notes
-- `prompt:string?=null` 机器人atme触发字符串 以该字符串开头的__群消息__会被认为发送给机器人
-  - `undefined|null|''` @该机器人时
 - `workpath:string='.cqnode'` 机器人运行所需的文件目录，同时启动多个机器人时要保证它们的目录各不相同
 
 # module
