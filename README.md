@@ -74,8 +74,14 @@ class MyModule extends CQNode.Module {
   }
   /**
    * 监听群消息
-   * @param {object} 消息内容
-   * @param {object} 包含了和响应回复相关的函数
+   * @param {object} msg 消息内容
+   * @param {bool} atme 该消息是否包含atme字符串
+   * @param {string} fromGroup 消息发送人
+   * @param {string} fromQQ 消息发送人
+   * @param {string} msg 消息内容
+   * @param {object} resp 包含了和响应回复相关的函数
+   * @param {function} resp.send 发送消息到消息来源群
+   * @param {function} resp.sendPrivate 发送私聊消息到发送人
    */
   onGroupMessage(msg, resp) {
     if (!msg.atme) return false;
