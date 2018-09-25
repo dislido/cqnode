@@ -5,10 +5,11 @@
 # todo
 - 将console.log信息改为使用log4js
 - 更好的多群支持(WIP)
-- test
+- 增强test支持
 - 文档(WIP)
-- 替换lemoc插件依赖 https://github.com/momocow/node-cq-websocket
+- 替换lemoc插件依赖 (WIP)
 - 自动获取qqid
+- 移除builtinModules
 
 # 使用
 [CQNode wiki](https://github.com/dislido/cqnode/wiki)
