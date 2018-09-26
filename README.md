@@ -9,7 +9,7 @@
 - 文档(WIP)
 - 替换lemoc插件依赖 (WIP)
 - 自动获取qqid
-- 移除builtinModules
+- 增强自动补全支持/ts支持
 
 # 使用
 [CQNode wiki](https://github.com/dislido/cqnode/wiki)
