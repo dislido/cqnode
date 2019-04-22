@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 
 class CQNodeWorkpathError extends Error {}
 
@@ -10,8 +10,12 @@ function createWorkPath(workpath) {
   fs.mkdirSync(path.resolve(workpath, 'group'));
 }
 
-module.exports = class WorkpathManager {
-  constructor(workpath) {
+export default class WorkpathManager {
+  workpath: string;
+  cache: {
+    groupModuleCfg: object;
+  };
+  constructor(workpath: string) {
     this.workpath = path.resolve(workpath);
     this.cache = Object.assign(Object.create(null), {
       groupModuleCfg: {
@@ -40,7 +44,7 @@ module.exports = class WorkpathManager {
         fs.mkdirSync(path.resolve(this.workpath, `group/${group}`));
         fs.writeFileSync(path.resolve(this.workpath, `group/${group}/modulecfg.json`), '{}');
       }
-      const cfg = JSON.parse(fs.readFileSync(path.resolve(this.workpath, `group/${group}/modulecfg.json`)));
+      const cfg = JSON.parse(fs.readFileSync(path.resolve(this.workpath, `group/${group}/modulecfg.json`)) as unknown as string);
       this.cache.groupModuleCfg[group] = cfg;
     }
     const groupFieldCfg = this.cache.groupModuleCfg[group];

@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 
+/** @deprecated */
 module.exports = {
   connect(cqnode, lemocUrl = 'ws://127.0.0.1:25303') {
     const ws = new WebSocket(lemocUrl);

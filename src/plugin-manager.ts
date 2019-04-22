@@ -1,8 +1,6 @@
-module.exports = class PluginManager {
-  constructor(CQNode) {
-    this.CQNode = CQNode;
-    this.plugins = [];
-  }
+export default class PluginManager {
+  plugins = [];
+  constructor(public CQNode) {}
 
   /**
    * 注册插件

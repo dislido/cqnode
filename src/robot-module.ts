@@ -1,15 +1,19 @@
-const symbols = require('./symbols');
-const fs = require('fs');
+import { bindingCQNode, CQNodeModule as CQNodeModuleSymbols } from './symbols';
+import * as fs from 'fs';
 
-const { bindingCQNode } = symbols;
-const { isRunning, onRun, onStop, svcList } = symbols.CQNodeModule;
+const { isRunning, onRun, onStop, svcList } = CQNodeModuleSymbols;
 /**
  * @property {Object} symbols
  * @property {Symbol} symbols.bindingCQNode
  * @property {Symbol} symbols.svcList
  * @property {Symbol} symbols.isRunning
  */
-class CQNodeModule {
+export default class CQNodeModule {
+  symbols = {
+    bindingCQNode,
+    svcList,
+    isRunning,
+  };
   constructor() {
     /*
       this.inf = {
@@ -38,14 +42,14 @@ class CQNodeModule {
   onMessage(msgData, resp) { // eslint-disable-line class-methods-use-this
     return false;
   }
-  onGroupMessage(...args) {
-    return this.onMessage(...args);
+  onGroupMessage(msgData, resp) {
+    return this.onMessage(msgData, resp);
   }
   onGroupNotice() { // eslint-disable-line class-methods-use-this
     return false;
   }
-  onPrivateMessage(...args) {
-    return this.onMessage(...args);
+  onPrivateMessage(msgData, resp) {
+    return this.onMessage(msgData, resp);
   }
 
   getFilepath() {
@@ -68,12 +72,3 @@ class CQNodeModule {
     this[isRunning] = false;
   }
 }
-
-CQNodeModule.symbols = {
-  bindingCQNode,
-  svcList,
-  isRunning,
-};
-
-
-module.exports = CQNodeModule;

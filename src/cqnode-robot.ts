@@ -1,63 +1,65 @@
-const EventEmitter = require('events');
-const PluginManager = require('./plugin-manager');
-const WorkpathManager = require('./workpath-manager');
-const cqutil = require('./util');
-const lemocConnector = require('./connector-cq-lemoc');
-const symbols = require('./symbols');
+import * as EventEmitter from 'events';
+import PluginManager from './plugin-manager';
+import WorkpathManager from './workpath-manager';
+import { checkConfig } from './util';
+import { CQNodeModule } from './symbols';
+import CQHttpConnector from './connector-cqhttp';
 
 const actTypes = {
   GROUP: 101,
   PM: 106,
 };
 
-class CQNodeRobot extends EventEmitter {
-  constructor(config) {
+interface CQNodeConfig {
+  qqid: string;
+  admin: string | string[];
+  listenGroups: string[];
+  modules: any[];
+  plugins: any[];
+  workpath: string;
+  prompt: {
+    group: string;
+    svc: string;
+    admin: string;
+  }
+}
+
+export default class CQNodeRobot extends EventEmitter {
+  config: CQNodeConfig;
+  workpathManager: WorkpathManager;
+  pluginManager: PluginManager;
+  connect: CQHttpConnector;
+  utils: any;
+  modules: any[];
+
+  constructor(config: CQNodeConfig) {
     super();
-    this.config = cqutil.checkConfig(config);
+    this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath);
-    this.connect = lemocConnector.connect(this, this.config.lemocURL);
     this.utils = {
-      send: (msg, act, to) => {
+      sendPrivateMsg: this.connect.api.sendPrivateMsg,
+      send: (msg: string, act: number, to: string) => {
         const event = { msg, act, to };
         if (!this.pluginManager.emit('beforeSendMessage', event)) return true;
-        this.connect.sendMsg(event.act, event.to, event.msg);
+        this.connect.api.sendMsg(event.act, event.to, event.msg);
         return true;
       },
-      radio: (msg, groups = this.config.listenGroups) => {
+      radio: (msg: string, groups = this.config.listenGroups) => {
         const event = { msg, groups };
         if (!this.pluginManager.emit('beforeRadioMessage', event)) return true;
         event.groups.forEach(groupId => this.utils.send(event.msg, actTypes.GROUP, groupId));
         return true;
       },
     };
-
+    this.connect = new CQHttpConnector(this, { LISTEN_PORT: 6363, API_PORT: 5700 });
+    
     this.pluginManager = new PluginManager(this);
     this.config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
 
     this.modules = this.config.modules;
     this.modules.forEach((modRef, index) => this.loadModule(index));
 
-    /**
-     * { username: 'DisLido',
-  nick: '用户',
-  sex: '0',
-  age: '0',
-  error: '0',
-  act: '2',
-  fromGroup: '488733372',
-  fromGroupName: '',
-  fromQQ: '909796264',
-  subType: '1',
-  sendTime: '10837',
-  fromAnonymous: '',
-  msg: '[CQ:at,qq=3368358116] 1',
-  font: '8578984',
-
-  atme
-  username
-}
-     */
-    this.on('groupMessage', async (data) => {
+    this.on('GroupMessage', async (data) => {
       if (!this.pluginManager.emit('messageReceived', { data })) return;
       if (!this.pluginManager.emit('groupMessageReceived', { data })) return;
       // todo: log
@@ -76,12 +78,12 @@ class CQNodeRobot extends EventEmitter {
         });
       }
       // 回复
-      const sendBack = (msg, atBack = false) => {
+      const sendBack = (msg: string, atBack = false) => {
         if (atBack) msg = `[CQ:at,qq=${data.fromQQ}] ${msg}`;
         this.utils.send(msg, actTypes.GROUP, data.fromGroup);
       };
       // 以私聊方式回复
-      const sendPrivate = (msg) => {
+      const sendPrivate = (msg: string) => {
         this.utils.send(msg, actTypes.PM, data.fromQQ);
       };
       // modulerouters
@@ -98,19 +100,7 @@ class CQNodeRobot extends EventEmitter {
         }
       }
     });
-    /**
-     * { nick: 'DisLido',
-  sex: '0',
-  age: '0',
-  error: '0',
-  act: '21',
-  fromQQ: '909796264',
-  subType: '11',
-  sendTime: '10845',
-  font: '54320960',
-  msg: '123' }
-     */
-    this.on('privateMessage', async (data) => {
+    this.on('PrivateMessage', async (data) => {
       if (!this.pluginManager.emit('messageReceived', { data })) return;
       if (!this.pluginManager.emit('privateMessageReceived', { data })) return;
       Object.assign(data, {
@@ -121,7 +111,7 @@ class CQNodeRobot extends EventEmitter {
       // modulerouters
       for (let i = 0; i < this.modules.length; ++i) {
         const currentModule = this.modules[i];
-        const sendBack = (msg) => {
+        const sendBack = (msg: string) => {
           this.utils.send(msg, actTypes.PM, data.fromQQ);
         };
         try {
@@ -135,21 +125,21 @@ class CQNodeRobot extends EventEmitter {
       }
     });
   }
-  loadModule(modIndex) {
+  loadModule(modIndex: number) {
     try {
       const m = this.modules[modIndex];
-      m[symbols.CQNodeModule.onRun](this);
+      m[CQNodeModule.onRun](this);
       return true;
     } catch (e) {
       console.error(e);
     }
     return false;
   }
-  unLoadModule(modIndex) {
+  unLoadModule(modIndex: number) {
     try {
       const m = this.modules[modIndex];
       if (!m) return false;
-      m[symbols.CQNodeModule.onStop]();
+      m[CQNodeModule.onStop]();
       return true;
     } catch (e) {
       console.error(e);
@@ -157,5 +147,3 @@ class CQNodeRobot extends EventEmitter {
     return false;
   }
 }
-
-module.exports = CQNodeRobot;
