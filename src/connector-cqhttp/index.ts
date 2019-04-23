@@ -15,7 +15,14 @@ export default class CQHttpConnector {
   LISTEN_PORT: number;
   user: any;
   api: CQAPI = new Proxy(api, {
-    get: (target: any, apiName: string) => (...args: any[]) => this.requestAPI(`/${toUnderScoreCase(apiName)}`, target[apiName](...args)),
+    get: (target: any, apiName: string) => (...args: any[]) => {
+      if (typeof apiName === 'symbol') return;
+      if (!target[apiName]) {
+        console.warn('CONode warn: no API: ', apiName);
+        return;
+      }
+      this.requestAPI(`/${toUnderScoreCase(apiName)}`, target[apiName](...args));
+    },
   });
   /**
    * cq-http插件的连接器
@@ -44,7 +51,7 @@ export default class CQHttpConnector {
    * @param {http.ServerResponse} resp 响应对象
    */
   async onMsgReceived(event: CQEvent.Event, resp: http.ServerResponse) {
-    await this.cqnode.emit(eventType.assertEventName(event), { event, resp });
+    await this.cqnode.emit(eventType.assertEventName(event), event, resp);
     if (!resp.finished) resp.end();
   }
 

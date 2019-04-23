@@ -17,8 +17,8 @@ export default class CQNodeRobot extends EventEmitter {
     super();
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath);
-    this.connect = new CQHttpConnector(this, { LISTEN_PORT: 6363, API_PORT: 5700 });
-    
+    /** @todo PORT config */
+    this.connect = new CQHttpConnector(this, { LISTEN_PORT: 8080, API_PORT: 5700 });
     // this.pluginManager = new PluginManager(this);
     // this.config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
 

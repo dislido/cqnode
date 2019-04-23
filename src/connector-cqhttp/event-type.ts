@@ -36,8 +36,8 @@ function traversalMsgTypeAssertTree (event: CQEvent.Event, obj: EventTypeTree): 
   // @ts-ignore
   const fieldValue = event[fieldName];
   if (!fieldValue) throw new Error(`CQNode Error: unknown Event:\n${JSON.stringify(event)}`);
-  if (typeof fieldValue === 'function') return fieldValue;
-  return traversalMsgTypeAssertTree(event, fieldValue);
+  if (typeof obj[fieldValue] === 'string') return obj[fieldValue] as string;
+  return traversalMsgTypeAssertTree(event, obj[fieldValue] as EventTypeTree);
 }
 
 export function assertEventName(event: CQEvent.Event) {
