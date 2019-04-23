@@ -9,12 +9,12 @@ function checkAtme(this: CQNodeRobot, data: CQEvent.MessageEvent) {
     atme: false,
     msg: data.message.trim(),
   });
-  if (data.message_type === 'private') {
+  if (data.messageType === 'private') {
     data.atme = true;
     return;
   }
   const prompt = typeof this.config.prompt === 'string' ? this.config.prompt : `[CQ:at,qq=${this.config.qqid}]`;
-  if (data.message_type === 'group' || data.message_type === 'discuss') {
+  if (data.messageType === 'group' || data.messageType === 'discuss') {
     if (data.msg.startsWith(prompt)) {
       data.msg = data.msg.substring(prompt.length).trim(),
       data.atme = true;
@@ -44,7 +44,7 @@ function registerPrivateMessageEvent(cqnode: CQNodeRobot) {
     originalResponse: response,
     responseBody: {},
     send(message: string) { 
-      cqnode.connect.api.sendPrivateMsg(data.user_id, message);
+      cqnode.connect.api.sendPrivateMsg(data.userId, message);
     },
     reply(message, autoEscape?) {
       this.responseBody.reply = message;
@@ -63,7 +63,7 @@ function registerGroupMessageEvent(cqnode: CQNodeRobot) {
     originalResponse: response,
     responseBody: {},
     send(message, autoEscape?) {
-      cqnode.connect.api.sendGroupMsg(data.group_id, message, autoEscape);
+      cqnode.connect.api.sendGroupMsg(data.groupId, message, autoEscape);
     },
     reply(message, autoEscape = false) {
       this.responseBody.reply = message;
@@ -71,7 +71,7 @@ function registerGroupMessageEvent(cqnode: CQNodeRobot) {
       return this;
     },
     sendPrivate(message: string, autoEscape?) {
-      cqnode.connect.api.sendPrivateMsg(data.user_id, message, autoEscape)
+      cqnode.connect.api.sendPrivateMsg(data.userId, message, autoEscape)
     },
     at(at = true) {
       this.responseBody.at_sender = at;

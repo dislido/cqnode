@@ -2,7 +2,7 @@ import * as http from 'http';
 import CQNodeRobot from '../cqnode-robot';
 import api from './api';
 import * as eventType from './event-type';
-import { toUnderScoreCase } from '../util';
+import { toUnderScoreCase, toCamelCase } from '../util';
 
 declare interface CQHTTPConfig {
   LISTEN_PORT?: number,
@@ -38,7 +38,7 @@ export default class CQHttpConnector {
         data += chunk;
       }).on('end', () => {
         resp.setHeader('Content-Type', 'application/json');
-        this.onMsgReceived(JSON.parse(data), resp);
+        this.onMsgReceived(toCamelCase(JSON.parse(data)) as CQEvent.Event, resp);
       });
     }).listen(LISTEN_PORT);
     this.API_PORT = API_PORT;
@@ -51,7 +51,7 @@ export default class CQHttpConnector {
    * @param {http.ServerResponse} resp 响应对象
    */
   async onMsgReceived(event: CQEvent.Event, resp: http.ServerResponse) {
-    await this.cqnode.emit(eventType.assertEventName(event), event, resp);
+    await this.cqnode.emit(eventType.assertEventName(event), toCamelCase(event), resp);
     if (!resp.finished) resp.end();
   }
 

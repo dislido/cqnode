@@ -4,15 +4,15 @@ interface EventTypeTree {
   [key: string]: string | EventTypeTree;
 }
 const EventTypeTree = {
-  [assertField]: 'post_type',
+  [assertField]: 'postType',
   message: {
-    [assertField]: 'message_type',
+    [assertField]: 'messageType',
     private: 'PrivateMessage',
     group: 'GroupMessage',
     discuss: 'DiscussMessage',
   },
   notice: {
-    [assertField]: 'notice_type',
+    [assertField]: 'noticeType',
     group_upload: 'GroupUploadNotice',
     group_admin: 'GroupAdminNotice',
     group_decrease: 'GroupDecreaseNotice',
@@ -20,12 +20,12 @@ const EventTypeTree = {
     friend_add: 'FriendAddNotice',
   },
   request: {
-    [assertField]: 'request_type',
+    [assertField]: 'requestType',
     friend: 'FriendRequest',
     group: 'GroupRequest',
   },
   meta_event: {
-    [assertField]: 'meta_event_type',
+    [assertField]: 'metaEventType',
     lifecycle: 'LifecycleMeta',
     heartbeat: 'HeartbeatMeta',
   }

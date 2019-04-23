@@ -24,6 +24,7 @@ export function checkConfig(config: any) {
 export function toUnderScoreCase(obj: object): object;
 export function toUnderScoreCase(str: string): string;
 export function toUnderScoreCase(t: any) {
+  if (!t) return t;
   if (typeof t === 'string') return t.replace(/[(A-Z)]/g, it => `_${it.toLowerCase()}`);
   return Object.entries(t).reduce((prev: { [key: string]: any }, [key, value]) => {
     prev[key.replace(/[(A-Z)]/g, it => `_${it.toLowerCase()}`)] = value;
@@ -34,9 +35,11 @@ export function toUnderScoreCase(t: any) {
 export function toCamelCase(obj: object): object;
 export function toCamelCase(str: string): string;
 export function toCamelCase(t: any) {
-  if (typeof t === 'string') return t.replace(/_([a-z])/g, it => it.toUpperCase());
+  if (!t) return t;
+  if (typeof t === 'string') return t.replace(/_([a-z])/g, it => it[1].toUpperCase());
   return Object.entries(t).reduce((prev: { [key: string]: any }, [key, value]) => {
-    prev[key.replace(/_([a-z])/g, it => it.toUpperCase())] = value;
+    if (typeof value === "object") value = toCamelCase(value);
+    prev[key.replace(/_([a-z])/g, it => it[1].toUpperCase())] = value;
     return prev;
   }, {});
 }
