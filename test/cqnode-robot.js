@@ -1,0 +1,2 @@
+const CQNode = require('../dist');
+

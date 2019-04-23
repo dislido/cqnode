@@ -1,6 +1,6 @@
 export as namespace CQNode;
-
-declare class CQNodeRobot {
+import { ServerResponse } from 'http';
+interface CQNodeRobot {
   api: {
     /**
      * 发送私聊消息  
@@ -13,6 +13,63 @@ declare class CQNodeRobot {
 }
 
 export function createRobot(config: any): CQNodeRobot;
+
+/** 模块信息 */
+interface CQNodeModuleInf {
+  /** 模块包名，应保证唯一 */
+  packageName: string;
+  /** 模块名 */
+  name: string;
+  /** 模块帮助信息 */
+  help: string;
+  /** 模块简介 */
+  description: string;
+}
+
+export abstract class Module {
+  /** 模块绑定的CQNode */
+  bindingCQNode: CQNodeRobot;
+  /** 模块是否处于运行状态 */
+  isRunning: boolean;
+  /** 模块信息 */
+  inf: CQNodeModuleInf;
+
+  constructor(inf: CQNodeModuleInf);
+  /** 模块启动 */
+  onRun(): void;
+  /** 模块停止 */
+  onStop(): void;
+  /** 收到事件 */
+  onEvent(event: CQEvent.Event, resp: ServerResponse): boolean;
+  /** 收到消息 */
+  onMessage(data: CQEvent.MessageEvent, resp: ServerResponse): boolean | string;
+  /** 收到私聊消息 */
+  onPrivateMessage(data: CQEvent.PrivateMessageEvent, resp: ServerResponse): boolean | string;
+  /** 收到群消息 */
+  onGroupMessage(data: CQEvent.GroupMessageEvent, resp: ServerResponse): boolean | string;
+  /** 收到讨论组消息 */
+  onDiscussMessage(data: CQEvent.DiscussMessageEvent, resp: ServerResponse): boolean | string;
+  /** 收到通知 */
+  onNotice(data: CQEvent.NoticeEvent, resp: ServerResponse): boolean;
+  /** 收到群文件上传通知 */
+  onGroupUploadNotice(data: CQEvent.GroupUploadNoticeEvent, resp: ServerResponse): boolean;
+  /** 收到群管理员变动通知 */
+  onGroupAdminNotice(data: CQEvent.GroupAdminNoticeEvent, resp: ServerResponse): boolean;
+  /** 收到群成员减少通知 */
+  onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNoticeEvent, resp: ServerResponse): boolean;
+  /** 收到群成员增加通知 */
+  onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNoticeEvent, resp: ServerResponse): boolean;
+  /** 收到好友添加通知 */
+  onFriendAddNotice(data: CQEvent.FriendAddNoticeEvent, resp: ServerResponse): boolean;
+  /** 收到请求 */
+  onRequest(data: CQEvent.RequestEvent, resp: ServerResponse);
+  /** 收到加好友请求 */
+  onFriendRequest(data: CQEvent.FriendRequestEvent, resp: ServerResponse);
+  /** 收到加群请求 */
+  onGroupRequest(data: CQEvent.GroupRequestEvent, resp: ServerResponse);
+  /** 获取本模块的数据文件目录 */
+  getFilepath(): string;
+}
 
 export namespace CQEvent {
     /** CQHTTP上报事件 */
@@ -54,7 +111,8 @@ export namespace CQEvent {
     /** 私聊消息事件 */
     interface PrivateMessageEvent extends MessageEvent {
       message_type: 'private';
-      /** 消息子类型，表示私聊的来源  
+      /**
+       * 消息子类型，表示私聊的来源  
        * friend: 好友  
        * group: 群临时会话
        * discuss: 讨论组临时会话  
@@ -77,7 +135,8 @@ export namespace CQEvent {
     /** 群消息事件 */
     interface GroupMessageEvent extends MessageEvent {
       message_type: 'group';
-      /** 消息子类型  
+      /**
+       * 消息子类型  
        * normal: 正常消息  
        * anonymous: 匿名消息  
        * notice: 系统提示
@@ -108,7 +167,8 @@ export namespace CQEvent {
         level: string;
         /** 昵称 */
         nickname: string;
-        /** 角色  
+        /**
+         * 角色  
          * owner: 群主  
          * admin: 管理员  
          * member: 群成员
@@ -142,7 +202,8 @@ export namespace CQEvent {
     /** 通知类事件 */
     interface NoticeEvent extends Event {
       post_type: 'notice';
-      /** 通知类型  
+      /**
+       * 通知类型  
        * group_upload: 群文件上传  
        * group_admin: 群管理员变动  
        * group_decrease: 群成员减少  
@@ -175,7 +236,8 @@ export namespace CQEvent {
     /** 群管理员变动 */
     interface GroupAdminNoticeEvent extends NoticeEvent {
       notice_type: 'group_admin';
-      /** 子类型  
+      /**
+       * 子类型  
        * set: 设置管理员  
        * unset: 取消管理员
        */
@@ -189,7 +251,8 @@ export namespace CQEvent {
     /** 群成员减少 */
     interface GroupDecreaseNoticeEvent extends NoticeEvent {
       notice_type: 'group_decrease';
-      /** 子类型
+      /**
+       * 子类型
        * leave: 主动退群
        * kick: 被踢出群
        * kick_me: 本账号被踢出群
@@ -206,7 +269,8 @@ export namespace CQEvent {
     /** 群成员增加 */
     interface GroupIncreaseNoticeEvent extends NoticeEvent {
       notice_type: 'group_increase';
-      /** 子类型
+      /**
+       * 子类型
        * approve: 管理员已同意入群
        * invite: 管理员邀请入群
        */
@@ -229,7 +293,8 @@ export namespace CQEvent {
     /** 请求类事件 */
     interface RequestEvent extends Event {
       post_type: 'request';
-      /** 请求类型  
+      /**
+       * 请求类型  
        * friend: 加好友请求  
        * group: 加群请求/邀请
        */
@@ -250,7 +315,8 @@ export namespace CQEvent {
     /** 加群请求 */
     interface GroupRequestEvent extends RequestEvent {
       request_type: 'group';
-      /** 子类型  
+      /**
+       * 子类型  
        * add: 请求加群  
        * invite: 邀请本账号入群
        */
@@ -268,7 +334,8 @@ export namespace CQEvent {
     /** 元事件 */
     interface MetaEvent extends Event {
       post_type: 'meta_event';
-      /** 元事件类型  
+      /**
+       * 元事件类型  
        * lifecycle: 生命周期  
        * heartbeat: 心跳
        */

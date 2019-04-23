@@ -2,10 +2,7 @@ import * as http from 'http';
 import CQNodeRobot from '../cqnode-robot';
 import api from './api';
 import * as eventType from './event-type';
-
-function toUnderScoreCase(str: string) {
-    return str.replace(/[(A-Z)]/g, it => `_${it.toLowerCase()}`);
-}
+import { toUnderScoreCase } from '../util';
 
 declare interface CQHTTPConfig {
   LISTEN_PORT?: number,
@@ -18,12 +15,7 @@ export default class CQHttpConnector {
   LISTEN_PORT: number;
   user: any;
   api: CQAPI = new Proxy(api, {
-    get: (target: any, apiName: string) => {
-      return (...args: any[]) => {
-        const requestBody = target[apiName](...args);
-        return this.requestAPI(`/${toUnderScoreCase(apiName)}`, requestBody);
-      };
-    }
+    get: (target: any, apiName: string) => (...args: any[]) => this.requestAPI(`/${toUnderScoreCase(apiName)}`, target[apiName](...args)),
   });
   /**
    * cq-http插件的连接器
@@ -38,23 +30,22 @@ export default class CQHttpConnector {
       req.on('data', (chunk) => {
         data += chunk;
       }).on('end', () => {
+        resp.setHeader('Content-Type', 'application/json');
         this.onMsgReceived(JSON.parse(data), resp);
       });
     }).listen(LISTEN_PORT);
     this.API_PORT = API_PORT;
     this.LISTEN_PORT = LISTEN_PORT;
-    const t = await this.api.sendDiscussMsg(123456789,'hello');
-    t.
   }
 
   /**
    * 接收消息事件
    * @param {Object} event 接收到的消息对象
    * @param {http.ServerResponse} resp 响应对象
-   * @returns {string} reply信息
    */
   async onMsgReceived(event: CQEvent.Event, resp: http.ServerResponse) {
-    return await this.cqnode.emit(eventType.assertEventName(event), { event, resp });
+    await this.cqnode.emit(eventType.assertEventName(event), { event, resp });
+    if (!resp.finished) resp.end();
   }
 
   /**

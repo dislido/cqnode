@@ -7,8 +7,8 @@ const EventTypeTree = {
   [assertField]: 'post_type',
   message: {
     [assertField]: 'message_type',
-    group: 'GroupMessage',
     private: 'PrivateMessage',
+    group: 'GroupMessage',
     discuss: 'DiscussMessage',
   },
   notice: {

@@ -6,9 +6,6 @@
    */
 module.exports = function requestAPI(path, body) {
     const content = body ? JSON.stringify(body) : '';
-    /**
-     * @todo Promise保持在pending状态不resolve，需要检查
-     */
     let data = '';
     return http.request({
       host: '127.0.0.1',

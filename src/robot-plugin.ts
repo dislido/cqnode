@@ -9,5 +9,6 @@ export default class CQNodePlugin {
    * @param {number} data.act 消息类型
    * @param {string} data.to 发送目标
    */
-  beforeSendMessage(data: { msg: string; act: number; to: string }) {} // eslint-disable-line no-unused-vars,class-methods-use-this
+  beforeSendMessage(data: { msg: string; act: number; to: string }) {}
+  onRegister(cqnode: CQNodeRobot) {}
 }

@@ -1,13 +1,16 @@
+import CQNodeRobot from "./cqnode-robot";
+import CQNodePlugin from "./robot-plugin";
+
 export default class PluginManager {
-  plugins = [];
-  constructor(public CQNode) {}
+  plugins: CQNodePlugin[] = [];
+  constructor(public cqnode: CQNodeRobot) {}
 
   /**
    * 注册插件
    * @param {object} plugin 插件对象
    */
-  registerPlugin(plugin) {
-    if (plugin.onRegister) plugin.onRegister(this.CQNode);
+  registerPlugin(plugin: CQNodePlugin) {
+    if (plugin.onRegister) plugin.onRegister(this.cqnode);
     this.plugins.push(plugin);
   }
 
@@ -17,14 +20,14 @@ export default class PluginManager {
    * @param {string} hookName 钩子名
    * @param {object} data 钩子提供的参数数据对象，对该对象的修改会改变事件相关数据
    */
-  emit(hookName, data) {
-    const plugins = this.plugins.filter(plugin => typeof plugin[hookName] === 'function');
-    try {
-      if (plugins.find(plugin => plugin[hookName](data) === false)) return false;
-    } catch (e) {
-      console.error(`[error]plugin error:(${hookName})`, e);
-      return false;
-    }
-    return true;
+  emit(hookName: string, data: object) {
+    // const plugins = this.plugins.filter(plugin => typeof plugin[hookName] === 'function');
+    // try {
+    //   if (plugins.find(plugin => (plugin[hookName])(data) === false)) return false;
+    // } catch (e) {
+    //   console.error(`[error]plugin error:(${hookName})`, e);
+    //   return false;
+    // }
+    // return true;
   }
 };

@@ -1,20 +1,25 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import CQNodeModule from './robot-module';
 
 class CQNodeWorkpathError extends Error {}
 
-function createWorkPath(workpath) {
+function createWorkPath(workpath: string) {
   fs.mkdirSync(workpath);
   fs.mkdirSync(path.resolve(workpath, 'module'));
   fs.mkdirSync(path.resolve(workpath, 'log'));
   fs.mkdirSync(path.resolve(workpath, 'group'));
 }
 
+interface WorkpathCache {
+  groupModuleCfg: {
+    [key: string]: any;
+  }
+}
+
 export default class WorkpathManager {
   workpath: string;
-  cache: {
-    groupModuleCfg: object;
-  };
+  cache: WorkpathCache;
   constructor(workpath: string) {
     this.workpath = path.resolve(workpath);
     this.cache = Object.assign(Object.create(null), {
@@ -30,7 +35,7 @@ export default class WorkpathManager {
     }
     createWorkPath(workpath);
   }
-  getWorkPath(...to) {
+  getWorkPath(...to: string[]) {
     return path.resolve(this.workpath, ...to);
   }
   /**
@@ -38,7 +43,7 @@ export default class WorkpathManager {
    * @param {string} group 群号码
    * @param {object} module 模块引用
    */
-  async getGroupModuleConfig(group, module) {
+  async getGroupModuleConfig(group: string, module: CQNodeModule) {
     if (!this.cache.groupModuleCfg[group]) {
       if (!fs.existsSync(path.resolve(this.workpath, `group/${group}`))) {
         fs.mkdirSync(path.resolve(this.workpath, `group/${group}`));
@@ -51,7 +56,7 @@ export default class WorkpathManager {
     if (!groupFieldCfg[module.inf.packageName]) groupFieldCfg[module.inf.packageName] = {};
     return groupFieldCfg[module.inf.packageName];
   }
-  async saveGroupModuleConfig(group) {
+  async saveGroupModuleConfig(group: string) {
     fs.writeFileSync(
       path.resolve(this.workpath, `group/${group}/modulecfg.json`),
       JSON.parse(this.cache.groupModuleCfg[group]),

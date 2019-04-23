@@ -33,6 +33,19 @@ declare namespace CQEvent {
     raw_message: string;
     /** 字体 */
     font: number;
+    /** 发送人信息,不保证各字段存在和正确性 */
+    sender: {
+      [field: string]: any;
+    },
+    /** cqnode附加字段：发送人名称，会尽可能提供在聊天窗口显示的名称 */
+    username: string;
+    /** cqnode附加字段：是否at了本账号，私聊消息中总是为true */
+    atme: boolean;
+    /**
+     * cqnode附加字段：对message进行过预处理操作后的字符串
+     * (进行trim操作，移除at信息部分)
+     */
+    msg: string;
   }
 
   /** 私聊消息事件 */
