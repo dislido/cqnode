@@ -23,6 +23,7 @@ declare interface CQNodeConfig {
 }
 
 type EventResult = boolean | undefined | CQNodeEventResponse.Response;
+type EventReturns = EventResult | Promise<EventResult>;
 
 /** 模块信息 */
 declare interface CQNodeModuleInf {

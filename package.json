@@ -15,14 +15,8 @@
     "type": "git",
     "url": "https://github.com/dislido/cqnode-alpha"
   },
-  "dependencies": {
-    "log4js": "^3.0.4",
-    "ws": "^6.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^11.13.5",
-    "eslint": "^3.18.0",
-    "eslint-config-airbnb-base": "^11.1.1",
-    "eslint-plugin-import": "^2.2.0"
+    "@types/node": "^11.13.5"
   }
 }

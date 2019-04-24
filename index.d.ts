@@ -1,5 +1,6 @@
 export as namespace CQNode;
 import { ServerResponse } from 'http';
+
 interface CQNodeRobot {
   api: {
     /**
@@ -26,6 +27,8 @@ interface CQNodeModuleInf {
   description: string;
 }
 
+type EventResult = boolean | undefined | CQNodeEventResponse.Response;
+type EventReturns = EventResult | Promise<EventResult>;
 export abstract class Module {
   /** 模块绑定的CQNode */
   bindingCQNode: CQNodeRobot;
@@ -40,37 +43,38 @@ export abstract class Module {
   /** 模块停止 */
   onStop(): void;
   /** 收到事件 */
-  onEvent(event: CQEvent.Event, resp: CQNodeEventResponse.Response): EventResult;
+  onEvent(event: CQEvent.Event, resp: CQNodeEventResponse.Response): EventReturns;
   /** 收到消息 */
-  onMessage(data: CQEvent.MessageEvent, resp: CQNodeEventResponse.MessageResponse): EventResult;
+  onMessage(data: CQEvent.MessageEvent, resp: CQNodeEventResponse.MessageResponse): EventReturns;
   /** 收到私聊消息 */
-  onPrivateMessage(data: CQEvent.PrivateMessageEvent, resp: CQNodeEventResponse.PrivateMessageResponse): EventResult;
+  onPrivateMessage(data: CQEvent.PrivateMessageEvent, resp: CQNodeEventResponse.PrivateMessageResponse): EventReturns;
   /** 收到群消息 */
-  onGroupMessage(data: CQEvent.GroupMessageEvent, resp: CQNodeEventResponse.GroupMessageResponse): EventResult;
+  onGroupMessage(data: CQEvent.GroupMessageEvent, resp: CQNodeEventResponse.GroupMessageResponse): EventReturns;
   /** 收到讨论组消息 */
-  onDiscussMessage(data: CQEvent.DiscussMessageEvent, resp: CQNodeEventResponse.DiscussMessageResponse): EventResult;
+  onDiscussMessage(data: CQEvent.DiscussMessageEvent, resp: CQNodeEventResponse.DiscussMessageResponse): EventReturns;
   /** 收到通知 */
-  onNotice(data: CQEvent.NoticeEvent, resp: CQNodeEventResponse.NoticeResponse): EventResult;
+  onNotice(data: CQEvent.NoticeEvent, resp: CQNodeEventResponse.NoticeResponse): EventReturns;
   /** 收到群文件上传通知 */
-  onGroupUploadNotice(data: CQEvent.GroupUploadNoticeEvent, resp: CQNodeEventResponse.GroupUploadNoticeResponse): EventResult;
+  onGroupUploadNotice(data: CQEvent.GroupUploadNoticeEvent, resp: CQNodeEventResponse.GroupUploadNoticeResponse): EventReturns;
   /** 收到群管理员变动通知 */
-  onGroupAdminNotice(data: CQEvent.GroupAdminNoticeEvent, resp: CQNodeEventResponse.GroupAdminNoticeResponse): EventResult;
+  onGroupAdminNotice(data: CQEvent.GroupAdminNoticeEvent, resp: CQNodeEventResponse.GroupAdminNoticeResponse): EventReturns;
   /** 收到群成员减少通知 */
-  onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNoticeEvent, resp: CQNodeEventResponse.GroupDecreaseNoticeResponse): EventResult;
+  onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNoticeEvent, resp: CQNodeEventResponse.GroupDecreaseNoticeResponse): EventReturns;
   /** 收到群成员增加通知 */
-  onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNoticeEvent, resp: CQNodeEventResponse.GroupIncreaseNoticeResponse): EventResult;
+  onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNoticeEvent, resp: CQNodeEventResponse.GroupIncreaseNoticeResponse): EventReturns;
   /** 收到好友添加通知 */
-  onFriendAddNotice(data: CQEvent.FriendAddNoticeEvent, resp: CQNodeEventResponse.FriendAddNoticeResponse): EventResult;
+  onFriendAddNotice(data: CQEvent.FriendAddNoticeEvent, resp: CQNodeEventResponse.FriendAddNoticeResponse): EventReturns;
   /** 收到请求 */
-  onRequest(data: CQEvent.RequestEvent, resp: CQNodeEventResponse.RequestResponse): EventResult;
+  onRequest(data: CQEvent.RequestEvent, resp: CQNodeEventResponse.RequestResponse): EventReturns;
   /** 收到加好友请求 */
-  onFriendRequest(data: CQEvent.FriendRequestEvent, resp: CQNodeEventResponse.FriendRequestResponse): EventResult;
+  onFriendRequest(data: CQEvent.FriendRequestEvent, resp: CQNodeEventResponse.FriendRequestResponse): EventReturns;
   /** 收到加群请求 */
-  onGroupRequest(data: CQEvent.GroupRequestEvent, resp: CQNodeEventResponse.GroupRequestResponse): EventResult;
+  onGroupRequest(data: CQEvent.GroupRequestEvent, resp: CQNodeEventResponse.GroupRequestResponse): EventReturns;
   /** 获取本模块的数据文件目录 */
   getFilepath(): string;
 }
 
+/** CQNode事件响应对象 */
 export namespace CQNodeEventResponse {
   /** CQNode事件响应对象 */
   interface Response {
@@ -185,6 +189,7 @@ export namespace CQNodeEventResponse {
   interface HeartbeatMetaResponse extends MetaResponse {}
 }
 
+/** CQHTTP上报事件 */
 export namespace CQEvent {
   /** CQHTTP上报事件 */
   interface Event {

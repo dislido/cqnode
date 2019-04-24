@@ -1,6 +1,6 @@
 import CQNodeRobot from "./cqnode-robot";
 import { ServerResponse } from "http";
-import { CQNodeEventResponse, EventResult } from "./cqnode";
+import { CQNodeEventResponse, EventReturns } from "./cqnode";
 import CQNodeModule from "./robot-module";
 
 function checkAtme(this: CQNodeRobot, data: CQEvent.MessageEvent) {
@@ -22,7 +22,7 @@ function checkAtme(this: CQNodeRobot, data: CQEvent.MessageEvent) {
   }
 }
 
-async function callModuleEvent(cqnode: CQNodeRobot, exec: (currentModule: CQNodeModule) => EventResult) {
+async function callModuleEvent(cqnode: CQNodeRobot, exec: (currentModule: CQNodeModule) => EventReturns) {
   for (let i = 0; i < cqnode.modules.length; ++i) {
     const currentModule = cqnode.modules[i];
     try {
