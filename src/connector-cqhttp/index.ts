@@ -21,7 +21,7 @@ export default class CQHttpConnector {
         console.warn('CONode warn: no API: ', apiName);
         return;
       }
-      this.requestAPI(`/${toUnderScoreCase(apiName)}`, target[apiName](...args));
+      return this.requestAPI(`/${toUnderScoreCase(apiName)}`, target[apiName](...args));
     },
   });
   /**
