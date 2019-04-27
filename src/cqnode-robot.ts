@@ -11,6 +11,7 @@ export default class CQNodeRobot extends EventEmitter {
   workpathManager: WorkpathManager;
   pluginManager: PluginManager;
   connect: CQHttpConnector;
+  api: CQAPI;
   modules: CQNodeModule[];
 
   constructor(config: CQNodeConfig) {
@@ -24,7 +25,7 @@ export default class CQNodeRobot extends EventEmitter {
 
     this.modules = this.config.modules;
     this.modules.forEach((modRef, index) => this.loadModule(index));
-
+    this.api = this.connect.api;
   }
   loadModule(modIndex: number) {
     try {

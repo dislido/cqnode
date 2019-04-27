@@ -12,10 +12,13 @@ export function checkConfig(config: any) {
     plugins: [],
     prompt: true,
     workpath: '.cqnode',
+    connector: {
+      LISTEN_PORT: 8080,
+      API_PORT: 5700,
+    },
     ...config,
   };
   if (!config) throw new Error('config is required');
-  if (!cfg.qqid) throw new Error('config.qqid is required');
   if (typeof cfg.workpath !== 'string' || !cfg.workpath) throw new TypeError('illegal config.workpath');
   if (cfg.prompt === true) cfg.prompt = `[CQ:at,qq=${cfg.qqid}]`;
   return cfg as CQNodeConfig;
