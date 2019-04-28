@@ -24,22 +24,22 @@ export default abstract class CQNodeModule {
   onDiscussMessage(data: CQEvent.DiscussMessageEvent, resp: CQNodeEventResponse.DiscussMessageResponse): EventReturns {
     return this.onMessage(data, resp);
   }
-  onNotice(data: CQEvent.NoticeEvent, resp: CQNodeEventResponse.NoticeResponse): EventReturns {
+  onNotice(data: CQEvent.NoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
     return this.onEvent(data, resp);
   }
-  onGroupUploadNotice(data: CQEvent.GroupUploadNoticeEvent, resp: CQNodeEventResponse.GroupUploadNoticeResponse): EventReturns {
+  onGroupUploadNotice(data: CQEvent.GroupUploadNoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
     return this.onNotice(data, resp);
   }
-  onGroupAdminNotice(data: CQEvent.GroupAdminNoticeEvent, resp: CQNodeEventResponse.GroupAdminNoticeResponse): EventReturns {
+  onGroupAdminNotice(data: CQEvent.GroupAdminNoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
     return this.onNotice(data, resp);
   }
-  onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNoticeEvent, resp: CQNodeEventResponse.GroupDecreaseNoticeResponse): EventReturns {
+  onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
     return this.onNotice(data, resp);
   }
-  onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNoticeEvent, resp: CQNodeEventResponse.GroupIncreaseNoticeResponse): EventReturns {
+  onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
     return this.onNotice(data, resp);
   }
-  onFriendAddNotice(data: CQEvent.FriendAddNoticeEvent, resp: CQNodeEventResponse.FriendAddNoticeResponse): EventReturns {
+  onFriendAddNotice(data: CQEvent.FriendAddNoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
     return this.onNotice(data, resp);
   }
   onRequest(data: CQEvent.RequestEvent, resp: CQNodeEventResponse.RequestResponse): EventReturns {

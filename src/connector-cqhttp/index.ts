@@ -7,12 +7,14 @@ import { toUnderScoreCase, toCamelCase } from '../util';
 declare interface CQHTTPConfig {
   LISTEN_PORT?: number,
   API_PORT?: number,
+  TIMEOUT?: number,
 }
 
 export default class CQHttpConnector {
   server: http.Server;
   API_PORT: number;
   LISTEN_PORT: number;
+  TIMEOUT: number;
   user: any;
   api: CQAPI = new Proxy(api, {
     get: (target: any, apiName: string) => (...args: any[]) => {
@@ -30,8 +32,9 @@ export default class CQHttpConnector {
    * @param {Object} config 端口设置
    * @param {number} config.LISTEN_PORT 接收消息端口
    * @param {number} config.API_PORT 调用API端口
+   * @param {number} config.TIMEOUT response超时时间
    */
-  constructor(public cqnode: CQNodeRobot, { LISTEN_PORT = 6363, API_PORT = 5700 }: CQHTTPConfig = {}) {
+  constructor(public cqnode: CQNodeRobot, { LISTEN_PORT = 8080, API_PORT = 5700, TIMEOUT = 10000 }: CQHTTPConfig = {}) {
     this.server = http.createServer((req, resp) => {
       let data = '';
       req.on('data', (chunk) => {
@@ -43,6 +46,7 @@ export default class CQHttpConnector {
     }).listen(LISTEN_PORT);
     this.API_PORT = API_PORT;
     this.LISTEN_PORT = LISTEN_PORT;
+    this.TIMEOUT = TIMEOUT;
   }
 
   /**
@@ -50,9 +54,9 @@ export default class CQHttpConnector {
    * @param {Object} event 接收到的消息对象
    * @param {http.ServerResponse} resp 响应对象
    */
-  async onMsgReceived(event: CQEvent.Event, resp: http.ServerResponse) {
-    await this.cqnode.emit(eventType.assertEventName(event), toCamelCase(event), resp);
-    if (!resp.finished) resp.end();
+  onMsgReceived(event: CQEvent.Event, resp: http.ServerResponse) {
+    this.cqnode.emit(eventType.assertEventName(event), toCamelCase(event), resp);
+    setTimeout(() => !resp.finished && resp.end(), this.TIMEOUT);
   }
 
   /**
@@ -63,7 +67,7 @@ export default class CQHttpConnector {
    */
   requestAPI(path: string, body?: object) {
     const content = body ? JSON.stringify(body) : '';
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       let data = '';
       http.request({
         host: '127.0.0.1',
@@ -81,7 +85,7 @@ export default class CQHttpConnector {
         }).on('end', () => {
           resolve(data && JSON.parse(data));
         });
-      }).end(content);
+      }).on('error', err => reject(err)).end(content);
     });
   }
 };

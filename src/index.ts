@@ -2,11 +2,12 @@ import CQNodeRobot from './cqnode-robot';
 import Module from './robot-module';
 import Plugin from './robot-plugin';
 import registerEvent from './register-event';
+import { CQNodeConfig } from './cqnode';
 
 const CQNode = {
-  createRobot(config: any) {
+  createRobot(config: CQNodeConfig) {
     const cqnode = new CQNodeRobot(config);
-    cqnode.setMaxListeners(17);
+    cqnode.setMaxListeners(13);
     registerEvent(cqnode);
     return cqnode;
   },

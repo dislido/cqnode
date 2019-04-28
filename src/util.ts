@@ -7,7 +7,6 @@ import { CQNodeConfig } from "./cqnode";
 export function checkConfig(config: any) {
   const cfg = {
     admin: [],
-    listenGroups: [],
     modules: [],
     plugins: [],
     prompt: true,
@@ -15,6 +14,7 @@ export function checkConfig(config: any) {
     connector: {
       LISTEN_PORT: 8080,
       API_PORT: 5700,
+      TIMEOUT: 10000,
     },
     ...config,
   };

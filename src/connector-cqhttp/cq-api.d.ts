@@ -280,7 +280,6 @@ declare interface CQAPI {
 
   /**
    * 获取登录号信息
-   * 无
    */
   getLoginInfo(): Promise<CQAPI.CQHttpResponseData<CQAPI.GetLoginInfoResponseData>>;
 

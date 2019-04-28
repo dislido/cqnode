@@ -1,12 +1,68 @@
 export as namespace CQNode;
 import { ServerResponse } from 'http';
 
+/** CQNode运行时信息 */
+interface CQNodeInf {
+  /** inf是否已获取 */
+  inited: boolean,
+  /** api.getLoginInfo, 当前登录号信息 */
+  loginInfo?: {
+    nickname: string,
+    userId: number,
+  };
+  /** 插件运行状态 */
+  status?: {
+    /** 当前 QQ 在线，null 表示无法查询到在线状态 */
+    online: boolean;
+    /** HTTP API 插件状态符合预期，意味着插件已初始化，内部插件都在正常运行，且 QQ 在线 */
+    good: boolean;
+  };
+  /** 酷Q 及 HTTP API 插件的版本信息 */
+  versionInfo?: {
+    /** 酷Q 根目录路径 */
+    coolqDirectory: string;
+    /** 酷Q 版本，air 或 pro */
+    coolqEdition: string;
+    /** HTTP API 插件版本，例如 2.1.3 */
+    pluginVersion: string;
+    /** HTTP API 插件 build 号 */
+    pluginBuildNumber: number;
+    /** HTTP API 插件编译配置，debug 或 release */
+    pluginBuildConfiguration: string;
+  };
+}
 interface CQNodeRobot {
+  /** 已加载的模块 */
   modules: Module[];
+  /** CQ HTTP API */
   api: CQAPI;
+  /** CQNode运行时信息 */
+  inf: CQNodeInf;
 }
 
-export function createRobot(config: any): CQNodeRobot;
+declare interface CQNodeConfig {
+  /** 本机器人ID @deprecated CQNode将会自动获取到此值 */
+  qqid: string;
+  /** 管理员 */
+  admin: string | string[];
+  /** 监听的群列表 */
+  listenGroups: string[];
+  /** 加载的模块 */
+  modules: any[];
+  /** 加载的插件 */
+  plugins: any[];
+  /** 数据文件夹 */
+  workpath: string;
+  /**
+   * atme判断字符串  
+   * 以该字符串开头的信息会被任务at了本机器人  
+   * 默认使用QQ的at  
+   * 空字符串表示将任何消息当作at了本机器人
+   */
+  prompt?: string;
+}
+
+export function createRobot(config: CQNodeConfig): CQNodeRobot;
 
 /** 模块信息 */
 interface CQNodeModuleInf {
