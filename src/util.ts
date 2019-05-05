@@ -1,4 +1,5 @@
 import { CQNodeConfig } from "./cqnode";
+import CQNode from ".";
 
 /**
  * 检查配置项
@@ -8,7 +9,6 @@ export function checkConfig(config: any) {
   const cfg = {
     admin: [],
     modules: [],
-    plugins: [],
     prompt: true,
     workpath: '.cqnode',
     connector: {
@@ -18,9 +18,22 @@ export function checkConfig(config: any) {
     },
     ...config,
   };
-  if (!config) throw new Error('config is required');
-  if (typeof cfg.workpath !== 'string' || !cfg.workpath) throw new TypeError('illegal config.workpath');
-  if (cfg.prompt === true) cfg.prompt = `[CQ:at,qq=${cfg.qqid}]`;
+  if (typeof cfg.admin !== 'number') {
+    if (false === cfg.admin instanceof Array || cfg.admin.some((it: any) => typeof it !== 'number')) {
+      throw new Error('config.admin 的类型必须是 number 或 number[]')
+    }
+    throw new Error('config.admin 的类型必须是 number 或 number[]')
+  }
+
+  if (false === cfg.modules instanceof Array) throw new Error('config.modules 的类型必须是 CQNodeModule[]');
+  if (cfg.modules.some((it: any) => false === it instanceof CQNode.Module)) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
+
+  if (cfg.prompt !== true) cfg.prompt = `${cfg.prompt}`;
+
+  cfg.workpath = `${cfg.workpath}`;
+
+  if (typeof cfg.connector !== 'object') throw new Error('config.connector 必须是对象');
+  
   return cfg as CQNodeConfig;
 }
 

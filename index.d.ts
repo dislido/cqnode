@@ -51,6 +51,15 @@ declare interface CQNodeConfig {
   // plugins?: any[];
   /** 数据文件夹 */
   workpath?: string;
+  /** HTTP API 连接配置 */
+  connector?: {
+    /** 事件监听接口 */
+    LISTEN_PORT?: number,
+    /** HTTP API接口 */
+    API_PORT?: number,
+    /** 事件处理超时时长（毫秒） */
+    TIMEOUT?: number,
+  };
   /**
    * atme判断字符串  
    * 以该字符串开头的信息会被任务at了本机器人  
@@ -58,7 +67,7 @@ declare interface CQNodeConfig {
    * 空字符串表示将任何消息当作at了本机器人
    * @todo 允许使用数组
    */
-  prompt?: string;
+  prompt?: string | true;
 }
 
 export function createRobot(config: CQNodeConfig): CQNodeRobot;

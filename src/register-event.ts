@@ -12,7 +12,7 @@ function checkAtme(this: CQNodeRobot, data: CQEvent.MessageEvent) {
     data.atme = true;
     return;
   }
-  const prompt = typeof this.config.prompt === 'string' ? this.config.prompt : `[CQ:at,qq=${data.selfId}]`;
+  const prompt = this.config.prompt === 'string' ? this.config.prompt : `[CQ:at,qq=${data.selfId}]`;
   if (data.messageType === 'group' || data.messageType === 'discuss') {
     if (data.msg.startsWith(prompt)) {
       data.msg = data.msg.substring(prompt.length).trim(),
@@ -20,11 +20,6 @@ function checkAtme(this: CQNodeRobot, data: CQEvent.MessageEvent) {
     }
   }
 }
-
-const getEmptyResponse = (response: ServerResponse) => ({
-  originalResponse: response,
-  responseBody: {},
-});
 
 type NoticeEventName = 'onGroupUploadNotice' | 'onGroupAdminNotice' | 'onGroupDecreaseNotice' | 'onGroupIncreaseNotice' | 'onFriendAddNotice';
 type MessageEventName = 'onDiscussMessage' | 'onPrivateMessage' | 'onGroupMessage';

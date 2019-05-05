@@ -7,4 +7,3 @@ console.log('cqhttp2');
 const cqhttp = new CQHttp(ee);
 console.log(cqhttp);
 console.log('cqhttp ok');
-
