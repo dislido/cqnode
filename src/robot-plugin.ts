@@ -1,8 +1,6 @@
-import { bindingCQNode } from './symbols';
 import CQNodeRobot from './cqnode-robot';
 
 export default class CQNodePlugin {
-  [bindingCQNode]: CQNodeRobot | null = null;
   /**
    * @param {object} data 发送消息数据
    * @param {string} data.msg 消息内容

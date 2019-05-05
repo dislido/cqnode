@@ -17,7 +17,7 @@ export default class CQNodeRobot extends EventEmitter {
   } as CQNodeInf;
   get api() { return this.connect.api; };
 
-  constructor(config: CQNodeConfig) {
+  constructor(config: unknown) {
     super();
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath);
@@ -34,6 +34,7 @@ export default class CQNodeRobot extends EventEmitter {
       this.once('LifecycleMeta', (data: CQEvent.LifecycleMetaEvent) => {
         if (data.subType === 'enable') this.init();
       });
+      return;
     } else {
       this.inf.inited = true;
     }

@@ -2,7 +2,7 @@ const CQNode = require('..');
 
 class DemoModule extends CQNode.Module {
   async onGroupMessage() {
-    console.log(this.bindingCQNode.inf)
+    console.log(this.bindingCQNode.inf.groupList)
   }
 }
 

@@ -134,8 +134,9 @@ declare namespace CQNodeEventResponse {
     /**
      * 向通知来源私聊/群/讨论组发送消息
      * @param message 回复信息
+     * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码）
      */
-    send(message: string): this;
+    send(message: string, autoEscape?: boolean): void;
   }
 
   /** 空响应，无可用的响应数据 */
