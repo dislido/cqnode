@@ -1,8 +1,5 @@
 import { toUnderScoreCase } from '../util';
 
-/**
- * @type {CQAPI}
- */
 export default {
   sendPrivateMsg(userId: number, message: string, autoEscape: boolean = false) {
     return toUnderScoreCase({ userId, message, autoEscape });
@@ -113,4 +110,4 @@ export default {
   cleanPluginLog() {
     return toUnderScoreCase({  });
   },
-};
+} as CQAPI;

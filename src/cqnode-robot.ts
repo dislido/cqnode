@@ -4,7 +4,8 @@ import WorkpathManager from './workpath-manager';
 import { checkConfig } from './util';
 import CQHttpConnector from './connector-cqhttp';
 import CQNodeModule from './robot-module';
-import { CQNodeConfig, CQNodeInf } from './cqnode';
+import { CQNodeConfig, CQNodeInf, CQNodeAPI } from './cqnode';
+
 
 export default class CQNodeRobot extends EventEmitter {
   config: CQNodeConfig;
@@ -12,25 +13,33 @@ export default class CQNodeRobot extends EventEmitter {
   pluginManager: PluginManager;
   connect: CQHttpConnector;
   modules: CQNodeModule[];
-  inf = {
-    inited: false,
-  } as CQNodeInf;
-  get api() { return this.connect.api; };
+  inf = { inited: false } as CQNodeInf;
+  api = new Proxy(this.connect.api, {
+    get: (target, name: keyof (CQAPI & CQNodeAPI)) => {
+      if (name in target) return target[name as keyof CQAPI];
+      if (name in this.cqnodeAPI) return this.cqnodeAPI[name as keyof CQNodeAPI];
+      return;
+    },
+  });
+  private cqnodeAPI: CQNodeAPI = {
+    groupRadio: (message: string, groups: number[] = this.inf.groupList.map(it => it.group_id), autoEscape?: boolean) => {
+      return groups.map(group =>  this.api.sendGroupMsg(group, message, autoEscape));
+    },
+  };
 
   constructor(config: unknown) {
     super();
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath);
-    /** @todo PORT config */
     this.connect = new CQHttpConnector(this, this.config.connector);
     this.init();
   }
 
   async init() {
-    console.log('初始化中......')
+    console.log('cqnode: 初始化中......')
     const isInfInited = await this.initInf();
     if (!isInfInited) {
-      console.warn('未能获取到运行信息，可能因为酷Q或HTTP API插件未启动，CQNode会在接收到HTTP API启动事件后开始初始化');
+      console.warn('cqnode warn: 未能获取到运行信息，可能因为酷Q或HTTP API插件未启动，CQNode会在接收到HTTP API启动事件后开始初始化');
       this.once('LifecycleMeta', (data: CQEvent.LifecycleMetaEvent) => {
         if (data.subType === 'enable') this.init();
       });
@@ -43,7 +52,7 @@ export default class CQNodeRobot extends EventEmitter {
 
     this.modules = this.config.modules;
     this.modules.forEach((modRef, index) => this.loadModule(index));
-    console.log('初始化完成');
+    console.log('cqnode: 初始化完成');
   }
 
   async initInf() {

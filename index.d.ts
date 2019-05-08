@@ -37,7 +37,7 @@ interface CQNodeRobot {
   /** 已加载的模块 */
   modules: Module[];
   /** CQ HTTP API */
-  api: CQAPI;
+  api: CQNodeAPI;
   /** CQNode运行时信息 */
   inf: CQNodeInf;
 }
@@ -694,8 +694,7 @@ declare namespace CQAPI{
   }
 }
 
-/** CQHTTP API */
-declare interface CQAPI {
+declare interface CQNodeAPI {
   /**
    * 发送私聊消息  
    * @param userId 对方QQ号
@@ -937,4 +936,13 @@ declare interface CQAPI {
    * 清理插件日志 用于清空插件的日志文件。
    */
   cleanPluginLog(): Promise<CQAPI.CQHttpResponseData<CQAPI.EmptyResponseData>>;
+
+  /**
+   * 群广播消息，将消息发送给指定的所有群
+   * @param message 要发送的内容
+   * @param groups 群号数组，默认为群列表中的所有群
+   * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码），只在 message 字段是字符串时有效
+   * @returns 每个消息的发送结果的Promise数组
+   */
+  groupRadio(message: string, groups?: number[], autoEscape?: boolean): Promise<CQAPI.CQHttpResponseData<CQAPI.SendMsgResponseData>>[];
 }

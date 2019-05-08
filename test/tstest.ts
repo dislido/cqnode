@@ -1,19 +1,20 @@
-interface Data1Type {}
-interface Data2Type {}
-
-interface FooData1Type extends Data1Type {}
-interface FooData2Type extends Data2Type {}
-
-interface BarData1Type extends Data1Type {}
-interface BarData2Type extends Data2Type {}
-
-const funs = {
-  foo(data1: FooData1Type, data2: FooData2Type) {},
-  bar(data1: BarData1Type, data2: BarData2Type) {},
+interface Obj1 {
+  foo: number;
+}
+const obj1 = {
+  foo: 123,
 }
 
-type FunName = 'foo' | 'bar';
-
-function call(funName: FunName, data1: Data1Type, data2: Data2Type) {
-  funs[funName](data1, data2);
+interface Obj2 {
+  bar: number;
 }
+const obj2 = {
+  bar: 321,
+}
+
+new Proxy(obj1, {
+  get: (target, name: keyof Obj1 | keyof Obj2) => {
+    if (name in target) return target[name];
+    if (name in obj2) return obj2[name];
+  },
+});
