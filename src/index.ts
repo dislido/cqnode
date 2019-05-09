@@ -14,6 +14,5 @@ const CQNode = {
   Module: Module,
   Plugin: Plugin,
 };
-module.exports = CQNode;
 
-export default CQNode;
+export default module.exports = CQNode;

@@ -65,9 +65,8 @@ declare interface CQNodeConfig {
    * 以该字符串开头的信息会被任务at了本机器人  
    * 默认使用QQ的at  
    * 空字符串表示将任何消息当作at了本机器人
-   * @todo 允许使用数组
    */
-  prompt?: string | true;
+  prompt?: string | true | Array<string | true>;
 }
 
 export function createRobot(config: CQNodeConfig): CQNodeRobot;

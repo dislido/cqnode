@@ -12,13 +12,19 @@ function checkAtme(this: CQNodeRobot, data: CQEvent.MessageEvent) {
     data.atme = true;
     return;
   }
-  const prompt = this.config.prompt === 'string' ? this.config.prompt : `[CQ:at,qq=${data.selfId}]`;
-  if (data.messageType === 'group' || data.messageType === 'discuss') {
-    if (data.msg.startsWith(prompt)) {
-      data.msg = data.msg.substring(prompt.length).trim(),
-      data.atme = true;
+  if (data.messageType !== 'group' && data.messageType !== 'discuss') return;
+  const prompt = this.config.prompt instanceof Array ? this.config.prompt : [this.config.prompt];
+  data.atme = prompt.some(p => {
+    if (p === true && data.msg.startsWith(`[CQ:at,qq=${data.selfId}]`)) {
+      data.msg = data.msg.substring(`[CQ:at,qq=${data.selfId}]`.length).trim();
+      return true;
     }
-  }
+    if (typeof p === 'string' && data.msg.startsWith(p)) {
+      data.msg = data.msg.substring(p.length).trim();
+      return true;
+    }
+    return false;
+  });
 }
 
 type NoticeEventName = 'onGroupUploadNotice' | 'onGroupAdminNotice' | 'onGroupDecreaseNotice' | 'onGroupIncreaseNotice' | 'onFriendAddNotice';
