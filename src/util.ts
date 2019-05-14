@@ -20,9 +20,8 @@ export function checkConfig(config: any) {
   };
   if (typeof cfg.admin !== 'number') {
     if (false === cfg.admin instanceof Array || cfg.admin.some((it: any) => typeof it !== 'number')) {
-      throw new Error('config.admin 的类型必须是 number 或 number[]')
+      throw new Error(`config.admin 的类型必须是 number 或 number[]`);
     }
-    throw new Error('config.admin 的类型必须是 number 或 number[]')
   }
 
   if (false === cfg.modules instanceof Array) throw new Error('config.modules 的类型必须是 CQNodeModule[]');

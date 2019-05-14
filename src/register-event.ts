@@ -47,10 +47,7 @@ async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: EventName
     try {
       const result = await currentModule[eventFunctionName](data, resp);
       if (result) {
-        if (typeof result === 'object') {
-          result.originalResponse.end(JSON.stringify(result.responseBody));
-        }
-        else resp.originalResponse.end();
+        resp.originalResponse.end(JSON.stringify(resp.responseBody));
         return;
       };
     } catch (err) {

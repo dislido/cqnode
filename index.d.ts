@@ -40,6 +40,8 @@ interface CQNodeRobot {
   api: CQNodeAPI;
   /** CQNode运行时信息 */
   inf: CQNodeInf;
+  /** CQNode配置 */
+  config: CQNodeConfig;
 }
 
 declare interface CQNodeConfig {
@@ -73,7 +75,7 @@ export function createRobot(config: CQNodeConfig): CQNodeRobot;
 
 /** 模块信息 */
 interface CQNodeModuleInf {
-  /** 模块包名，应保证唯一 */
+  /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，`/`会被替换为`.` */
   packageName: string;
   /** 模块名 */
   name: string;

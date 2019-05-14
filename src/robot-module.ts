@@ -6,6 +6,7 @@ export default abstract class CQNodeModule {
   bindingCQNode?: CQNodeRobot;
   isRunning = false;
   constructor(public inf: CQNodeModuleInf) {
+    this.inf.packageName = this.inf.packageName.replace(/\//g, '.');
   }
   onRun() {}
   onStop() {}
@@ -52,21 +53,15 @@ export default abstract class CQNodeModule {
     return this.onRequest(data, resp);
   }
 
+  /**
+   * @todo 递归创建文件夹
+   */
   getFilepath() {
-    if (!this.bindingCQNode) throw new Error('在模块启动后才能使用(包括onRun和onStop)');
+    if (!this.bindingCQNode) throw new Error('在模块启动后才能使用(从onRun到onStop)');
     const filepath = this.bindingCQNode.workpathManager.getWorkPath(`module/${this.inf.packageName}`);
     if (!fs.existsSync(filepath)) {
       fs.mkdirSync(filepath);
     }
     return filepath;
   }
-
-  /**
-   * @todo 移动到CQNodeRobot
-   */
-  // [onStop]() {
-  //   this.onStop();
-  //   this[bindingCQNode] = null;
-  //   this[isRunning] = false;
-  // }
 }

@@ -14,13 +14,7 @@ export default class CQNodeRobot extends EventEmitter {
   connect: CQHttpConnector;
   modules: CQNodeModule[];
   inf = { inited: false } as CQNodeInf;
-  api = new Proxy(this.connect.api, {
-    get: (target, name: keyof (CQAPI & CQNodeAPI)) => {
-      if (name in target) return target[name as keyof CQAPI];
-      if (name in this.cqnodeAPI) return this.cqnodeAPI[name as keyof CQNodeAPI];
-      return;
-    },
-  });
+  api: CQAPI;
   private cqnodeAPI: CQNodeAPI = {
     groupRadio: (message: string, groups: number[] = this.inf.groupList.map(it => it.group_id), autoEscape?: boolean) => {
       return groups.map(group =>  this.api.sendGroupMsg(group, message, autoEscape));
@@ -32,6 +26,13 @@ export default class CQNodeRobot extends EventEmitter {
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath);
     this.connect = new CQHttpConnector(this, this.config.connector);
+    this.api = new Proxy(this.connect.api, {
+      get: (target, name: keyof (CQAPI & CQNodeAPI)) => {
+        if (name in target) return target[name as keyof CQAPI];
+        if (name in this.cqnodeAPI) return this.cqnodeAPI[name as keyof CQNodeAPI];
+        return;
+      },
+    });
     this.init();
   }
 
