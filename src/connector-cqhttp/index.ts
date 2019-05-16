@@ -2,7 +2,7 @@ import * as http from 'http';
 import CQNodeRobot from '../cqnode-robot';
 import api from './api';
 import * as eventType from './event-type';
-import { toUnderScoreCase, toCamelCase } from '../util';
+import { toUnderScoreCase, toCamelCase, decodeHtml } from '../util';
 
 declare interface CQHTTPConfig {
   LISTEN_PORT?: number,
@@ -41,7 +41,7 @@ export default class CQHttpConnector {
         data += chunk;
       }).on('end', () => {
         resp.setHeader('Content-Type', 'application/json');
-        this.onMsgReceived(toCamelCase(JSON.parse(data)) as CQEvent.Event, resp);
+        this.onMsgReceived(toCamelCase(JSON.parse(decodeHtml(data))) as CQEvent.Event, resp);
       });
     }).listen(LISTEN_PORT);
     this.API_PORT = API_PORT;

@@ -1,15 +1,21 @@
-import { CQNodeConfig } from "./cqnode";
+import { CQNodeConfig, CQNodeConfigObject } from "./cqnode";
 import CQNode from ".";
+import CQNodeModule from "./robot-module";
+import CQNodePlugin from "./robot-plugin";
 
+function isArray(o: any): o is Array<any> {
+  return o instanceof Array;
+}
 /**
  * 检查配置项
  * @param {object} config 配置对象
  */
-export function checkConfig(config: any) {
+export function checkConfig(config: CQNodeConfigObject) {
   const cfg = {
-    admin: [],
-    modules: [],
-    prompt: true,
+    admin: [] as number[],
+    modules: [] as CQNodeModule[],
+    plugins: [] as CQNodePlugin[],
+    prompt: [true] as Array<string | true>,
     workpath: '.cqnode',
     connector: {
       LISTEN_PORT: 8080,
@@ -18,16 +24,17 @@ export function checkConfig(config: any) {
     },
     ...config,
   };
-  if (typeof cfg.admin !== 'number') {
-    if (false === cfg.admin instanceof Array || cfg.admin.some((it: any) => typeof it !== 'number')) {
-      throw new Error(`config.admin 的类型必须是 number 或 number[]`);
-    }
+  if (!isArray(cfg.admin)) cfg.admin = [cfg.admin];
+  if (cfg.admin.some((it: any) => typeof it !== 'number')) {
+    throw new Error(`config.admin 的类型必须是 number 或 number[]`);
   }
+
 
   if (false === cfg.modules instanceof Array) throw new Error('config.modules 的类型必须是 CQNodeModule[]');
   if (cfg.modules.some((it: any) => false === it instanceof CQNode.Module)) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
 
-  if (cfg.prompt !== true) cfg.prompt = `${cfg.prompt}`;
+  if (!isArray(cfg.prompt)) cfg.prompt = [cfg.prompt];
+  cfg.prompt = cfg.prompt.map(it => it === true ? it : `${it}`);
 
   cfg.workpath = `${cfg.workpath}`;
 
@@ -59,3 +66,7 @@ export function toCamelCase(t: any) {
   }, {});
 }
 
+export function decodeHtml(str: string) {
+  const s = str.replace(/&#[\d]{2,4};/g, hex => String.fromCharCode(parseInt(hex.slice(2, -1), 10)));
+  return s.replace(/&amp;/g, '&');
+}

@@ -46,9 +46,34 @@ interface CQNodeRobot {
 
 declare interface CQNodeConfig {
   /** 管理员 */
-  admin?: string | string[];
+  admin: number[];
   /** 加载的模块 */
-  modules?: CQNode.Module[];
+  modules: any[];
+  /** 加载的插件 */
+  plugins: any[];
+  /** 数据文件夹 */
+  workpath: string;
+  /**
+   * atme判断字符串  
+   * 以该字符串开头的信息会被任务at了本机器人  
+   * 默认使用QQ的at  
+   * 空字符串表示将任何消息当作at了本机器人
+   */
+  prompt: Array<string | true>;
+  connector: {
+    LISTEN_PORT: number,
+    API_PORT: number,
+    TIMEOUT: number,
+  }
+}
+
+declare interface CQNodeConfigObject {
+  /** 
+   * 管理员
+   */
+  admin?: number | number[];
+  /** 加载的模块 */
+  modules?: Module[];
   /** 加载的插件 */
   // plugins?: any[];
   /** 数据文件夹 */
@@ -71,7 +96,8 @@ declare interface CQNodeConfig {
   prompt?: string | true | Array<string | true>;
 }
 
-export function createRobot(config: CQNodeConfig): CQNodeRobot;
+
+export function createRobot(config: CQNodeConfigObject): CQNodeRobot;
 
 /** 模块信息 */
 interface CQNodeModuleInf {

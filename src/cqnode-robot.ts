@@ -4,7 +4,7 @@ import WorkpathManager from './workpath-manager';
 import { checkConfig } from './util';
 import CQHttpConnector from './connector-cqhttp';
 import CQNodeModule from './robot-module';
-import { CQNodeConfig, CQNodeInf, CQNodeAPI } from './cqnode';
+import { CQNodeConfig, CQNodeInf, CQNodeAPI, CQNodeConfigObject } from './cqnode';
 
 
 export default class CQNodeRobot extends EventEmitter {
@@ -21,7 +21,7 @@ export default class CQNodeRobot extends EventEmitter {
     },
   };
 
-  constructor(config: unknown) {
+  constructor(config: CQNodeConfigObject) {
     super();
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath);

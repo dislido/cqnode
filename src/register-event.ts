@@ -64,7 +64,7 @@ function registerPrivateMessageEvent(cqnode: CQNodeRobot) {
     send(message: string) { 
       cqnode.connect.api.sendPrivateMsg(data.userId, message);
     },
-    reply(message, autoEscape?) {
+    reply(message, autoEscape = false) {
       this.responseBody.reply = message;
       this.responseBody.auto_escape = autoEscape;
       return this;
