@@ -10,7 +10,6 @@ export default class ModuleFactory {
   private duplicateError(name: string) {
     throw new Error(`duplicate ${name}`);
   }
-  /** @todo */
   createModule(inf: CQNodeModuleInf, initfn?: () => void) {
     const mod = Object.assign(Object.create(CQNodeModule.prototype), this.prototype) as CQNodeModule;
     mod.inf = inf;

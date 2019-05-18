@@ -91,13 +91,13 @@ declare interface CQNodeInf {
 /** 模块信息 */
 declare interface CQNodeModuleInf {
   /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，‘/’会被替换为‘.’ */
-  packageName: string;
+  packageName?: string;
   /** 模块名 */
-  name: string;
+  name?: string;
   /** 模块帮助信息 */
-  help: string;
+  help?: string;
   /** 模块简介 */
-  description: string;
+  description?: string;
 }
 
 declare namespace CQNodeEventResponse {

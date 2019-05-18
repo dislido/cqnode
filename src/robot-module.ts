@@ -5,8 +5,8 @@ import { CQNodeEventResponse, CQNodeModuleInf, EventReturns } from './cqnode';
 export default class CQNodeModule {
   bindingCQNode?: CQNodeRobot;
   isRunning = false;
-  constructor(public inf: CQNodeModuleInf) {
-    this.inf.packageName = this.inf.packageName.replace(/\//g, '.');
+  constructor(public inf: CQNodeModuleInf = {}) {
+    if (this.inf.packageName) this.inf.packageName = this.inf.packageName.replace(/\//g, '.');
   }
   onRun() {}
   onStop() {}
@@ -58,6 +58,7 @@ export default class CQNodeModule {
    */
   getFilepath() {
     if (!this.bindingCQNode) throw new Error('在模块启动后才能使用(从onRun到onStop)');
+    if (!this.inf.packageName) throw new Error('不能在匿名模块中使用此功能，在inf中添加packageName以启用此功能');
     const filepath = this.bindingCQNode.workpathManager.getWorkPath(`module/${this.inf.packageName}`);
     if (!fs.existsSync(filepath)) {
       fs.mkdirSync(filepath);

@@ -115,7 +115,7 @@ type EventResult = boolean | void | CQNodeEventResponse.Response;
 type EventReturns = EventResult | Promise<EventResult>;
 
 /** CQNode模块 */
-export abstract class Module {
+export class Module {
   /** 模块绑定的CQNode */
   bindingCQNode: CQNodeRobot;
   /** 模块是否处于运行状态 */
@@ -972,4 +972,25 @@ declare interface CQNodeAPI {
    * @returns 每个消息的发送结果的Promise数组
    */
   groupRadio(message: string, groups?: number[], autoEscape?: boolean): Promise<CQAPI.CQHttpResponseData<CQAPI.SendMsgResponseData>>[];
+}
+
+export class ModuleFactory {
+  constructor(config: { noDuplicate: boolean });
+  createModule(inf: CQNodeModuleInf, initfn?: () => void): Module;
+  onGroupMessage(fn: (data: CQEvent.GroupMessageEvent, resp: CQNodeEventResponse.GroupMessageResponse) => EventReturns): ModuleFactory;
+  onRun(fn: () => void): ModuleFactory;
+  onStop(fn: () => void): ModuleFactory;
+  onEvent(fn: (data: CQEvent.Event, resp: CQNodeEventResponse.Response) => EventReturns): ModuleFactory;
+  onMessage(fn: (data: CQEvent.MessageEvent, resp: CQNodeEventResponse.MessageResponse) => EventReturns): ModuleFactory;
+  onPrivateMessage(fn: (data: CQEvent.PrivateMessageEvent, resp: CQNodeEventResponse.PrivateMessageResponse) => EventReturns): ModuleFactory;
+  onDiscussMessage(fn: (data: CQEvent.DiscussMessageEvent, resp: CQNodeEventResponse.DiscussMessageResponse) => EventReturns): ModuleFactory;
+  onNotice(fn: (data: CQEvent.NoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
+  onGroupUploadNotice(fn: (data: CQEvent.GroupUploadNoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
+  onGroupAdminNotice(fn: (data: CQEvent.GroupAdminNoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
+  onGroupDecreaseNotice(fn: (data: CQEvent.GroupDecreaseNoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
+  onGroupIncreaseNotice(fn: (data: CQEvent.GroupIncreaseNoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
+  onFriendAddNotice(fn: (data: CQEvent.FriendAddNoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
+  onRequest(fn: (data: CQEvent.RequestEvent, resp: CQNodeEventResponse.RequestResponse) => EventReturns): ModuleFactory;
+  onFriendRequest(fn: (data: CQEvent.FriendRequestEvent, resp: CQNodeEventResponse.FriendRequestResponse) => EventReturns): ModuleFactory;
+  onGroupRequest(fn: (data: CQEvent.GroupRequestEvent, resp: CQNodeEventResponse.GroupRequestResponse) => EventReturns): ModuleFactory;
 }

@@ -1,9 +1,6 @@
 README.md
 node_modules
-.git
-.gitignore
-.vscode
-.cqnode
 test
 tsconfig.json
 src
+/.*
