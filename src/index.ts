@@ -4,6 +4,8 @@ import Plugin from './robot-plugin';
 import * as CQNodeUtil from './cqnode-util';
 import registerEvent from './register-event';
 import { CQNodeConfig } from './cqnode';
+import ModuleFactory from './module-factory';
+
 
 const CQNode = {
   createRobot(config: CQNodeConfig) {
@@ -15,6 +17,7 @@ const CQNode = {
   Module: Module,
   Plugin: Plugin,
   util: CQNodeUtil,
+  ModuleFactory,
 };
 
 export default module.exports = CQNode;

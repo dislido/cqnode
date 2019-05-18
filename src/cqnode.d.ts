@@ -53,7 +53,7 @@ declare interface CQNodeConfigObject {
   prompt?: string | true | Array<string | true>;
 }
 
-type EventResult = boolean | undefined | CQNodeEventResponse.Response;
+type EventResult = boolean | void | CQNodeEventResponse.Response;
 type EventReturns = EventResult | Promise<EventResult>;
 
 /** CQNode运行时信息 */

@@ -89,7 +89,7 @@ function registerGroupMessageEvent(cqnode: CQNodeRobot) {
       return this;
     },
     sendPrivate(message: string, autoEscape?) {
-      cqnode.connect.api.sendPrivateMsg(data.userId, message, autoEscape)
+      cqnode.connect.api.sendPrivateMsg(data.userId, message, autoEscape);
     },
     at(at = true) {
       this.responseBody.at_sender = at;

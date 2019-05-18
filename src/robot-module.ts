@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import CQNodeRobot from './cqnode-robot';
 import { CQNodeEventResponse, CQNodeModuleInf, EventReturns } from './cqnode';
 
-export default abstract class CQNodeModule {
+export default class CQNodeModule {
   bindingCQNode?: CQNodeRobot;
   isRunning = false;
   constructor(public inf: CQNodeModuleInf) {
