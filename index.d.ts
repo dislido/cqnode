@@ -171,7 +171,8 @@ declare namespace CQNodeEventResponse {
       [field: string]: any;
     };
   }
-
+  /** 空响应，该事件没有可用的resp响应 */
+  interface EmptyResponse extends Response {}
   /** 消息类事件 */
   interface MessageResponse extends Response {
     /**

@@ -37,7 +37,7 @@ export default class CQNodeRobot extends EventEmitter {
   }
 
   async init() {
-    console.log('cqnode: 初始化中......')
+    console.log('cqnode: 初始化中......');
     const isInfInited = await this.initInf();
     if (!isInfInited) {
       console.warn('cqnode warn: 未能获取到运行信息，可能因为酷Q或HTTP API插件未启动，CQNode会在接收到HTTP API启动事件后开始初始化');
@@ -90,6 +90,7 @@ export default class CQNodeRobot extends EventEmitter {
     return true;
   }
 
+  /** @todo 检查冲突模块 */
   loadModule(modIndex: number) {
     try {
       const m = this.modules[modIndex];

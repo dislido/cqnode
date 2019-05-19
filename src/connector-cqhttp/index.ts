@@ -4,9 +4,13 @@ import api from './api';
 import * as eventType from './event-type';
 import { toUnderScoreCase, toCamelCase, decodeHtml } from '../util';
 
+/** CQHTTP设置 */
 declare interface CQHTTPConfig {
+  /** 接收消息端口，对应post_url的端口 */
   LISTEN_PORT?: number,
+  /** 调用API端口，对应port */
   API_PORT?: number,
+  /** response超时时间 */
   TIMEOUT?: number,
 }
 
@@ -28,11 +32,8 @@ export default class CQHttpConnector {
   });
   /**
    * cq-http插件的连接器
-   * @param {CQNode} cqnode cqnode实例
-   * @param {Object} config 端口设置
-   * @param {number} config.LISTEN_PORT 接收消息端口
-   * @param {number} config.API_PORT 调用API端口
-   * @param {number} config.TIMEOUT response超时时间
+   * @param cqnode cqnode实例
+   * @param config CQHTTP设置
    */
   constructor(public cqnode: CQNodeRobot, { LISTEN_PORT = 8080, API_PORT = 5700, TIMEOUT = 10000 }: CQHTTPConfig = {}) {
     this.server = http.createServer((req, resp) => {

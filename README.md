@@ -4,3 +4,7 @@
 
 # 使用
 [CQNode wiki](https://github.com/dislido/cqnode/wiki)
+
+# todo
+提供一些常用的内置模块
+插件功能支持
