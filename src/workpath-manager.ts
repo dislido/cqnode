@@ -53,6 +53,7 @@ export default class WorkpathManager {
       this.cache.groupModuleCfg[group] = cfg;
     }
     const groupFieldCfg = this.cache.groupModuleCfg[group];
+    if (!module.inf.packageName) throw new Error('无法在匿名模块中使用此功能，添加inf.packageName以启用此功能');
     if (!groupFieldCfg[module.inf.packageName]) groupFieldCfg[module.inf.packageName] = {};
     return groupFieldCfg[module.inf.packageName];
   }
