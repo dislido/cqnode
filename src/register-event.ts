@@ -1,8 +1,8 @@
 import CQNodeRobot from "./cqnode-robot";
 import { ServerResponse } from "http";
-import { CQNodeEventResponse } from "./cqnode";
+import { CQResponse } from "./cqnode";
 
-function checkAtme(this: CQNodeRobot, data: CQEvent.MessageEvent) {
+function checkAtme(this: CQNodeRobot, data: CQEvent.Message) {
   Object.assign(data, {
     username: data.sender.card || data.sender.nickname,
     atme: false,
@@ -31,16 +31,16 @@ type NoticeEventName = 'onGroupUploadNotice' | 'onGroupAdminNotice' | 'onGroupDe
 type MessageEventName = 'onDiscussMessage' | 'onPrivateMessage' | 'onGroupMessage';
 type RequestEventName = 'onFriendRequest' | 'onGroupRequest';
 type EventName = NoticeEventName | MessageEventName | RequestEventName;
-async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onFriendAddNotice', data: CQEvent.FriendAddNoticeEvent, resp: CQNodeEventResponse.FriendAddNoticeResponse): Promise<void>;
-async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupIncreaseNotice', data: CQEvent.GroupIncreaseNoticeEvent, resp: CQNodeEventResponse.GroupIncreaseNoticeResponse): Promise<void>;
-async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupDecreaseNotice', data: CQEvent.GroupDecreaseNoticeEvent, resp: CQNodeEventResponse.GroupDecreaseNoticeResponse): Promise<void>;
-async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupAdminNotice', data: CQEvent.GroupAdminNoticeEvent, resp: CQNodeEventResponse.GroupAdminNoticeResponse): Promise<void>;
-async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupUploadNotice', data: CQEvent.GroupUploadNoticeEvent, resp: CQNodeEventResponse.GroupUploadNoticeResponse): Promise<void>;
-async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onDiscussMessage', data: CQEvent.DiscussMessageEvent, resp: CQNodeEventResponse.DiscussMessageResponse): Promise<void>;
-async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onFriendRequest', data: CQEvent.FriendRequestEvent, resp: CQNodeEventResponse.FriendRequestResponse): Promise<void>;
-async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupRequest', data: CQEvent.GroupRequestEvent, resp: CQNodeEventResponse.GroupRequestResponse): Promise<void>;
-async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onPrivateMessage', data: CQEvent.PrivateMessageEvent, resp: CQNodeEventResponse.PrivateMessageResponse): Promise<void>;
-async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupMessage', data: CQEvent.GroupMessageEvent, resp: CQNodeEventResponse.GroupMessageResponse): Promise<void>;
+async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onFriendAddNotice', data: CQEvent.FriendAddNotice, resp: CQResponse.FriendAddNotice): Promise<void>;
+async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupIncreaseNotice', data: CQEvent.GroupIncreaseNotice, resp: CQResponse.GroupIncreaseNotice): Promise<void>;
+async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupDecreaseNotice', data: CQEvent.GroupDecreaseNotice, resp: CQResponse.GroupDecreaseNotice): Promise<void>;
+async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupAdminNotice', data: CQEvent.GroupAdminNotice, resp: CQResponse.GroupAdminNotice): Promise<void>;
+async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupUploadNotice', data: CQEvent.GroupUploadNotice, resp: CQResponse.GroupUploadNotice): Promise<void>;
+async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onDiscussMessage', data: CQEvent.DiscussMessage, resp: CQResponse.DiscussMessage): Promise<void>;
+async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onFriendRequest', data: CQEvent.FriendRequest, resp: CQResponse.FriendRequest): Promise<void>;
+async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupRequest', data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest): Promise<void>;
+async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onPrivateMessage', data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage): Promise<void>;
+async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: 'onGroupMessage', data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage): Promise<void>;
 async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: EventName, data: any, resp: any) {
   for (let i = 0; i < cqnode.modules.length; ++i) {
     const currentModule = cqnode.modules[i];
@@ -58,7 +58,7 @@ async function callModuleEvent(cqnode: CQNodeRobot, eventFunctionName: EventName
 }
 
 function registerPrivateMessageEvent(cqnode: CQNodeRobot) {
-  const getResponse = (data: CQEvent.PrivateMessageEvent, response: ServerResponse): CQNodeEventResponse.PrivateMessageResponse => ({
+  const getResponse = (data: CQEvent.PrivateMessage, response: ServerResponse): CQResponse.PrivateMessage => ({
     originalResponse: response,
     responseBody: {},
     send(message: string) { 
@@ -70,14 +70,14 @@ function registerPrivateMessageEvent(cqnode: CQNodeRobot) {
       return this;
     },
   });
-  cqnode.on('PrivateMessage', (data: CQEvent.PrivateMessageEvent, response: ServerResponse) => {
+  cqnode.on('PrivateMessage', (data: CQEvent.PrivateMessage, response: ServerResponse) => {
     checkAtme.call(cqnode, data);
     callModuleEvent(cqnode, 'onPrivateMessage', data, getResponse(data, response));
   });
 }
 
 function registerGroupMessageEvent(cqnode: CQNodeRobot) {
-  const getResponse = (data: CQEvent.GroupMessageEvent, response: ServerResponse): CQNodeEventResponse.GroupMessageResponse => ({
+  const getResponse = (data: CQEvent.GroupMessage, response: ServerResponse): CQResponse.GroupMessage => ({
     originalResponse: response,
     responseBody: {},
     send(message, autoEscape?) {
@@ -109,14 +109,14 @@ function registerGroupMessageEvent(cqnode: CQNodeRobot) {
       return this;
     },
   });
-  cqnode.on('GroupMessage', (data: CQEvent.GroupMessageEvent, response: ServerResponse) => {
+  cqnode.on('GroupMessage', (data: CQEvent.GroupMessage, response: ServerResponse) => {
     checkAtme.call(cqnode, data);
     callModuleEvent(cqnode, 'onGroupMessage', data, getResponse(data, response));
   });
 }
 
 function registerDiscussMessageEvent(cqnode: CQNodeRobot) {
-  const getResponse = (data: CQEvent.DiscussMessageEvent, response: ServerResponse): CQNodeEventResponse.DiscussMessageResponse => ({
+  const getResponse = (data: CQEvent.DiscussMessage, response: ServerResponse): CQResponse.DiscussMessage => ({
     originalResponse: response,
     responseBody: {},
     at(at = true) {
@@ -132,79 +132,79 @@ function registerDiscussMessageEvent(cqnode: CQNodeRobot) {
       cqnode.connect.api.sendDiscussMsg(data.discussId, message, autoEscape);
     }
   });
-  cqnode.on('DiscussMessage', (data: CQEvent.DiscussMessageEvent, response: ServerResponse) => {
+  cqnode.on('DiscussMessage', (data: CQEvent.DiscussMessage, response: ServerResponse) => {
     checkAtme.call(cqnode, data);
     callModuleEvent(cqnode, 'onDiscussMessage', data, getResponse(data, response));
   });
 }
 
 function registerGroupUploadNotice(cqnode: CQNodeRobot) {
-  const getResponse = (data: CQEvent.GroupUploadNoticeEvent, response: ServerResponse): CQNodeEventResponse.GroupUploadNoticeResponse => ({
+  const getResponse = (data: CQEvent.GroupUploadNotice, response: ServerResponse): CQResponse.GroupUploadNotice => ({
     originalResponse: response,
     responseBody: {},
     send(message: string, autoEscape?: boolean) {
       cqnode.api.sendGroupMsg(data.groupId, message, autoEscape)
     },
   });
-  cqnode.on('GroupUploadNotice', (data: CQEvent.GroupUploadNoticeEvent, response: ServerResponse) => {
+  cqnode.on('GroupUploadNotice', (data: CQEvent.GroupUploadNotice, response: ServerResponse) => {
     callModuleEvent(cqnode, 'onGroupUploadNotice', data, getResponse(data, response));
   });
 }
 
 function registerGroupAdminNotice(cqnode: CQNodeRobot) {
-  const getResponse = (data: CQEvent.GroupAdminNoticeEvent, response: ServerResponse): CQNodeEventResponse.GroupAdminNoticeResponse => ({
+  const getResponse = (data: CQEvent.GroupAdminNotice, response: ServerResponse): CQResponse.GroupAdminNotice => ({
     originalResponse: response,
     responseBody: {},
     send(message: string, autoEscape?: boolean) {
       cqnode.api.sendGroupMsg(data.groupId, message, autoEscape)
     },
   });
-  cqnode.on('GroupAdminNotice', (data: CQEvent.GroupAdminNoticeEvent, response: ServerResponse) => {
+  cqnode.on('GroupAdminNotice', (data: CQEvent.GroupAdminNotice, response: ServerResponse) => {
     callModuleEvent(cqnode, 'onGroupAdminNotice', data, getResponse(data, response));
   });
 }
 
 function registerGroupDecreaseNotice(cqnode: CQNodeRobot) {
-  const getResponse = (data: CQEvent.GroupDecreaseNoticeEvent, response: ServerResponse): CQNodeEventResponse.GroupDecreaseNoticeResponse => ({
+  const getResponse = (data: CQEvent.GroupDecreaseNotice, response: ServerResponse): CQResponse.GroupDecreaseNotice => ({
     originalResponse: response,
     responseBody: {},
     send(message: string, autoEscape?: boolean) {
       cqnode.api.sendGroupMsg(data.groupId, message, autoEscape)
     },
   });
-  cqnode.on('GroupDecreaseNotice', (data: CQEvent.GroupDecreaseNoticeEvent, response: ServerResponse) => {
+  cqnode.on('GroupDecreaseNotice', (data: CQEvent.GroupDecreaseNotice, response: ServerResponse) => {
     callModuleEvent(cqnode, 'onGroupDecreaseNotice', data, getResponse(data, response));
   });
 }
 
 function registerGroupIncreaseNotice(cqnode: CQNodeRobot) {
-  const getResponse = (data: CQEvent.GroupIncreaseNoticeEvent, response: ServerResponse): CQNodeEventResponse.GroupIncreaseNoticeResponse => ({
+  const getResponse = (data: CQEvent.GroupIncreaseNotice, response: ServerResponse): CQResponse.GroupIncreaseNotice => ({
     originalResponse: response,
     responseBody: {},
     send(message: string, autoEscape?: boolean) {
       cqnode.api.sendGroupMsg(data.groupId, message, autoEscape)
     },
   });
-  cqnode.on('GroupIncreaseNotice', (data: CQEvent.GroupIncreaseNoticeEvent, response: ServerResponse) => {
+  cqnode.on('GroupIncreaseNotice', (data: CQEvent.GroupIncreaseNotice, response: ServerResponse) => {
     callModuleEvent(cqnode, 'onGroupIncreaseNotice', data, getResponse(data, response));
   });
 }
 
 function registerFriendAddNotice(cqnode: CQNodeRobot) {
-  const getResponse = (data: CQEvent.FriendAddNoticeEvent, response: ServerResponse): CQNodeEventResponse.FriendAddNoticeResponse => ({
+  const getResponse = (data: CQEvent.FriendAddNotice, response: ServerResponse): CQResponse.FriendAddNotice => ({
     originalResponse: response,
     responseBody: {},
     send(message: string, autoEscape?: boolean) {
       cqnode.api.sendPrivateMsg(data.userId, message, autoEscape)
     },
   });
-  cqnode.on('FriendAddNotice', (data: CQEvent.FriendAddNoticeEvent, response: ServerResponse) => {
+  cqnode.on('FriendAddNotice', (data: CQEvent.FriendAddNotice, response: ServerResponse) => {
     callModuleEvent(cqnode, 'onFriendAddNotice', data, getResponse(data, response));
   });
 }
 
 function registerFriendRequestEvent(cqnode: CQNodeRobot) {
-  const getResponse = (response: ServerResponse): CQNodeEventResponse.FriendRequestResponse => ({
+  const getResponse = (response: ServerResponse): CQResponse.FriendRequest => ({
     originalResponse: response,
     responseBody: {},
     approve(approve, remark) {
@@ -213,13 +213,13 @@ function registerFriendRequestEvent(cqnode: CQNodeRobot) {
       return this;
     },
   });
-  cqnode.on('FriendRequest', (data: CQEvent.FriendRequestEvent, response: ServerResponse) => {
+  cqnode.on('FriendRequest', (data: CQEvent.FriendRequest, response: ServerResponse) => {
     callModuleEvent(cqnode, 'onFriendRequest', data, getResponse(response));
   });
 }
 
 function registerGroupRequestEvent(cqnode: CQNodeRobot) {
-  const getResponse = (response: ServerResponse): CQNodeEventResponse.GroupRequestResponse => ({
+  const getResponse = (response: ServerResponse): CQResponse.GroupRequest => ({
     originalResponse: response,
     responseBody: {},
     approve(approve, reason) {
@@ -228,19 +228,19 @@ function registerGroupRequestEvent(cqnode: CQNodeRobot) {
       return this;
     },
   });
-  cqnode.on('GroupRequest', (data: CQEvent.GroupRequestEvent, response: ServerResponse) => {
+  cqnode.on('GroupRequest', (data: CQEvent.GroupRequest, response: ServerResponse) => {
     callModuleEvent(cqnode, 'onGroupRequest', data, getResponse(response));
   });
 }
 
 function registerLifecycleMetaEvent(cqnode: CQNodeRobot) {
-  cqnode.on('LifecycleMeta', (data: CQEvent.LifecycleMetaEvent, response: ServerResponse) => {
+  cqnode.on('LifecycleMeta', (data: CQEvent.LifecycleMeta, response: ServerResponse) => {
     response.end();
   });
 }
 
 function registerHeartbeatMetaEvent(cqnode: CQNodeRobot) {
-  cqnode.on('HeartbeatMeta', (data: CQEvent.HeartbeatMetaEvent, response: ServerResponse) => {
+  cqnode.on('HeartbeatMeta', (data: CQEvent.HeartbeatMeta, response: ServerResponse) => {
     response.end();
   });
 }

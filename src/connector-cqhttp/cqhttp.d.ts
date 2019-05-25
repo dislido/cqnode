@@ -15,7 +15,7 @@ declare namespace CQEvent {
   }
 
   /** 消息类事件 */
-  interface MessageEvent extends Event {
+  interface Message extends Event {
     postType: 'message';
     /** 消息类型  
      * group: 群消息  
@@ -49,7 +49,7 @@ declare namespace CQEvent {
   }
 
   /** 私聊消息事件 */
-  interface PrivateMessageEvent extends MessageEvent {
+  interface PrivateMessage extends Message {
     messageType: 'private';
     /** 消息子类型，表示私聊的来源  
      * friend: 好友  
@@ -72,7 +72,7 @@ declare namespace CQEvent {
   }
 
   /** 群消息事件 */
-  interface GroupMessageEvent extends MessageEvent {
+  interface GroupMessage extends Message {
     messageType: 'group';
     /** 消息子类型  
      * normal: 正常消息  
@@ -119,7 +119,7 @@ declare namespace CQEvent {
   }
 
   /** 讨论组消息事件 */
-  interface DiscussMessageEvent extends MessageEvent {
+  interface DiscussMessage extends Message {
     messageType: 'discuss';
     /** 讨论组ID */
     discussId: number;
@@ -137,7 +137,7 @@ declare namespace CQEvent {
   }
 
   /** 通知类事件 */
-  interface NoticeEvent extends Event {
+  interface Notice extends Event {
     postType: 'notice';
     /** 通知类型  
      * group_upload: 群文件上传  
@@ -150,7 +150,7 @@ declare namespace CQEvent {
   }
 
   /** 群文件上传 */
-  interface GroupUploadNoticeEvent extends NoticeEvent {
+  interface GroupUploadNotice extends Notice {
     noticeType: 'group_upload';
     /** 群号 */
     groupId: number;
@@ -170,7 +170,7 @@ declare namespace CQEvent {
   }
 
   /** 群管理员变动 */
-  interface GroupAdminNoticeEvent extends NoticeEvent {
+  interface GroupAdminNotice extends Notice {
     noticeType: 'group_admin';
     /** 子类型  
      * set: 设置管理员  
@@ -184,7 +184,7 @@ declare namespace CQEvent {
   }
 
   /** 群成员减少 */
-  interface GroupDecreaseNoticeEvent extends NoticeEvent {
+  interface GroupDecreaseNotice extends Notice {
     noticeType: 'group_decrease';
     /** 子类型
      * leave: 主动退群
@@ -201,7 +201,7 @@ declare namespace CQEvent {
   }
 
   /** 群成员增加 */
-  interface GroupIncreaseNoticeEvent extends NoticeEvent {
+  interface GroupIncreaseNotice extends Notice {
     noticeType: 'group_increase';
     /** 子类型
      * approve: 管理员已同意入群
@@ -217,14 +217,14 @@ declare namespace CQEvent {
   }
 
   /** 好友添加 */
-  interface FriendAddNoticeEvent extends NoticeEvent {
+  interface FriendAddNotice extends Notice {
     noticeType: 'friend_add';
     /** 新添加好友 QQ 号 */
     userId: number;
   }
 
   /** 请求类事件 */
-  interface RequestEvent extends Event {
+  interface Request extends Event {
     postType: 'request';
     /** 请求类型  
      * friend: 加好友请求  
@@ -234,7 +234,7 @@ declare namespace CQEvent {
   }
 
   /** 加好友请求 */
-  interface FriendRequestEvent extends RequestEvent {
+  interface FriendRequest extends Request {
     requestType: 'friend';
     /** 发送请求的 QQ 号 */
     userId: number;
@@ -245,7 +245,7 @@ declare namespace CQEvent {
   }
 
   /** 加群请求 */
-  interface GroupRequestEvent extends RequestEvent {
+  interface GroupRequest extends Request {
     requestType: 'group';
     /** 子类型  
      * add: 请求加群  
@@ -263,7 +263,7 @@ declare namespace CQEvent {
   }
 
   /** 元事件 */
-  interface MetaEvent extends Event {
+  interface Meta extends Event {
     postType: 'meta_event';
     /** 元事件类型  
      * lifecycle: 生命周期  
@@ -273,7 +273,7 @@ declare namespace CQEvent {
   }
 
   /** 生命周期 */
-  interface LifecycleMetaEvent extends MetaEvent {
+  interface LifecycleMeta extends Meta {
     metaEventType: 'lifecycle';
     /** 子类型  
      * enable: 插件启用  
@@ -283,7 +283,7 @@ declare namespace CQEvent {
   }
   
   /** 心跳 */
-  interface HeartbeatMetaEvent extends MetaEvent {
+  interface HeartbeatMeta extends Meta {
     metaEventType: 'heartbeat';
     /** 状态信息 */
     status: {

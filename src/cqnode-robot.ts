@@ -41,7 +41,7 @@ export default class CQNodeRobot extends EventEmitter {
     const isInfInited = await this.initInf();
     if (!isInfInited) {
       console.warn('cqnode warn: 未能获取到运行信息，可能因为酷Q或HTTP API插件未启动，CQNode会在接收到HTTP API启动事件后开始初始化');
-      this.once('LifecycleMeta', (data: CQEvent.LifecycleMetaEvent) => {
+      this.once('LifecycleMeta', (data: CQEvent.LifecycleMeta) => {
         if (data.subType === 'enable') this.init();
       });
       return;

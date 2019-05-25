@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import CQNodeRobot from './cqnode-robot';
-import { CQNodeEventResponse, CQNodeModuleInf, EventReturns } from './cqnode';
+import { CQResponse, CQNodeModuleInf, EventReturns } from './cqnode';
 
 export default class CQNodeModule {
   bindingCQNode?: CQNodeRobot;
@@ -10,46 +10,46 @@ export default class CQNodeModule {
   }
   onRun() {}
   onStop() {}
-  onEvent(event: CQEvent.Event, resp: CQNodeEventResponse.Response): EventReturns {
+  onEvent(event: CQEvent.Event, resp: CQResponse.Response): EventReturns {
     return false;
   }
-  onMessage(data: CQEvent.MessageEvent, resp: CQNodeEventResponse.MessageResponse): EventReturns {
+  onMessage(data: CQEvent.Message, resp: CQResponse.Message): EventReturns {
     return this.onEvent(data, resp);
   }
-  onPrivateMessage(data: CQEvent.PrivateMessageEvent, resp: CQNodeEventResponse.PrivateMessageResponse): EventReturns {
+  onPrivateMessage(data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage): EventReturns {
     return this.onMessage(data, resp);
   }
-  onGroupMessage(data: CQEvent.GroupMessageEvent, resp: CQNodeEventResponse.GroupMessageResponse): EventReturns {
+  onGroupMessage(data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage): EventReturns {
     return this.onMessage(data, resp);
   }
-  onDiscussMessage(data: CQEvent.DiscussMessageEvent, resp: CQNodeEventResponse.DiscussMessageResponse): EventReturns {
+  onDiscussMessage(data: CQEvent.DiscussMessage, resp: CQResponse.DiscussMessage): EventReturns {
     return this.onMessage(data, resp);
   }
-  onNotice(data: CQEvent.NoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
+  onNotice(data: CQEvent.Notice, resp: CQResponse.Empty): EventReturns {
     return this.onEvent(data, resp);
   }
-  onGroupUploadNotice(data: CQEvent.GroupUploadNoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
+  onGroupUploadNotice(data: CQEvent.GroupUploadNotice, resp: CQResponse.Empty): EventReturns {
     return this.onNotice(data, resp);
   }
-  onGroupAdminNotice(data: CQEvent.GroupAdminNoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
+  onGroupAdminNotice(data: CQEvent.GroupAdminNotice, resp: CQResponse.Empty): EventReturns {
     return this.onNotice(data, resp);
   }
-  onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
+  onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNotice, resp: CQResponse.Empty): EventReturns {
     return this.onNotice(data, resp);
   }
-  onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
+  onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNotice, resp: CQResponse.Empty): EventReturns {
     return this.onNotice(data, resp);
   }
-  onFriendAddNotice(data: CQEvent.FriendAddNoticeEvent, resp: CQNodeEventResponse.EmptyResponse): EventReturns {
+  onFriendAddNotice(data: CQEvent.FriendAddNotice, resp: CQResponse.Empty): EventReturns {
     return this.onNotice(data, resp);
   }
-  onRequest(data: CQEvent.RequestEvent, resp: CQNodeEventResponse.RequestResponse): EventReturns {
+  onRequest(data: CQEvent.Request, resp: CQResponse.Request): EventReturns {
     return this.onEvent(data, resp);
   }
-  onFriendRequest(data: CQEvent.FriendRequestEvent, resp: CQNodeEventResponse.FriendRequestResponse): EventReturns {
+  onFriendRequest(data: CQEvent.FriendRequest, resp: CQResponse.FriendRequest): EventReturns {
     return this.onRequest(data, resp);
   }
-  onGroupRequest(data: CQEvent.GroupRequestEvent, resp: CQNodeEventResponse.GroupRequestResponse): EventReturns {
+  onGroupRequest(data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest): EventReturns {
     return this.onRequest(data, resp);
   }
 

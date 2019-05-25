@@ -111,7 +111,7 @@ interface CQNodeModuleInf {
   description: string;
 }
 
-type EventResult = boolean | void | CQNodeEventResponse.Response;
+type EventResult = boolean | void | CQResponse.Response;
 type EventReturns = EventResult | Promise<EventResult>;
 
 /** CQNode模块 */
@@ -129,39 +129,39 @@ export class Module {
   /** 模块停止 */
   onStop(): void;
   /** 收到事件 */
-  onEvent(event: CQEvent.Event, resp: CQNodeEventResponse.Response): EventReturns;
+  onEvent(event: CQEvent.Event, resp: CQResponse.Response): EventReturns;
   /** 收到消息 */
-  onMessage(data: CQEvent.MessageEvent, resp: CQNodeEventResponse.MessageResponse): EventReturns;
+  onMessage(data: CQEvent.Message, resp: CQResponse.Message): EventReturns;
   /** 收到私聊消息 */
-  onPrivateMessage(data: CQEvent.PrivateMessageEvent, resp: CQNodeEventResponse.PrivateMessageResponse): EventReturns;
+  onPrivateMessage(data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage): EventReturns;
   /** 收到群消息 */
-  onGroupMessage(data: CQEvent.GroupMessageEvent, resp: CQNodeEventResponse.GroupMessageResponse): EventReturns;
+  onGroupMessage(data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage): EventReturns;
   /** 收到讨论组消息 */
-  onDiscussMessage(data: CQEvent.DiscussMessageEvent, resp: CQNodeEventResponse.DiscussMessageResponse): EventReturns;
+  onDiscussMessage(data: CQEvent.DiscussMessage, resp: CQResponse.DiscussMessage): EventReturns;
   /** 收到通知 */
-  onNotice(data: CQEvent.NoticeEvent, resp: CQNodeEventResponse.NoticeResponse): EventReturns;
+  onNotice(data: CQEvent.Notice, resp: CQResponse.Notice): EventReturns;
   /** 收到群文件上传通知 */
-  onGroupUploadNotice(data: CQEvent.GroupUploadNoticeEvent, resp: CQNodeEventResponse.GroupUploadNoticeResponse): EventReturns;
+  onGroupUploadNotice(data: CQEvent.GroupUploadNotice, resp: CQResponse.GroupUploadNotice): EventReturns;
   /** 收到群管理员变动通知 */
-  onGroupAdminNotice(data: CQEvent.GroupAdminNoticeEvent, resp: CQNodeEventResponse.GroupAdminNoticeResponse): EventReturns;
+  onGroupAdminNotice(data: CQEvent.GroupAdminNotice, resp: CQResponse.GroupAdminNotice): EventReturns;
   /** 收到群成员减少通知 */
-  onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNoticeEvent, resp: CQNodeEventResponse.GroupDecreaseNoticeResponse): EventReturns;
+  onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNotice, resp: CQResponse.GroupDecreaseNotice): EventReturns;
   /** 收到群成员增加通知 */
-  onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNoticeEvent, resp: CQNodeEventResponse.GroupIncreaseNoticeResponse): EventReturns;
+  onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNotice, resp: CQResponse.GroupIncreaseNotice): EventReturns;
   /** 收到好友添加通知 */
-  onFriendAddNotice(data: CQEvent.FriendAddNoticeEvent, resp: CQNodeEventResponse.FriendAddNoticeResponse): EventReturns;
+  onFriendAddNotice(data: CQEvent.FriendAddNotice, resp: CQResponse.FriendAddNotice): EventReturns;
   /** 收到请求 */
-  onRequest(data: CQEvent.RequestEvent, resp: CQNodeEventResponse.RequestResponse): EventReturns;
+  onRequest(data: CQEvent.Request, resp: CQResponse.Request): EventReturns;
   /** 收到加好友请求 */
-  onFriendRequest(data: CQEvent.FriendRequestEvent, resp: CQNodeEventResponse.FriendRequestResponse): EventReturns;
+  onFriendRequest(data: CQEvent.FriendRequest, resp: CQResponse.FriendRequest): EventReturns;
   /** 收到加群请求 */
-  onGroupRequest(data: CQEvent.GroupRequestEvent, resp: CQNodeEventResponse.GroupRequestResponse): EventReturns;
+  onGroupRequest(data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest): EventReturns;
   /** 获取本模块的数据文件目录 */
   getFilepath(): string;
 }
 
 /** CQNode事件响应对象 */
-declare namespace CQNodeEventResponse {
+declare namespace CQResponse {
   /** CQNode事件响应对象 */
   interface Response {
     /** 原始http response对象，通常情况下不建议直接调用此对象 */
@@ -172,9 +172,9 @@ declare namespace CQNodeEventResponse {
     };
   }
   /** 空响应，该事件没有可用的resp响应 */
-  interface EmptyResponse extends Response {}
+  interface Empty extends Response {}
   /** 消息类事件 */
-  interface MessageResponse extends Response {
+  interface Message extends Response {
     /**
      * 向消息来源私聊/群/讨论组发送消息，不使用response而是使用API发送消息
      * @param message 回复信息
@@ -190,10 +190,10 @@ declare namespace CQNodeEventResponse {
   }
 
   /** 私聊消息事件 */
-  interface PrivateMessageResponse extends MessageResponse {}
+  interface PrivateMessage extends Message {}
 
   /** 群消息事件 */
-  interface GroupMessageResponse extends MessageResponse {
+  interface GroupMessage extends Message {
     /**
      * 向发送者发送私聊消息
      * @param message 回复信息
@@ -214,13 +214,13 @@ declare namespace CQNodeEventResponse {
   }
 
   /** 讨论组消息事件 */
-  interface DiscussMessageResponse extends MessageResponse {
+  interface DiscussMessage extends Message {
     /** 是否要在回复开头at发送者 */
     at(at: boolean): this;
   }
 
   /** 通知类事件 */
-  interface NoticeResponse extends Response {
+  interface Notice extends Response {
     /**
      * 向通知来源私聊/群/讨论组发送消息
      * @param message 回复信息
@@ -229,25 +229,25 @@ declare namespace CQNodeEventResponse {
   }
 
   /** 群文件上传 */
-  interface GroupUploadNoticeResponse extends NoticeResponse {}
+  interface GroupUploadNotice extends Notice {}
 
   /** 群管理员变动 */
-  interface GroupAdminNoticeResponse extends NoticeResponse {}
+  interface GroupAdminNotice extends Notice {}
 
   /** 群成员减少 */
-  interface GroupDecreaseNoticeResponse extends NoticeResponse {}
+  interface GroupDecreaseNotice extends Notice {}
 
   /** 群成员增加 */
-  interface GroupIncreaseNoticeResponse extends NoticeResponse {}
+  interface GroupIncreaseNotice extends Notice {}
 
   /** 好友添加 */
-  interface FriendAddNoticeResponse extends NoticeResponse {}
+  interface FriendAddNotice extends Notice {}
 
   /** 请求类事件 */
-  interface RequestResponse extends Response {}
+  interface Request extends Response {}
 
   /** 加好友请求 */
-  interface FriendRequestResponse extends RequestResponse {
+  interface FriendRequest extends Request {
     /**
      * 是否同意请求
      * @param approve 是否同意请求
@@ -257,7 +257,7 @@ declare namespace CQNodeEventResponse {
   }
 
   /** 加群请求 */
-  interface GroupRequestResponse extends RequestResponse {
+  interface GroupRequest extends Request {
     /**
      * 是否同意请求
      * @param approve 是否同意请求/邀请
@@ -267,13 +267,13 @@ declare namespace CQNodeEventResponse {
   }
 
   /** 元事件 */
-  interface MetaResponse extends Response {}
+  interface Meta extends Response {}
 
   /** 生命周期 */
-  interface LifecycleMetaResponse extends MetaResponse {}
+  interface LifecycleMeta extends Meta {}
   
   /** 心跳 */
-  interface HeartbeatMetaResponse extends MetaResponse {}
+  interface HeartbeatMeta extends Meta {}
 }
 
 /** CQHTTP上报事件 */
@@ -294,7 +294,7 @@ declare namespace CQEvent {
   }
 
   /** 消息类事件 */
-  interface MessageEvent extends Event {
+  interface Message extends Event {
     postType: 'message';
     /** 消息类型  
      * group: 群消息  
@@ -328,7 +328,7 @@ declare namespace CQEvent {
   }
 
   /** 私聊消息事件 */
-  interface PrivateMessageEvent extends MessageEvent {
+  interface PrivateMessage extends Message {
     messageType: 'private';
     /** 消息子类型，表示私聊的来源  
      * friend: 好友  
@@ -351,7 +351,7 @@ declare namespace CQEvent {
   }
 
   /** 群消息事件 */
-  interface GroupMessageEvent extends MessageEvent {
+  interface GroupMessage extends Message {
     messageType: 'group';
     /** 消息子类型  
      * normal: 正常消息  
@@ -398,7 +398,7 @@ declare namespace CQEvent {
   }
 
   /** 讨论组消息事件 */
-  interface DiscussMessageEvent extends MessageEvent {
+  interface DiscussMessage extends Message {
     messageType: 'discuss';
     /** 讨论组ID */
     discussId: number;
@@ -416,7 +416,7 @@ declare namespace CQEvent {
   }
 
   /** 通知类事件 */
-  interface NoticeEvent extends Event {
+  interface Notice extends Event {
     postType: 'notice';
     /** 通知类型  
      * group_upload: 群文件上传  
@@ -429,7 +429,7 @@ declare namespace CQEvent {
   }
 
   /** 群文件上传 */
-  interface GroupUploadNoticeEvent extends NoticeEvent {
+  interface GroupUploadNotice extends Notice {
     noticeType: 'group_upload';
     /** 群号 */
     groupId: number;
@@ -449,7 +449,7 @@ declare namespace CQEvent {
   }
 
   /** 群管理员变动 */
-  interface GroupAdminNoticeEvent extends NoticeEvent {
+  interface GroupAdminNotice extends Notice {
     noticeType: 'group_admin';
     /** 子类型  
      * set: 设置管理员  
@@ -463,7 +463,7 @@ declare namespace CQEvent {
   }
 
   /** 群成员减少 */
-  interface GroupDecreaseNoticeEvent extends NoticeEvent {
+  interface GroupDecreaseNotice extends Notice {
     noticeType: 'group_decrease';
     /** 子类型
      * leave: 主动退群
@@ -480,7 +480,7 @@ declare namespace CQEvent {
   }
 
   /** 群成员增加 */
-  interface GroupIncreaseNoticeEvent extends NoticeEvent {
+  interface GroupIncreaseNotice extends Notice {
     noticeType: 'group_increase';
     /** 子类型
      * approve: 管理员已同意入群
@@ -496,14 +496,14 @@ declare namespace CQEvent {
   }
 
   /** 好友添加 */
-  interface FriendAddNoticeEvent extends NoticeEvent {
+  interface FriendAddNotice extends Notice {
     noticeType: 'friend_add';
     /** 新添加好友 QQ 号 */
     userId: number;
   }
 
   /** 请求类事件 */
-  interface RequestEvent extends Event {
+  interface Request extends Event {
     postType: 'request';
     /** 请求类型  
      * friend: 加好友请求  
@@ -513,7 +513,7 @@ declare namespace CQEvent {
   }
 
   /** 加好友请求 */
-  interface FriendRequestEvent extends RequestEvent {
+  interface FriendRequest extends Request {
     requestType: 'friend';
     /** 发送请求的 QQ 号 */
     userId: number;
@@ -524,7 +524,7 @@ declare namespace CQEvent {
   }
 
   /** 加群请求 */
-  interface GroupRequestEvent extends RequestEvent {
+  interface GroupRequest extends Request {
     requestType: 'group';
     /** 子类型  
      * add: 请求加群  
@@ -542,7 +542,7 @@ declare namespace CQEvent {
   }
 
   /** 元事件 */
-  interface MetaEvent extends Event {
+  interface Meta extends Event {
     postType: 'meta_event';
     /** 元事件类型  
      * lifecycle: 生命周期  
@@ -552,7 +552,7 @@ declare namespace CQEvent {
   }
 
   /** 生命周期 */
-  interface LifecycleMetaEvent extends MetaEvent {
+  interface LifecycleMeta extends Meta {
     metaEventType: 'lifecycle';
     /** 子类型  
      * enable: 插件启用  
@@ -562,7 +562,7 @@ declare namespace CQEvent {
   }
   
   /** 心跳 */
-  interface HeartbeatMetaEvent extends MetaEvent {
+  interface HeartbeatMeta extends Meta {
     metaEventType: 'heartbeat';
     /** 状态信息 */
     status: {
@@ -978,20 +978,20 @@ declare interface CQNodeAPI {
 export class ModuleFactory {
   constructor(config: { noDuplicate: boolean });
   createModule(inf: CQNodeModuleInf, initfn?: () => void): Module;
-  onGroupMessage(fn: (data: CQEvent.GroupMessageEvent, resp: CQNodeEventResponse.GroupMessageResponse) => EventReturns): ModuleFactory;
+  onGroupMessage(fn: (data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage) => EventReturns): ModuleFactory;
   onRun(fn: () => void): ModuleFactory;
   onStop(fn: () => void): ModuleFactory;
-  onEvent(fn: (data: CQEvent.Event, resp: CQNodeEventResponse.Response) => EventReturns): ModuleFactory;
-  onMessage(fn: (data: CQEvent.MessageEvent, resp: CQNodeEventResponse.MessageResponse) => EventReturns): ModuleFactory;
-  onPrivateMessage(fn: (data: CQEvent.PrivateMessageEvent, resp: CQNodeEventResponse.PrivateMessageResponse) => EventReturns): ModuleFactory;
-  onDiscussMessage(fn: (data: CQEvent.DiscussMessageEvent, resp: CQNodeEventResponse.DiscussMessageResponse) => EventReturns): ModuleFactory;
-  onNotice(fn: (data: CQEvent.NoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
-  onGroupUploadNotice(fn: (data: CQEvent.GroupUploadNoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
-  onGroupAdminNotice(fn: (data: CQEvent.GroupAdminNoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
-  onGroupDecreaseNotice(fn: (data: CQEvent.GroupDecreaseNoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
-  onGroupIncreaseNotice(fn: (data: CQEvent.GroupIncreaseNoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
-  onFriendAddNotice(fn: (data: CQEvent.FriendAddNoticeEvent, resp: CQNodeEventResponse.EmptyResponse) => EventReturns): ModuleFactory;
-  onRequest(fn: (data: CQEvent.RequestEvent, resp: CQNodeEventResponse.RequestResponse) => EventReturns): ModuleFactory;
-  onFriendRequest(fn: (data: CQEvent.FriendRequestEvent, resp: CQNodeEventResponse.FriendRequestResponse) => EventReturns): ModuleFactory;
-  onGroupRequest(fn: (data: CQEvent.GroupRequestEvent, resp: CQNodeEventResponse.GroupRequestResponse) => EventReturns): ModuleFactory;
+  onEvent(fn: (data: CQEvent.Event, resp: CQResponse.Response) => EventReturns): ModuleFactory;
+  onMessage(fn: (data: CQEvent.Message, resp: CQResponse.Message) => EventReturns): ModuleFactory;
+  onPrivateMessage(fn: (data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage) => EventReturns): ModuleFactory;
+  onDiscussMessage(fn: (data: CQEvent.DiscussMessage, resp: CQResponse.DiscussMessage) => EventReturns): ModuleFactory;
+  onNotice(fn: (data: CQEvent.Notice, resp: CQResponse.Empty) => EventReturns): ModuleFactory;
+  onGroupUploadNotice(fn: (data: CQEvent.GroupUploadNotice, resp: CQResponse.Empty) => EventReturns): ModuleFactory;
+  onGroupAdminNotice(fn: (data: CQEvent.GroupAdminNotice, resp: CQResponse.Empty) => EventReturns): ModuleFactory;
+  onGroupDecreaseNotice(fn: (data: CQEvent.GroupDecreaseNotice, resp: CQResponse.Empty) => EventReturns): ModuleFactory;
+  onGroupIncreaseNotice(fn: (data: CQEvent.GroupIncreaseNotice, resp: CQResponse.Empty) => EventReturns): ModuleFactory;
+  onFriendAddNotice(fn: (data: CQEvent.FriendAddNotice, resp: CQResponse.Empty) => EventReturns): ModuleFactory;
+  onRequest(fn: (data: CQEvent.Request, resp: CQResponse.Request) => EventReturns): ModuleFactory;
+  onFriendRequest(fn: (data: CQEvent.FriendRequest, resp: CQResponse.FriendRequest) => EventReturns): ModuleFactory;
+  onGroupRequest(fn: (data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest) => EventReturns): ModuleFactory;
 }

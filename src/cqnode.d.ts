@@ -53,7 +53,7 @@ declare interface CQNodeConfigObject {
   prompt?: string | true | Array<string | true>;
 }
 
-type EventResult = boolean | void | CQNodeEventResponse.Response;
+type EventResult = boolean | void | CQResponse.Response;
 type EventReturns = EventResult | Promise<EventResult>;
 
 /** CQNode运行时信息 */
@@ -99,8 +99,7 @@ declare interface CQNodeModuleInf {
   /** 模块简介 */
   description?: string;
 }
-
-declare namespace CQNodeEventResponse {
+declare namespace CQResponse {
   /** CQNode事件响应对象 */
   interface Response {
     /** 原始http response对象，通常情况下不建议直接调用此对象 */
@@ -110,9 +109,10 @@ declare namespace CQNodeEventResponse {
       [field: string]: any;
     };
   }
-
+  /** 空响应，该事件没有可用的resp响应 */
+  interface Empty extends Response {}
   /** 消息类事件 */
-  interface MessageResponse extends Response {
+  interface Message extends Response {
     /**
      * 向消息来源私聊/群/讨论组发送消息，不使用response而是使用API发送消息
      * @param message 回复信息
@@ -128,10 +128,10 @@ declare namespace CQNodeEventResponse {
   }
 
   /** 私聊消息事件 */
-  interface PrivateMessageResponse extends MessageResponse {}
+  interface PrivateMessage extends Message {}
 
   /** 群消息事件 */
-  interface GroupMessageResponse extends MessageResponse {
+  interface GroupMessage extends Message {
     /**
      * 向发送者发送私聊消息
      * @param message 回复信息
@@ -152,13 +152,13 @@ declare namespace CQNodeEventResponse {
   }
 
   /** 讨论组消息事件 */
-  interface DiscussMessageResponse extends MessageResponse {
+  interface DiscussMessage extends Message {
     /** 是否要在回复开头at发送者 */
     at(at: boolean): this;
   }
 
   /** 通知类事件 */
-  interface NoticeResponse extends Response {
+  interface Notice extends Response {
     /**
      * 向通知来源私聊/群/讨论组发送消息
      * @param message 回复信息
@@ -167,29 +167,26 @@ declare namespace CQNodeEventResponse {
     send(message: string, autoEscape?: boolean): void;
   }
 
-  /** 空响应，无可用的响应数据 */
-  interface EmptyResponse extends Response {}
-
   /** 群文件上传 */
-  interface GroupUploadNoticeResponse extends NoticeResponse {}
+  interface GroupUploadNotice extends Notice {}
 
   /** 群管理员变动 */
-  interface GroupAdminNoticeResponse extends NoticeResponse {}
+  interface GroupAdminNotice extends Notice {}
 
   /** 群成员减少 */
-  interface GroupDecreaseNoticeResponse extends NoticeResponse {}
+  interface GroupDecreaseNotice extends Notice {}
 
   /** 群成员增加 */
-  interface GroupIncreaseNoticeResponse extends NoticeResponse {}
+  interface GroupIncreaseNotice extends Notice {}
 
   /** 好友添加 */
-  interface FriendAddNoticeResponse extends NoticeResponse {}
+  interface FriendAddNotice extends Notice {}
 
   /** 请求类事件 */
-  interface RequestResponse extends Response {}
+  interface Request extends Response {}
 
   /** 加好友请求 */
-  interface FriendRequestResponse extends RequestResponse {
+  interface FriendRequest extends Request {
     /**
      * 是否同意请求
      * @param approve 是否同意请求
@@ -199,7 +196,7 @@ declare namespace CQNodeEventResponse {
   }
 
   /** 加群请求 */
-  interface GroupRequestResponse extends RequestResponse {
+  interface GroupRequest extends Request {
     /**
      * 是否同意请求
      * @param approve 是否同意请求/邀请
@@ -209,13 +206,13 @@ declare namespace CQNodeEventResponse {
   }
 
   /** 元事件 */
-  interface MetaResponse extends Response {}
+  interface Meta extends Response {}
 
   /** 生命周期 */
-  interface LifecycleMetaResponse extends MetaResponse {}
+  interface LifecycleMeta extends Meta {}
   
   /** 心跳 */
-  interface HeartbeatMetaResponse extends MetaResponse {}
+  interface HeartbeatMeta extends Meta {}
 }
 
 
