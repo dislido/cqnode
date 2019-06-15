@@ -33,6 +33,7 @@ interface CQNodeInf {
   /** 群列表 */
   groupList: CQAPI.GetGroupListResponseData[];
 }
+
 interface CQNodeRobot {
   /** 已加载的模块 */
   modules: Module[];
@@ -121,7 +122,7 @@ export class Module {
   /** 模块是否处于运行状态 */
   isRunning: boolean;
   /** 模块信息 */
-  inf: CQNodeModuleInf;
+  inf?: CQNodeModuleInf;
 
   constructor(inf: CQNodeModuleInf);
   /** 模块启动 */
@@ -965,6 +966,7 @@ declare interface CQNodeAPI {
    */
   cleanPluginLog(): Promise<CQAPI.CQHttpResponseData<CQAPI.EmptyResponseData>>;
 
+  // CQNode API
   /**
    * 群广播消息，将消息发送给指定的所有群
    * @param message 要发送的内容
@@ -976,8 +978,8 @@ declare interface CQNodeAPI {
 }
 
 export class ModuleFactory {
-  constructor(config: { noDuplicate: boolean });
-  createModule(inf: CQNodeModuleInf, initfn?: () => void): Module;
+  constructor(config?: { noDuplicate: boolean });
+  createModule(inf?: CQNodeModuleInf, initfn?: () => void): Module;
   onGroupMessage(fn: (data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage) => EventReturns): ModuleFactory;
   onRun(fn: () => void): ModuleFactory;
   onStop(fn: () => void): ModuleFactory;
