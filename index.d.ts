@@ -122,9 +122,9 @@ export class Module {
   /** 模块是否处于运行状态 */
   isRunning: boolean;
   /** 模块信息 */
-  inf?: CQNodeModuleInf;
+  inf: CQNodeModuleInf;
 
-  constructor(inf: CQNodeModuleInf);
+  constructor(inf?: CQNodeModuleInf);
   /** 模块启动 */
   onRun(): void;
   /** 模块停止 */
