@@ -25,13 +25,23 @@ CQNode.createRobot({
 
 ```javascript
 class Timer extends CQNode.Module {
-  constructor(time, to, msg) {
-    super();
-    setTimeout()
+  constructor(group) {
+    this.group = group;
+  }
+
+  onRun() {
+    this.minute = 0;
+    this.timer = setInterval(() => {
+      this.cqnode.api.sendGroupMsg(this.group, `模块已启动${++this.minute}分钟`);
+    }, 60000);
+  }
+
+  onStop() {
+    clearInterval(this.timer);
   }
 }
 
 CQNode.createRobot({
-  modules: [new Repeat()],
+  modules: [new Timer(1145141919)],
 });
 ```
