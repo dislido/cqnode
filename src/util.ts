@@ -59,7 +59,7 @@ export function toCamelCase(str: string): string;
 export function toCamelCase(t: any) {
   if (!t) return t;
   if (typeof t === 'string') return t.replace(/_([a-z])/g, it => it[1].toUpperCase());
-  return Object.entries(t).reduce((prev: { [key: string]: any }, [key, value]) => {
+  return Object.entries(t).reduce((prev: { [key: string]: any }, [key, value]: [string, any]) => {
     if (typeof value === "object") value = toCamelCase(value);
     prev[key.replace(/_([a-z])/g, it => it[1].toUpperCase())] = value;
     return prev;
