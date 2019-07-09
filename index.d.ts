@@ -118,7 +118,7 @@ type EventReturns = EventResult | Promise<EventResult>;
 /** CQNode模块 */
 export class Module {
   /** 模块绑定的CQNode */
-  bindingCQNode: CQNodeRobot;
+  cqnode: CQNodeRobot;
   /** 模块是否处于运行状态 */
   isRunning: boolean;
   /** 模块信息 */

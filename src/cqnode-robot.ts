@@ -94,7 +94,7 @@ export default class CQNodeRobot extends EventEmitter {
   loadModule(modIndex: number) {
     try {
       const m = this.modules[modIndex];
-      m.bindingCQNode = this;
+      m.cqnode = this;
       m.isRunning = true;
       m.onRun();
       return true;
@@ -109,7 +109,7 @@ export default class CQNodeRobot extends EventEmitter {
       const m = this.modules[modIndex];
       if (!m) return false;
       m.onStop();
-      m.bindingCQNode = undefined;
+      m.cqnode = undefined;
       m.isRunning = false;
       return true;
     } catch (e) {
