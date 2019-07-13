@@ -9,7 +9,7 @@ class MyModule extends CQNode.Module {
     /** (可选)添加模块信息 */
     super({
       name: '我的模块',
-      packageName: '@dislido/MyModule',
+      packageName: '@dislido/demo-mymodule',
       help: '模块帮助信息',
       description: '模块描述信息',
     });
