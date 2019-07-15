@@ -1,6 +1,6 @@
 > - **首页**
-> - [文档](/cqnode/docs)
-> - [教程](/cqnode/tutorial)
+> > - [文档](/cqnode/docs)
+> > - [教程](/cqnode/tutorial)
 
 # 简介
 CQNode是一个基于[酷Q](https://cqp.cc/)的Node.js的QQ机器人开发框架

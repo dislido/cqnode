@@ -7,6 +7,10 @@
   display: flex;
 }
 
+#main_content {
+  width: 700px;
+}
+
 #main_content_wrap > div:not(:nth-child(2)) {
   flex-grow: 1;
   position: relative;
