@@ -64,10 +64,6 @@ page.next: {{ page.next }}
 page.previous: {{ page.previous }}
 
 -->
-{% if page.dir == "/docs/" %}
-
-    <!-- yes -->
-{% endif %}
   <body>
 
     <!-- HEADER -->
@@ -91,9 +87,17 @@ page.previous: {{ page.previous }}
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
+      <div>
+        <div id="main_directory">
+          <blockquote>
+            <ul></ul>
+          </blockquote>
+        </div>
+      </div>
       <section id="main_content" class="inner">
         {{ content }}
       </section>
+      <div></div>
     </div>
 
     <!-- FOOTER  -->
@@ -116,5 +120,6 @@ page.previous: {{ page.previous }}
         ga('send', 'pageview');
       </script>
     {% endif %}
+      <script src="{{ '/assets/js/page.js?v=' | append: site.github.build_revision | relative_url }}"></script>
   </body>
 </html>

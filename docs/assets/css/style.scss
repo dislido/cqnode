@@ -1,0 +1,16 @@
+@import "{{ site.theme }}";
+
+#main_content_wrap {
+  display: flex;
+}
+
+#main_content_wrap > div:not(:nth-child(1)) {
+  flex-grow: 1;
+  position: relative;
+}
+
+#main_directory {
+  position: absolute;
+  right: 0;
+  margin-right: 20px;
+}

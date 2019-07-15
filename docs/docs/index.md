@@ -4,7 +4,7 @@
 
 # 文档
 
-> - createRobot
+> - [createRobot](/cqnode/docs/createrobot)
 > - Module
 > - Plugin
 > - util
