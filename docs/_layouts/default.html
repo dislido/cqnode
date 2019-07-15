@@ -64,6 +64,10 @@ page.next: {{ page.next }}
 page.previous: {{ page.previous }}
 
 -->
+{% if page.dir == "/docs/" %}
+
+    <!-- yes -->
+{% endif %}
   <body>
 
     <!-- HEADER -->
