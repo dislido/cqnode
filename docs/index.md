@@ -8,7 +8,7 @@ CQNode是一个基于[酷Q](https://cqp.cc/)的Node.js的QQ机器人开发框架
 ---
 
 ### 复读
-> - 只需要几行代码即可实现一个简单的复读功能 
+> 只需要几行代码即可实现一个简单的复读功能 
 
 ```javascript
 class Repeat extends CQNode.Module {
