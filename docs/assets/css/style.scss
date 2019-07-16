@@ -6,7 +6,7 @@
 #main_content_wrap {
   display: flex;
   min-height: 200px;
-  div:not(:nth-child(2)) {
+  >div:not(:nth-child(2)) {
     flex-grow: 1;
     position: relative;
   }
