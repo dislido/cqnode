@@ -4,11 +4,11 @@ CQNode.createRobot(ConfigObject);
 ```
 创建并启动机器人  
 
-- `ConfigObject`: `CQNode.ConfigObject` CQNode的配置对象
+- `ConfigObject`: [`CQNode.ConfigObject`](#configobject) CQNode的配置对象
 
 返回创建的机器人实例`CQNode.Robot`
 
-## CQNode.ConfigObject
+## ConfigObject
 ```javascript
 {
   /** 
@@ -34,7 +34,7 @@ CQNode.createRobot(ConfigObject);
 
   /**
    * CoolQ HTTP API 连接配置
-   * 应与CoolQ HTTP API 插件
+   * 应与CoolQ HTTP API 插件的相关配置一致
    * 参考 [CoolQ HTTP API配置](https://cqhttp.cc/docs/4.10/#/Configuration)
    */
   connector: {
@@ -64,3 +64,11 @@ CQNode.createRobot(ConfigObject);
   // prompt: [true, '-', '.'], // 设置多个atme判断规则
 }
 ```
+
+## CQNode.Robot
+机器人实例，只能由`CQNode.createRobot()`创建
+- `Robot.modules`: `CQNode.Module[]` 加载的模块
+- `Robot.api`: `CQNodeAPI` CQNode提供的API
+- `Robot.inf`: `CQNodeInf` CQNode信息
+- `Robot.config`: `CQNodeConfig` 配置信息，是对`ConfigObject`进行处理后的对象
+

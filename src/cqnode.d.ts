@@ -85,7 +85,7 @@ declare interface CQNodeInf {
     /** HTTP API 插件编译配置，debug 或 release */
     pluginBuildConfiguration: string;
   };
-  groupList: CQAPI.GetGroupListResponseData[];
+  groupList: CQHTTP.GetGroupListResponseData[];
 }
 
 /** 模块信息 */
@@ -217,5 +217,5 @@ declare namespace CQResponse {
 
 
 declare interface CQNodeAPI {
-  groupRadio: (message: string, groups?: number[], autoEscape?: boolean) => Promise<CQAPI.CQHttpResponseData<CQAPI.SendMsgResponseData>>[];
+  groupRadio: (message: string, groups?: number[], autoEscape?: boolean) => Promise<CQHTTP.ResponseData<CQHTTP.SendMsgResponseData>>[];
 }

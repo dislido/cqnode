@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="{{ site.lang | default: "en-US" }}">
-
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,65 +12,9 @@
         path: '{{ page.path }}',
       };
     </script>
-
 {% seo %}
   </head>
-  
-<!-- 
-  site:
-
-site.posts: {{ site.posts }}
-
-site.related_posts: {{ site.related_posts }}
-
-site.html_files: {{ site.html_files }}
-
-site.collections: {{ site.collections }}
-
-site.data: {{ site.data }}
-
-site.documents: {{ site.documents }}
-
-site.categories.CATEGORY: {{ site.categories.CATEGORY }}
-
-site.tags.TAG: {{ site.tags.TAG }}
-
-site.url: {{ site.url }}
-
-site.[CONFIGURATION_DATA]: {{ site.[CONFIGURATION_DATA] }}
-
-
-  page:
-
-page.title: {{ page.title }}
-
-page.excerpt: {{ page.excerpt }}
-
-page.url: {{ page.url }}
-
-page.date: {{ page.date }}
-
-page.id: {{ page.id }}
-
-page.categories: {{ page.categories }}
-
-page.collection: {{ page.collection }}
-
-page.tags: {{ page.tags }}
-
-page.dir: {{ page.dir }}
-
-page.name: {{ page.name }}
-
-page.path: {{ page.path }}
-
-page.next: {{ page.next }}
-
-page.previous: {{ page.previous }}
-
--->
   <body>
-
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
@@ -90,7 +33,6 @@ page.previous: {{ page.previous }}
           {% endif %}
         </header>
     </div>
-
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <div>
@@ -102,7 +44,6 @@ page.previous: {{ page.previous }}
       </section>
       <div></div>
     </div>
-
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
@@ -112,7 +53,6 @@ page.previous: {{ page.previous }}
         <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-
     {% if site.google_analytics %}
       <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
