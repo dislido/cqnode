@@ -1,4 +1,4 @@
-import CQNodeRobot from './cqnode-robot';
+import Robot from './cqnode-robot';
 import Module from './robot-module';
 import Plugin from './robot-plugin';
 import * as CQNodeUtil from './cqnode-util';
@@ -9,7 +9,7 @@ import ModuleFactory from './module-factory';
 
 const CQNode = {
   createRobot(config: CQNodeConfig) {
-    const cqnode = new CQNodeRobot(config);
+    const cqnode = new Robot(config);
     cqnode.setMaxListeners(13);
     registerEvent(cqnode);
     return cqnode;

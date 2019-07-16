@@ -1,9 +1,9 @@
 import * as fs from 'fs';
-import CQNodeRobot from './cqnode-robot';
+import Robot from './cqnode-robot';
 import { CQResponse, CQNodeModuleInf, EventReturns } from './cqnode';
 
 export default class CQNodeModule {
-  cqnode?: CQNodeRobot;
+  cqnode?: Robot;
   isRunning = false;
   constructor(public inf: CQNodeModuleInf = {}) {
     if (this.inf.packageName) this.inf.packageName = this.inf.packageName.replace(/\//g, '.');

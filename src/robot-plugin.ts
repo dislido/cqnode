@@ -1,4 +1,4 @@
-import CQNodeRobot from './cqnode-robot';
+import Robot from './cqnode-robot';
 
 export default class CQNodePlugin {
   /**
@@ -8,5 +8,5 @@ export default class CQNodePlugin {
    * @param {string} data.to 发送目标
    */
   beforeSendMessage(data: { msg: string; act: number; to: string }) {}
-  onRegister(cqnode: CQNodeRobot) {}
+  onRegister(cqnode: Robot) {}
 }

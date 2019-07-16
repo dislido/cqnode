@@ -1,4 +1,4 @@
-import { CQNodeConfig, CQNodeConfigObject } from "./cqnode";
+import { CQNodeConfig, ConfigObject } from "./cqnode";
 import CQNode from ".";
 import CQNodeModule from "./robot-module";
 import CQNodePlugin from "./robot-plugin";
@@ -10,7 +10,7 @@ function isArray(o: any): o is Array<any> {
  * 检查配置项
  * @param {object} config 配置对象
  */
-export function checkConfig(config: CQNodeConfigObject) {
+export function checkConfig(config: ConfigObject) {
   const cfg = {
     admin: [] as number[],
     modules: [] as CQNodeModule[],

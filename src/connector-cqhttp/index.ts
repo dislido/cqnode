@@ -1,5 +1,5 @@
 import * as http from 'http';
-import CQNodeRobot from '../cqnode-robot';
+import Robot from '../cqnode-robot';
 import api from './api';
 import * as eventType from './event-type';
 import { toUnderScoreCase, toCamelCase, decodeHtml } from '../util';
@@ -35,7 +35,7 @@ export default class CQHttpConnector {
    * @param cqnode cqnode实例
    * @param config CQHTTP设置
    */
-  constructor(public cqnode: CQNodeRobot, { LISTEN_PORT = 8080, API_PORT = 5700, TIMEOUT = 10000 }: CQHTTPConfig = {}) {
+  constructor(public cqnode: Robot, { LISTEN_PORT = 8080, API_PORT = 5700, TIMEOUT = 10000 }: CQHTTPConfig = {}) {
     this.server = http.createServer((req, resp) => {
       let data = '';
       req.on('data', (chunk) => {
@@ -57,7 +57,7 @@ export default class CQHttpConnector {
    */
   onMsgReceived(event: CQEvent.Event, resp: http.ServerResponse) {
     this.cqnode.emit(eventType.assertEventName(event), toCamelCase(event), resp);
-    setTimeout(() => !resp.finished && resp.end(), this.TIMEOUT);
+    if (this.TIMEOUT) setTimeout(() => !resp.finished && resp.end(), this.TIMEOUT);
   }
 
   /**

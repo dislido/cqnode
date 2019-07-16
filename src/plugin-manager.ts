@@ -1,9 +1,9 @@
-import CQNodeRobot from "./cqnode-robot";
+import Robot from "./cqnode-robot";
 import CQNodePlugin from "./robot-plugin";
 
 export default class PluginManager {
   plugins: CQNodePlugin[] = [];
-  constructor(public cqnode: CQNodeRobot) {}
+  constructor(public cqnode: Robot) {}
 
   /**
    * 注册插件

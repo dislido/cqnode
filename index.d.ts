@@ -1,46 +1,48 @@
 export as namespace CQNode;
 import { ServerResponse } from 'http';
 
-/** CQNode运行时信息 */
-interface CQNodeInf {
-  /** inf是否已获取 */
-  inited: boolean,
-  /** api.getLoginInfo, 当前登录号信息 */
-  loginInfo: {
-    nickname: string,
-    userId: number,
-  };
-  /** 插件运行状态 */
-  status: {
-    /** 当前 QQ 在线，null 表示无法查询到在线状态 */
-    online: boolean;
-    /** HTTP API 插件状态符合预期，意味着插件已初始化，内部插件都在正常运行，且 QQ 在线 */
-    good: boolean;
-  };
-  /** 酷Q 及 HTTP API 插件的版本信息 */
-  versionInfo: {
-    /** 酷Q 根目录路径 */
-    coolqDirectory: string;
-    /** 酷Q 版本，air 或 pro */
-    coolqEdition: string;
-    /** HTTP API 插件版本，例如 2.1.3 */
-    pluginVersion: string;
-    /** HTTP API 插件 build 号 */
-    pluginBuildNumber: number;
-    /** HTTP API 插件编译配置，debug 或 release */
-    pluginBuildConfiguration: string;
-  };
-  /** 群列表 */
-  groupList: CQAPI.GetGroupListResponseData[];
+declare namespace Robot {
+  /** CQNode运行时信息 */
+  interface Inf {
+    /** inf是否已获取 */
+    inited: boolean,
+    /** api.getLoginInfo, 当前登录号信息 */
+    loginInfo: {
+      nickname: string,
+      userId: number,
+    };
+    /** 插件运行状态 */
+    status: {
+      /** 当前 QQ 在线，null 表示无法查询到在线状态 */
+      online: boolean;
+      /** HTTP API 插件状态符合预期，意味着插件已初始化，内部插件都在正常运行，且 QQ 在线 */
+      good: boolean;
+    };
+    /** 酷Q 及 HTTP API 插件的版本信息 */
+    versionInfo: {
+      /** 酷Q 根目录路径 */
+      coolqDirectory: string;
+      /** 酷Q 版本，air 或 pro */
+      coolqEdition: string;
+      /** HTTP API 插件版本，例如 2.1.3 */
+      pluginVersion: string;
+      /** HTTP API 插件 build 号 */
+      pluginBuildNumber: number;
+      /** HTTP API 插件编译配置，debug 或 release */
+      pluginBuildConfiguration: string;
+    };
+    /** 群列表 */
+    groupList: CQAPI.GetGroupListResponseData[];
+  }
 }
 
-interface CQNodeRobot {
+interface Robot {
   /** 已加载的模块 */
   modules: Module[];
   /** CQ HTTP API */
   api: CQNodeAPI;
   /** CQNode运行时信息 */
-  inf: CQNodeInf;
+  inf: Robot.Inf;
   /** CQNode配置 */
   config: CQNodeConfig;
 }
@@ -68,7 +70,7 @@ declare interface CQNodeConfig {
   }
 }
 
-declare interface CQNodeConfigObject {
+declare interface ConfigObject {
   /** 
    * 管理员
    */
@@ -98,33 +100,36 @@ declare interface CQNodeConfigObject {
 }
 
 
-export function createRobot(config: CQNodeConfigObject): CQNodeRobot;
+export function createRobot(config: ConfigObject): Robot;
 
-/** 模块信息 */
-interface CQNodeModuleInf {
-  /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，`/`会被替换为`.` */
-  packageName: string;
-  /** 模块名 */
-  name: string;
-  /** 模块帮助信息 */
-  help: string;
-  /** 模块简介 */
-  description: string;
-}
 
 type EventResult = boolean | void | CQResponse.Response;
 type EventReturns = EventResult | Promise<EventResult>;
 
+declare namespace Module {
+  /** 模块信息 */
+  interface Inf {
+    /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，`/`会被替换为`.` */
+    packageName: string;
+    /** 模块名 */
+    name: string;
+    /** 模块帮助信息 */
+    help: string;
+    /** 模块简介 */
+    description: string;
+  }
+}
+
 /** CQNode模块 */
 export class Module {
   /** 模块绑定的CQNode */
-  cqnode: CQNodeRobot;
+  cqnode: Robot;
   /** 模块是否处于运行状态 */
   isRunning: boolean;
   /** 模块信息 */
-  inf: CQNodeModuleInf;
+  inf: Module.Inf;
 
-  constructor(inf?: CQNodeModuleInf);
+  constructor(inf?: Module.Inf);
   /** 模块启动 */
   onRun(): void;
   /** 模块停止 */
@@ -979,7 +984,7 @@ declare interface CQNodeAPI {
 
 export class ModuleFactory {
   constructor(config?: { noDuplicate: boolean });
-  createModule(inf?: CQNodeModuleInf, initfn?: () => void): Module;
+  createModule(inf?: Module.Inf, initfn?: () => void): Module;
   onGroupMessage(fn: (data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage) => EventReturns): ModuleFactory;
   onRun(fn: () => void): ModuleFactory;
   onStop(fn: () => void): ModuleFactory;
