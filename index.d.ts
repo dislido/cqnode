@@ -4,11 +4,11 @@ import { ServerResponse } from 'http';
 /** CQNode运行时信息 */
 interface CQNodeInf {
   /** inf是否已获取 */
-  inited: boolean,
+  inited: boolean;
   /** api.getLoginInfo, 当前登录号信息 */
   loginInfo: {
-    nickname: string,
-    userId: number,
+    nickname: string;
+    userId: number;
   };
   /** 插件运行状态 */
   status: {
@@ -51,9 +51,9 @@ interface CQNodeConfig {
    */
   prompt: Array<string | true>;
   connector: {
-    LISTEN_PORT: number,
-    API_PORT: number,
-    TIMEOUT: number,
+    LISTEN_PORT: number;
+    API_PORT: number;
+    TIMEOUT: number;
   }
 }
 
@@ -71,11 +71,11 @@ interface ConfigObject {
   /** HTTP API 连接配置 */
   connector?: {
     /** 事件监听接口 */
-    LISTEN_PORT?: number,
+    LISTEN_PORT?: number;
     /** HTTP API接口 */
-    API_PORT?: number,
+    API_PORT?: number;
     /** 事件处理超时时长（毫秒） */
-    TIMEOUT?: number,
+    TIMEOUT?: number;
   };
   /**
    * atme判断字符串  

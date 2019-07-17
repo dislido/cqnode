@@ -81,9 +81,9 @@ interface CQNodeConfig {
   modules: Module[];
   workpath: string;
   connector: {
-    LISTEN_PORT: number,
-    API_PORT: number,
-    TIMEOUT: number,
+    LISTEN_PORT: number;
+    API_PORT: number;
+    TIMEOUT: number;
   }
   prompt: Array<string | true>;
 }
@@ -97,8 +97,8 @@ interface CQNodeInf {
   inited: boolean,
   /** 当前登录号信息 */
   loginInfo: {
-    nickname: string, // 昵称
-    userId: number, // QQ号
+    nickname: string; // 昵称
+    userId: number; // QQ号
   };
   /** 插件运行状态 */
   status: {
