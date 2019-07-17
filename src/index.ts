@@ -1,7 +1,5 @@
 import Robot from './cqnode-robot';
 import Module from './robot-module';
-import Plugin from './robot-plugin';
-import * as CQNodeUtil from './cqnode-util';
 import registerEvent from './register-event';
 import { CQNodeConfig } from './cqnode';
 import ModuleFactory from './module-factory';
@@ -15,8 +13,6 @@ const CQNode = {
     return cqnode;
   },
   Module: Module,
-  Plugin: Plugin,
-  util: CQNodeUtil,
   ModuleFactory,
 };
 

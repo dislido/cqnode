@@ -2,5 +2,6 @@
 
 > - [createRobot](/cqnode/docs/createrobot)
 > - [Module](/cqnode/docs/module)
-> - util
-> - ModuleFactory
+> - [ModuleFactory](/cqnode/docs/modulefactory)
+
+> - [api](/cqnode/docs/api)
