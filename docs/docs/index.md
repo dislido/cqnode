@@ -5,3 +5,4 @@
 > - [ModuleFactory](/cqnode/docs/modulefactory)
 
 > - [api](/cqnode/docs/api)
+> - [Robot](/cqnode/docs/robot)
