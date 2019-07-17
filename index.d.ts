@@ -38,9 +38,9 @@ interface CQNodeConfig {
   /** 管理员 */
   admin: number[];
   /** 加载的模块 */
-  modules: any[];
-  /** 加载的插件 */
-  plugins: any[];
+  modules: Module[];
+  /** @wip 加载的插件 */
+  // plugins: any[];
   /** 数据文件夹 */
   workpath: string;
   /**

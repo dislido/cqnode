@@ -1,7 +1,6 @@
 # 文档
 
 > - [createRobot](/cqnode/docs/createrobot)
-> - Module
-> - Plugin
+> - [Module](/cqnode/docs/module)
 > - util
 > - ModuleFactory
