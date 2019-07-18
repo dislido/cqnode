@@ -180,19 +180,15 @@ onMessage(data: CQEvent.Message, resp: CQResponse.Message)
 ### CQResponse.Message
 实现了[`CQResponse.Response`](#cqresponseresponse)接口，还有以下额外的方法
 
-> `send(message: string, autoEscape?: boolean)`  
+> `send(message: string, autoEscape?: boolean): void`  
 > 向消息来源私聊/群/讨论组发送消息，不使用response而是使用API发送消息  
 > - `message` 回复信息  
 > - `autoEscape` 消息内容是否作为纯文本发送（即不解析 CQ 码）  
->
-> 返回`void`
 
-> `reply(message: string, autoEscape?: boolean)`  
+> `reply(message: string, autoEscape?: boolean): this`  
 > 使用response响应回复消息  
 > - `message` 回复信息  
 > - `autoEscape` 消息内容是否作为纯文本发送（即不解析 CQ 码）  
-> 
-> 返回`this`
 
 ## module.onPrivateMessage
 ``` typescript
@@ -200,13 +196,62 @@ onPrivateMessage(data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage)
 ```
 收到私聊消息
 
+### CQEvent.PrivateMessage
+实现了[`CQEvent.Message`](#cqeventmessage)接口，还有以下额外的属性
+- `messageType`: `'private'`
+- `subType`: `string` 消息子类型，表示私聊的来源 `'friend'`好友 `'group'`群临时会话 `'discuss'`讨论组临时会话 `'other'`其他
+- `sender`: `object` 发送人信息,不保证各字段存在和正确性
+  - `userId`: `number` 发送者 QQ 号
+  - `nickname`: `string` 昵称
+  - `sex`: `'male' | 'female' | 'unknown'` 性别
+  - `age`: `number` 年龄
+### CQResponse.PrivateMessage
+实现了[`CQResponse.Message`](#cqresponsemessage)接口，无额外方法
 
 ## module.onGroupMessage
-/** 收到群消息 */
-  onGroupMessage(data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage): Module.EventReturns;
 ```typescript
-
+  onGroupMessage(data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage)
 ```
+收到群消息
+### CQEvent.GroupMessage
+实现了[`CQEvent.Message`](#cqeventmessage)接口，还有以下额外的属性
+- `messageType`: `'group'`
+- `subType`: `string` 消息子类型 `'normal'`正常消息 `'anonymous'`匿名消息 `'notice'`系统提示
+- `groupId`: `number` 群号
+- `anonymous`: `null | object` 匿名信息，如果不是匿名消息则为 null
+  - `id`: `number` 匿名用户ID
+  - `name`: `string` 匿名用户名称
+  - `flag`: `string` 匿名用户flag，在调用禁言API时需要传入
+- `sender`: `object` 发送人信息,不保证各字段存在和正确性
+  - `userId`: `number` 发送者QQ号
+  - `age`: `number` 年龄
+  - `area`: `string` 地区
+  - `card`: `string` 群名片／备注
+  - `level`: `string` 成员等级
+  - `nickname`: `string` 昵称
+  - `role`: `string` 角色 `'owner'`群主 `'admin'`管理员 `'member'`群成员
+  - `sex`: `'male' | 'female' | 'unknown'` 性别
+  - `title`: `string` 专属头衔
+### CQResponse.GroupMessage
+实现了[`CQResponse.Message`](#cqresponsemessage)接口，还有以下额外的方法
+> `sendPrivate(message: string, autoEscape?: boolean): void`  
+> 向发送者发送私聊消息
+> - `message` 回复信息
+> - `autoEscape` 消息内容是否作为纯文本发送（即不解析 CQ 码）
+
+> `at(at: boolean): this`  
+> 是否要在回复开头at发送者，发送者是匿名用户时无效  
+> - `at` 是否at
+
+> `delete(): this`  
+> 撤回该消息
+
+> `kick(): this`  
+> 把发送者踢出群组（需要登录号权限足够），不拒绝此人后续加群请求，发送者是匿名用户时无效
+
+> `ban(duration: number): this`  
+>  把发送者禁言，对匿名用户也有效  
+>  - `duration` 指定时长（分钟）
 
 ## module.onDiscussMessage
 /** 收到讨论组消息 */
