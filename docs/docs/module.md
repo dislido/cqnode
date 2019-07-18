@@ -180,19 +180,19 @@ onMessage(data: CQEvent.Message, resp: CQResponse.Message)
 ### CQResponse.Message
 实现了[`CQResponse.Response`](#cqresponseresponse)接口，还有以下额外的方法
 
-- `send(message: string, autoEscape?: boolean)`  
-  向消息来源私聊/群/讨论组发送消息，不使用response而是使用API发送消息  
-  - `message` 回复信息  
-  - `autoEscape` 消息内容是否作为纯文本发送（即不解析 CQ 码）  
+> `send(message: string, autoEscape?: boolean)`  
+> 向消息来源私聊/群/讨论组发送消息，不使用response而是使用API发送消息  
+> - `message` 回复信息  
+> - `autoEscape` 消息内容是否作为纯文本发送（即不解析 CQ 码）  
+>
+> 返回`void`
 
-  返回`void`
-
-- `reply(message: string, autoEscape?: boolean)`  
-  使用response响应回复消息  
-  - `message` 回复信息  
-  - `autoEscape` 消息内容是否作为纯文本发送（即不解析 CQ 码）  
-  
-  返回`this`
+> `reply(message: string, autoEscape?: boolean)`  
+> 使用response响应回复消息  
+> - `message` 回复信息  
+> - `autoEscape` 消息内容是否作为纯文本发送（即不解析 CQ 码）  
+> 
+> 返回`this`
 
 ## module.onPrivateMessage
 ``` typescript
