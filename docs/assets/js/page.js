@@ -8,6 +8,6 @@
     }
   };
   scr();
-  backtotop.addEventListener('click', () => document.documentElement.scrollTo({ top: 0 }))
+  backtotop.addEventListener('click', () => document.documentElement.scrollTo({ top: 210 }))
   document.addEventListener('scroll', scr);
 }
