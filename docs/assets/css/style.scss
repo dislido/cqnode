@@ -22,8 +22,31 @@ a>code {
 }
 
 #main_directory {
-  position: absolute;
-  right: 0;
+  position: sticky;
+  float: right;
+  top: 0;
   margin-right: 20px;
   padding-top: 40px;
+}
+
+#backtotop {
+  position: fixed;
+  bottom: 150px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  background: white;
+  border: #888888 1px solid;
+  border-radius: 100%;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+  transition: 1s linear transform;
+}
+#backtotop.btt-hidden {
+  transform: translateX(60px);
+}
+
+blockquote:hover {
+  background-color: #00000010;
 }
