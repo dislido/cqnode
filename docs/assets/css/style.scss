@@ -3,6 +3,10 @@
 
 @import "{{ site.theme }}";
 
+html {
+  scroll-behavior: smooth;
+}
+
 #main_content_wrap {
   display: flex;
   min-height: 200px;
@@ -41,7 +45,7 @@ a>code {
   text-align: center;
   line-height: 30px;
   cursor: pointer;
-  transition: 1s linear transform;
+  transition: 0.5s linear transform;
 }
 #backtotop.btt-hidden {
   transform: translateX(60px);
