@@ -421,7 +421,7 @@ declare namespace CQResponse {
   interface Response {
     /** 原始http response对象，通常情况下不建议直接调用此对象 */
     originalResponse: ServerResponse;
-    /** response响应数据，通常情况下不建议直接修改此对象内容， */
+    /** response响应数据，通常情况下不建议直接修改此对象内容 */
     responseBody: {
       [field: string]: any;
     };
