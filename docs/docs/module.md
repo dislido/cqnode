@@ -205,6 +205,7 @@ onPrivateMessage(data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage)
   - `nickname`: `string` 昵称
   - `sex`: `'male' | 'female' | 'unknown'` 性别
   - `age`: `number` 年龄
+
 ### CQResponse.PrivateMessage
 实现了[`CQResponse.Message`](#cqresponsemessage)接口，无额外方法
 
@@ -213,6 +214,7 @@ onPrivateMessage(data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage)
   onGroupMessage(data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage)
 ```
 收到群消息
+
 ### CQEvent.GroupMessage
 实现了[`CQEvent.Message`](#cqeventmessage)接口，还有以下额外的属性
 - `messageType`: `'group'`
@@ -232,6 +234,7 @@ onPrivateMessage(data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage)
   - `role`: `string` 角色 `'owner'`群主 `'admin'`管理员 `'member'`群成员
   - `sex`: `'male' | 'female' | 'unknown'` 性别
   - `title`: `string` 专属头衔
+
 ### CQResponse.GroupMessage
 实现了[`CQResponse.Message`](#cqresponsemessage)接口，还有以下额外的方法
 > `sendPrivate(message: string, autoEscape?: boolean): void`  
