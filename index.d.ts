@@ -838,7 +838,7 @@ declare namespace CQEvent {
 }
 
 /** CQHTTP API */
-declare namespace CQHTTP{
+declare namespace CQHTTP {
   interface ResponseData<T> {
     /**
      * ok: 操作成功  

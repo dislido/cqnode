@@ -257,73 +257,204 @@ onPrivateMessage(data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage)
 >  - `duration` 指定时长（分钟）
 
 ## module.onDiscussMessage
-/** 收到讨论组消息 */
-  onDiscussMessage(data: CQEvent.DiscussMessage, resp: CQResponse.DiscussMessage): Module.EventReturns;
 ```typescript
-
+onDiscussMessage(data: CQEvent.DiscussMessage, resp: CQResponse.DiscussMessage)
 ```
+收到讨论组消息
+
+### CQEvent.DiscussMessage
+实现了[`CQEvent.Message`](#cqeventmessage)接口，还有以下额外的属性
+- `messageType`: `'discuss'`
+- `discussId`: `number` 讨论组ID
+- `sender`: `object` 发送人信息,不保证各字段存在和正确性
+  - `userId`: `number` 发送者QQ号
+  - `nickname`: `string` 昵称
+  - `sex`: `'male' | 'female' | 'unknown'` 性别
+  - `age`: `number` 年龄
+
+### CQResponse.DiscussMessage
+实现了[`CQResponse.Message`](#cqresponsemessage)接口，还有以下额外的方法
+
+> `at(at: boolean): this`  
+> 是否要在回复开头at发送者，发送者是匿名用户时无效  
+> - `at` 是否at
 
 ## module.onNotice
-/** 收到通知 */
-  onNotice(data: CQEvent.Notice, resp: CQResponse.Notice): Module.EventReturns;
-  
 ```typescript
-
+onNotice(data: CQEvent.Notice, resp: CQResponse.Notice)
 ```
-##module.onGroupUploadNotice
-/** 收到群文件上传通知 */
-  onGroupUploadNotice(data: CQEvent.GroupUploadNotice, resp: CQResponse.GroupUploadNotice): Module.EventReturns;
+收到通知
+
+### CQEvent.Notice
+实现了[`CQEvent.Event`](#cqeventevent)接口，还有以下额外的属性
+- `postType`: `'notice'`
+- `noticeType`: `string` 通知类型 `'group_upload'`群文件上传 `'group_admin'`群管理员变动 `'group_decrease'`群成员减少 `'group_increase'`群成员增加 `'friend_add'`好友添加
+
+### CQResponse.Notice
+实现了[`CQResponse.Response`](#cqresponseresponse)接口，还有以下额外的方法
+
+> `send(message: string): this`  
+> 向通知来源私聊/群/讨论组发送消息
+> - `message` 回复信息
+
+## module.onGroupUploadNotice
 ```typescript
-
+onGroupUploadNotice(data: CQEvent.GroupUploadNotice, resp: CQResponse.GroupUploadNotice)
 ```
+收到群文件上传通知
+
+### CQEvent.GroupUploadNotice
+实现了[`CQEvent.Notice`](#cqeventnotice)接口，还有以下额外的属性
+- `noticeType`: `'group_upload'`
+- `groupId`: `number` 群号
+- `userId`: `number` 发送者QQ号
+- `file`: `object` 文件信息
+  - `id`: `string` 文件ID
+  - `name`: `string` 文件名
+  - `size`: `number` 文件大小（字节）
+  - `busid`: `number` 未知用途
+
+### CQResponse.GroupUploadNotice
+实现了[`CQResponse.Notice`](#cqresponsenotice)接口，无额外方法
 
 ## module.onGroupAdminNotice
-/** 收到群管理员变动通知 */
-  onGroupAdminNotice(data: CQEvent.GroupAdminNotice, resp: CQResponse.GroupAdminNotice): Module.EventReturns;
 ```typescript
-
+onGroupAdminNotice(data: CQEvent.GroupAdminNotice, resp: CQResponse.GroupAdminNotice)
 ```
+收到群管理员变动通知
+
+### CQEvent.GroupAdminNotice
+实现了[`CQEvent.Notice`](#cqeventnotice)接口，还有以下额外的属性
+- `noticeType`: `'group_admin'`
+- `subType`: `string` 子类型 `'set'`设置管理员 `'unset'`取消管理员
+- `groupId`: `number` 群号
+- `userId`: `number` 管理员QQ号
+
+### CQResponse.GroupAdminNotice
+实现了[`CQResponse.Notice`](#cqresponsenotice)接口，无额外方法
 
 ## module.onGroupDecreaseNotice
-/** 收到群成员减少通知 */
-  onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNotice, resp: CQResponse.GroupDecreaseNotice): Module.EventReturns;
 ```typescript
-
+onGroupDecreaseNotice(data: CQEvent.GroupDecreaseNotice, resp: CQResponse.GroupDecreaseNotice)
 ```
+收到群成员减少通知
+
+### CQEvent.GroupDecreaseNotice
+实现了[`CQEvent.Notice`](#cqeventnotice)接口，还有以下额外的属性
+- `noticeType`: `'group_decrease'`
+- `subType`: `'leave'`主动退群 `'kick'`被踢出群 `'kick_me'`本账号被踢出群
+- `groupId`: `number` 群号
+- `operatorId`: `number` 操作者 QQ 号（如果是主动退群，则和 userId 相同）
+- `userId`: `number` 离开者 QQ 号
+
+### CQResponse.GroupDecreaseNotice
+实现了[`CQResponse.Notice`](#cqresponsenotice)接口，无额外方法
 
 ## module.onGroupIncreaseNotice
-/** 收到群成员增加通知 */
-  onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNotice, resp: CQResponse.GroupIncreaseNotice): Module.EventReturns;
 ```typescript
-
+onGroupIncreaseNotice(data: CQEvent.GroupIncreaseNotice, resp: CQResponse.GroupIncreaseNotice)
 ```
+收到群成员增加通知
+
+### CQEvent.GroupIncreaseNotice
+实现了[`CQEvent.Notice`](#cqeventnotice)接口，还有以下额外的属性
+- `noticeType`: `'group_increase'`
+- `subType`: `'approve'`管理员已同意入群 `'invite'`管理员邀请入群
+- `groupId`: `number` 群号
+- `operatorId`: `number` 操作者 QQ 号
+- `userId`: `number` 加入者 QQ 号
+
+### CQResponse.GroupIncreaseNotice
+实现了[`CQResponse.Notice`](#cqresponsenotice)接口，无额外方法
 
 ## module.onFriendAddNotice
-/** 收到好友添加通知 */
-  onFriendAddNotice(data: CQEvent.FriendAddNotice, resp: CQResponse.FriendAddNotice): Module.EventReturns;
 ```typescript
-
+onFriendAddNotice(data: CQEvent.FriendAddNotice, resp: CQResponse.FriendAddNotice)
 ```
+收到好友添加通知
+
+### CQEvent.FriendAddNotice
+实现了[`CQEvent.Notice`](#cqeventnotice)接口，还有以下额外的属性
+- `noticeType`: `'friend_add'`
+- `userId`: `number` 新添加好友 QQ 号
+
+### CQResponse.FriendAddNotice
+实现了[`CQResponse.Notice`](#cqresponsenotice)接口，无额外方法
 
 ## module.onRequest
-/** 收到请求 */
-  onRequest(data: CQEvent.Request, resp: CQResponse.Request): Module.EventReturns;
 ```typescript
-
+onRequest(data: CQEvent.Request, resp: CQResponse.Request)
 ```
+收到请求
+
+### CQEvent.Request
+实现了[`CQEvent.Event`](#cqeventevent)接口，还有以下额外的属性
+- `postType`: `'request'`
+- `requestType`: `string` 请求类型 `'friend'`加好友请求 `'group'`加群请求/邀请
+
+### CQResponse.Request
+实现了[`CQResponse.Response`](#cqresponseresponse)接口，无额外方法
 
 ## module.onFriendRequest
-/** 收到加好友请求 */
-  onFriendRequest(data: CQEvent.FriendRequest, resp: CQResponse.FriendRequest): Module.EventReturns;
 ```typescript
-
+onFriendRequest(data: CQEvent.FriendRequest, resp: CQResponse.FriendRequest)
 ```
+收到加好友请求
+
+### CQEvent.FriendRequest
+实现了[`CQEvent.Request`](#cqeventrequest)接口，还有以下额外的属性
+- `requestType`: `'friend'`
+- `userId`: `number` 发送请求的 QQ 号
+- `comment`: `string` 验证信息
+- `flag`: `string` 请求 flag，在调用处理请求的 API 时需要传入
+
+### CQResponse.FriendRequest
+实现了[`CQResponse.Request`](#cqresponserequest)接口，还有以下额外的方法
+> `approve(approve: boolean, remark?: string): this`  
+> 是否同意请求
+> - `approve` 是否同意请求
+> - `remark` 添加后的好友备注（仅在`approve`=`true`时有效）
 
 ## module.onGroupRequest
-/** 收到加群请求 */
-  onGroupRequest(data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest): Module.EventReturns;
 ```typescript
-
+onGroupRequest(data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest)
 ```
+收到加群请求
+
+### CQEvent.GroupRequest
+实现了[`CQEvent.Request`](#cqeventrequest)接口，还有以下额外的属性
+- `requestType`: `'group'`
+- `subType`: `string` 子类型 `'add'`请求加群 `'invite'`邀请本账号入群
+- `groupId`: `number` 群号
+- `userId`: `number` 发送请求的 QQ 号
+- `comment`: `string` 验证信息
+- `flag`: `string` 请求 flag，在调用处理请求的 API 时需要传入
+
+### CQResponse.GroupRequest
+实现了[`CQResponse.Request`](#cqresponserequest)接口，还有以下额外的方法
+> `approve(approve: boolean, reason?: string): this`  
+> 是否同意请求
+> - `approve` 是否同意请求
+> - `reason` 拒绝理由（仅在拒绝时有效）
 
 ## module.getFilepath
+获得本模块的数据文件目录，仅在设置了[`module.inf.packageName`](#moduleinf)且模块已启动后可用  
+建议将模块保存的文件放在此目录下
+```javascript
+class MyModule extends CQNode.Module {
+  constructor() {
+    super({
+      packageName: '@myname/cqnode-module-mymodule',
+      name: '我的模块',
+      help: '模块帮助信息',
+      description: '模块描述',
+    });
+  }
+
+  onRun() {
+    const filePath = this.getFilepath();
+    const data = fs.readFileSync(path.resolve(filePath, 'data.txt'));
+    this.data = JSON.parse(data);
+  }
+}
+```
