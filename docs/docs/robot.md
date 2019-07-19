@@ -6,7 +6,7 @@
 - `Robot.inf`: [`CQNodeInf`](#cqnodeinf) CQNode信息
 
 ## CQNodeConfig
-统一了类型后的配置对象，各属性意义与[`ConfigObject`](#configobject)一致
+统一了类型后的配置对象，各属性意义与[`ConfigObject`](/cqnode/docs/createrobot#configobject)一致
 ```typescript
 interface CQNodeConfig {
   admin: number[];
