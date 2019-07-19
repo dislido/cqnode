@@ -14,10 +14,10 @@ const MyModule = new CQNode.ModuleFactory()
     console.log('received groupMessage');
     return this.onMessage(data, resp);
   })
-  .createModule(); // createModule返回模块实例，你可以在参数中为模块设置inf信息
+  .createConstructor(); // createConstructor返回模块构造器，你可以在参数中为模块设置inf信息和初始化函数
 
 CQNode.createRobot({
-  modules: [MyModule],
+  modules: [new MyModule()],
 });
 
 /**

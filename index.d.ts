@@ -979,7 +979,7 @@ declare namespace CQHTTP {
 
 export class ModuleFactory {
   constructor(config?: { noDuplicate: boolean });
-  createModule(inf?: Module.Inf, initfn?: () => void): Module;
+  createConstructor(inf?: Module.Inf, initfn?: (...args: any) => void): typeof Module;
   onGroupMessage(fn: (data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage) => Module.EventReturns): ModuleFactory;
   onRun(fn: () => void): ModuleFactory;
   onStop(fn: () => void): ModuleFactory;
