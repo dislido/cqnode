@@ -1,5 +1,5 @@
 # 简介
-CQNode是一个基于[酷Q](https://cqp.cc/)的Node.js的QQ机器人开发框架
+CQNode是一个基于[酷Q](https://cqp.cc/)与[CoolQ HTTP API 插件](https://cqhttp.cc/)的Node.js的QQ机器人开发框架
 
 ---
 

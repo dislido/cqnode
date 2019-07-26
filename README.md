@@ -1,11 +1,45 @@
-# CQNode
-酷Q的Node开发框架  
-开发中，已经可以使用，但在正式版之前会有大量不兼容性修改
+# 简介
+CQNode是一个基于[酷Q](https://cqp.cc/)与[CoolQ HTTP API 插件](https://cqhttp.cc/)的Node.js的QQ机器人开发框架
+`npm i @dislido/cqnode`
+---
 
-# 使用
-[CQNode wiki](https://github.com/dislido/cqnode/wiki)
+### 复读
+> 只需要几行代码即可实现一个简单的复读功能 
 
-# todo
-提供一些常用的内置模块  
-插件功能支持
-replace node-schedule with laterjs
+```javascript
+class Repeat extends CQNode.Module {
+  onMessage(data, resp) {
+    return resp.reply(`收到消息: ${data.msg}`);
+  }
+}
+
+CQNode.createRobot({
+  modules: [new Repeat()],
+});
+```
+
+### 定时器
+> 简单的主动发送消息示例
+
+```javascript
+class Timer extends CQNode.Module {
+  constructor(group) {
+    this.group = group;
+  }
+
+  onRun() {
+    this.minute = 0;
+    this.timer = setInterval(() => {
+      this.cqnode.api.sendGroupMsg(this.group, `模块已启动${++this.minute}分钟`);
+    }, 60000);
+  }
+
+  onStop() {
+    clearInterval(this.timer);
+  }
+}
+
+CQNode.createRobot({
+  modules: [new Timer(1145141919)],
+});
+```
