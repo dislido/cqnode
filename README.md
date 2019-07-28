@@ -1,9 +1,11 @@
 # 简介
-CQNode是一个基于[酷Q](https://cqp.cc/)与[CoolQ HTTP API 插件](https://cqhttp.cc/)的Node.js的QQ机器人开发框架  
-[文档与教程](https://dislido.github.io/cqnode/)
+CQNode是一个基于[酷Q](https://cqp.cc/)与[CoolQ HTTP API 插件](https://cqhttp.cc/)的Node.js的QQ机器人开发框架
 
-### 安装
+### [文档与教程](https://dislido.github.io/cqnode/)
+
+### 安装  
 `npm i @dislido/cqnode`
+
 ---
 
 ## 示例
