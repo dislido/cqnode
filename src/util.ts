@@ -15,7 +15,7 @@ export function checkConfig(config: ConfigObject) {
     admin: [] as number[],
     modules: [] as CQNodeModule[],
     plugins: [] as CQNodePlugin[],
-    prompt: [true] as Array<string | true>,
+    atmeTrigger: [true] as Array<string | true>,
     workpath: '.cqnode',
     connector: {
       LISTEN_PORT: 8080,
@@ -33,8 +33,8 @@ export function checkConfig(config: ConfigObject) {
   if (false === cfg.modules instanceof Array) throw new Error('config.modules 的类型必须是 CQNodeModule[]');
   if (cfg.modules.some((it: any) => false === it instanceof CQNode.Module)) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
 
-  if (!isArray(cfg.prompt)) cfg.prompt = [cfg.prompt];
-  cfg.prompt = cfg.prompt.map(it => it === true ? it : `${it}`);
+  if (!isArray(cfg.atmeTrigger)) cfg.atmeTrigger = [cfg.atmeTrigger];
+  cfg.atmeTrigger = cfg.atmeTrigger.map(it => it === true ? it : `${it}`);
 
   cfg.workpath = `${cfg.workpath}`;
 

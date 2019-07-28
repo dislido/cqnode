@@ -18,11 +18,11 @@ CQNode.createRobot({
 
 > 预计行为：  
 > - [群聊]  
-> user < aaa >  
-> robot < @user 收到消息: aaa >  
+> __user__: aaa  
+> __robot__: `@user` 收到消息: aaa  
 > 
 > - [私聊]  
-> user < aaa >  
-> robot < 收到消息: aaa >  
+> __user__: aaa  
+> __robot__: 收到消息: aaa  
 
 [下一步 消息处理](/cqnode/tutorial/messagehandling)

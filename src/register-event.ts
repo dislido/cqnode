@@ -13,8 +13,8 @@ function checkAtme(this: Robot, data: CQEvent.Message) {
     return;
   }
   if (data.messageType !== 'group' && data.messageType !== 'discuss') return;
-  const prompt = this.config.prompt instanceof Array ? this.config.prompt : [this.config.prompt];
-  data.atme = prompt.some(p => {
+  const atmeTrigger = this.config.atmeTrigger instanceof Array ? this.config.atmeTrigger : [this.config.atmeTrigger];
+  data.atme = atmeTrigger.some(p => {
     if (p === true && data.msg.startsWith(`[CQ:at,qq=${data.selfId}]`)) {
       data.msg = data.msg.substring(`[CQ:at,qq=${data.selfId}]`.length).trim();
       return true;

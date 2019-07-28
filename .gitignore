@@ -1,6 +1,7 @@
 node_modules
 dist
 .cqnode
+cqnode
 /.*
 !/.gitignore
 !/.npmignore

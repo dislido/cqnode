@@ -17,7 +17,7 @@ interface CQNodeConfig {
     API_PORT: number;
     TIMEOUT: number;
   }
-  prompt: Array<string | true>;
+  atmeTrigger: Array<string | true>;
 }
 ```
 

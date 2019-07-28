@@ -60,8 +60,8 @@ CQNode配置对象，各属性默认值如下
    * 空字符串表示将任何消息当作at了本机器人
    * @type {string | true | Array<string | true>}
    */
-  prompt: true, // 将@本账号开头的消息作为atme
-  // prompt: '-', // 将-开头的消息作为atme消息
-  // prompt: [true, '-', '.'], // 设置多个atme判断规则
+  atmeTrigger: true, // 将@本账号开头的消息作为atme
+  // atmeTrigger: '-', // 将-开头的消息作为atme消息
+  // atmeTrigger: [true, '-', '.'], // 设置多个atme判断规则
 }
 ```

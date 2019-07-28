@@ -16,7 +16,7 @@ declare interface CQNodeConfig {
    * 默认使用QQ的at  
    * 空字符串表示将任何消息当作at了本机器人
    */
-  prompt: Array<string | true>;
+  atmeTrigger: Array<string | true>;
   connector: {
     LISTEN_PORT: number,
     API_PORT: number,
@@ -50,7 +50,7 @@ declare interface ConfigObject {
    * 默认使用QQ的at  
    * 空字符串表示将任何消息当作at了本机器人
    */
-  prompt?: string | true | Array<string | true>;
+  atmeTrigger?: string | true | Array<string | true>;
 }
 
 type EventResult = boolean | void | CQResponse.Response;
