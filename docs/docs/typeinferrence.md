@@ -29,7 +29,7 @@ class Repeat extends CQNode.Module {
 }
 ```
 
-## 使用`ModuleFactory`获得代码提示
+## 使用ModuleFactory获得代码提示
 [`ModuleFactory`](/cqnode/docs/modulefactory)不需要提供类型声明就能提供代码提示  
 
 ![ModuleFactory代码提示](/cqnode/assets/img/typeinferrence-3.png)
