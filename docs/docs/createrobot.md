@@ -6,7 +6,7 @@ CQNode.createRobot(ConfigObject);
 
 - `ConfigObject`: [`ConfigObject`](#configobject) CQNode的配置对象
 
-返回创建的机器人实例[`CQNode.Robot`](/cqnode/docs/robot)
+返回创建的机器人实例[`CQNode.Robot`](./robot)
 
 ## ConfigObject
 CQNode配置对象，各属性默认值如下

@@ -33,7 +33,7 @@ CQNode功能模块基类，通过继承此类来编写模块，在代码提示�
 >> [`getFilepath`](#modulegetfilepath) 获取本模块的数据文件目录  
 
 ## module.cqnode
-模块绑定的[CQNode.Robot](/cqnode/docs/robot)实例，仅在模块已启动时可访问，否则为`undefined`
+模块绑定的[CQNode.Robot](./robot)实例，仅在模块已启动时可访问，否则为`undefined`
 ```javascript
 class MyModule extends CQNode.Module {
   getCQNode() {

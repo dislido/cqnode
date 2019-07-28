@@ -1,12 +1,12 @@
 # 消息处理
 
-在开始本节前，建议先阅读[代码提示与类型检查](/cqnode/docs/typeinferrence)，代码提示对学习本章的内容有很大帮助
+在开始本节前，建议先阅读[代码提示与类型检查](../docs/typeinferrence)，代码提示对学习本章的内容有很大帮助
 
 ## 消息处理函数
 
 在上一节中，如果你不是复制代码而是手写`Repeat`模块的话，当你写完`onMessage`的`on`两个字母时，应该已经从代码提示中看到模块提供的消息处理函数列表了  
-如果没看到也没关系，你也可以在[CQNode.Module](/cqnode/docs/module)中查看消息处理函数的文档  
-本章我们以处理群消息为例，在[`onGroupMessage`](/cqnode/docs/module#moduleongroupmessage)中编写代码  
+如果没看到也没关系，你也可以在[CQNode.Module](../docs/module)中查看消息处理函数的文档  
+本章我们以处理群消息为例，在[`onGroupMessage`](../docs/module#moduleongroupmessage)中编写代码  
 
 ```javascript
 const CQNode = require('@dislido/CQNode');
@@ -44,7 +44,7 @@ class MyModule extends CQNode.Module {
 > __robot__: `@user1` 收到消息: 123   
 
 默认情况下，CQNode使用@作为`atme`判断条件，以@本机器人开头的消息的`atme`才会为`true`  
-可以在[配置](/cqnode/docs/createrobot#configobject)中修改`atmeTrigger`来修改`atme`判断条件
+可以在[配置](../docs/createrobot#configobject)中修改`atmeTrigger`来修改`atme`判断条件
 
 ```javascript
 class MyModule extends CQNode.Module {

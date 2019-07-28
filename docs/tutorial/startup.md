@@ -29,7 +29,7 @@
   }
 }
 ```
-即`port`端口`5700`，`post_url`为本机`8080`端口，这是CQNode的默认端口，如果你想更改它，可以参考[createRobot](/cqnode/docs/robot)中的`connector`项进行配置
+即`port`端口`5700`，`post_url`为本机`8080`端口，这是CQNode的默认端口，如果你想更改它，可以参考[createRobot](../docs/robot)中的`connector`项进行配置
 
 配置完毕后启动酷Q并启动HTTP API插件  
 
@@ -72,4 +72,4 @@ cqnode warn: 未能获取到运行信息，可能因为酷Q或HTTP API插件未�
 
 _你不需要一次次重启CQNode来测试配置是否正确，当你以正确的配置启动酷Q后，CQNode会自动继续未完成的初始化工作_
 
-[下一步 第一个模块](/cqnode/tutorial/firstmodule)
+[下一步 第一个模块](./firstmodule)

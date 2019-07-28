@@ -17,8 +17,8 @@ class Repeat extends CQNode.Module {
 }
 ```
 然后你就能得到对`data`和`resp`的代码提示  
-![resp代码提示](/cqnode/assets/img/typeinferrence-1.png)  
-![data代码提示](/cqnode/assets/img/typeinferrence-2.png)
+![resp代码提示](../assets/img/typeinferrence-1.png)  
+![data代码提示](../assets/img/typeinferrence-2.png)
 
 在ts文件中会简单一些
 ```typescript
@@ -30,6 +30,6 @@ class Repeat extends CQNode.Module {
 ```
 
 ## 使用ModuleFactory获得代码提示
-[`ModuleFactory`](/cqnode/docs/modulefactory)不需要提供类型声明就能提供代码提示  
+[`ModuleFactory`](./modulefactory)不需要提供类型声明就能提供代码提示  
 
-![ModuleFactory代码提示](/cqnode/assets/img/typeinferrence-3.png)
+![ModuleFactory代码提示](../assets/img/typeinferrence-3.png)

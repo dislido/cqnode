@@ -25,4 +25,4 @@ CQNode.createRobot({
 > __user__: aaa  
 > __robot__: 收到消息: aaa  
 
-[下一步 消息处理](/cqnode/tutorial/messagehandling)
+[下一步 消息处理](./messagehandling)

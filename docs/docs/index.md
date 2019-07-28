@@ -1,10 +1,10 @@
 # 文档
 
-> - [createRobot](/cqnode/docs/createrobot)
-> - [Module](/cqnode/docs/module)
-> - [ModuleFactory](/cqnode/docs/modulefactory)
+> - [createRobot](./createrobot)
+> - [Module](./module)
+> - [ModuleFactory](./modulefactory)
 
-> - [api](/cqnode/docs/api)
-> - [Robot](/cqnode/docs/robot)
+> - [api](./api)
+> - [Robot](./robot)
 
-> - [代码提示与类型检查](/cqnode/docs/typeinferrence)
+> - [代码提示与类型检查](./typeinferrence)
