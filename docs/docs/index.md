@@ -6,3 +6,5 @@
 
 > - [api](/cqnode/docs/api)
 > - [Robot](/cqnode/docs/robot)
+
+> - [代码提示与类型检查](/cqnode/docs/typeinferrence)

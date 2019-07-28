@@ -15,3 +15,14 @@ CQNode.createRobot({
 });
 ```
 运行`node index`启动CQNode，然后发消息给机器人吧
+
+> 预计行为：  
+> - [群聊]  
+> user < aaa >  
+> robot < @user 收到消息: aaa >  
+> 
+> - [私聊]  
+> user < aaa >  
+> robot < 收到消息: aaa >  
+
+[下一步 消息处理](/cqnode/tutorial/messagehandling)
