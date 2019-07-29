@@ -72,3 +72,10 @@ CQNode.createRobot({
 
 _在私聊中，`atme`总是为`true`_
 
+## 返回值
+消息处理函数有以下几种返回值
+- `true` 代表本模块可以处理此消息，阻止消息继续向其他模块传递
+- `false` 代表本模块不处理此消息，消息会继续向其他模块传递
+- `undefined` 同`false`
+- `CQNode.CQResponse.Response` 即消息处理函数的第二个参数`resp`，本模块可以直接用`response`返回消息处理结果，阻止消息继续向其他模块传递  
+  当你用到了`resp`，就返回这个

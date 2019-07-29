@@ -63,6 +63,7 @@ function registerPrivateMessageEvent(cqnode: Robot) {
     responseBody: {},
     send(message: string) { 
       cqnode.connect.api.sendPrivateMsg(data.userId, message);
+      return this;
     },
     reply(message, autoEscape = false) {
       this.responseBody.reply = message;
@@ -82,6 +83,7 @@ function registerGroupMessageEvent(cqnode: Robot) {
     responseBody: {},
     send(message, autoEscape?) {
       cqnode.connect.api.sendGroupMsg(data.groupId, message, autoEscape);
+      return this;
     },
     reply(message, autoEscape = false) {
       this.responseBody.reply = message;
@@ -90,6 +92,7 @@ function registerGroupMessageEvent(cqnode: Robot) {
     },
     sendPrivate(message: string, autoEscape?) {
       cqnode.connect.api.sendPrivateMsg(data.userId, message, autoEscape);
+      return this;
     },
     at(at = true) {
       this.responseBody.at_sender = at;
@@ -130,6 +133,7 @@ function registerDiscussMessageEvent(cqnode: Robot) {
     },
     send(message, autoEscape) {
       cqnode.connect.api.sendDiscussMsg(data.discussId, message, autoEscape);
+      return this;
     }
   });
   cqnode.on('DiscussMessage', (data: CQEvent.DiscussMessage, response: ServerResponse) => {
