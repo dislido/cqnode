@@ -17,11 +17,11 @@ CQNode.createRobot({
 运行`node index`启动CQNode，然后发消息给机器人吧
 
 > 预计行为：  
-> - [群聊]  
+> __[群聊]__  
 > __user__: aaa  
 > __robot__: `@user` 收到消息: aaa  
 > 
-> - [私聊]  
+> __[私聊]__  
 > __user__: aaa  
 > __robot__: 收到消息: aaa  
 

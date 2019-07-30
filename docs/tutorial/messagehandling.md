@@ -23,7 +23,6 @@ CQNode.createRobot({
 ```
 
 ## atme
-
 在群聊天中，通常只在需要时才会让机器人处理你的消息，机器人会忽略群成员间的正常聊天，此时可以用`atme`来判断一条消息是否需要处理
 
 ```javascript
@@ -37,7 +36,7 @@ class MyModule extends CQNode.Module {
 ```
 
 > 预计行为：  
-> - [群聊]  
+> __[群聊]__  
 > __user1__: aaa   
 > __user2__: bbb   
 > __user1__: `@robot` 123   
@@ -62,7 +61,7 @@ CQNode.createRobot({
 ```
 
 > 预计行为：  
-> - [群聊]  
+> __[群聊]__    
 > __user1__: aaa  
 > __user2__: bbb  
 > __user1__: `@robot` 123  
@@ -78,4 +77,47 @@ _在私聊中，`atme`总是为`true`_
 - `false` 代表本模块不处理此消息，消息会继续向其他模块传递
 - `undefined` 同`false`
 - `CQNode.CQResponse.Response` 即消息处理函数的第二个参数`resp`，本模块可以直接用`response`返回消息处理结果，阻止消息继续向其他模块传递  
-  当你用到了`resp`，就返回这个
+  当你用到了`resp`，就返回这个  
+_即使你用到了`resp`_
+
+```javascript
+class MyModule extends CQNode.Module {
+  onGroupMessage(data, resp) {
+    if (!data.atme) return false; // <- 这里也可以直接写成 return;
+
+    if (data.msg === '111') return true; // <- 不回复消息，但也不让消息流向下一个模块
+
+    return resp.reply(`收到消息: ${data.msg}`);
+  }
+}
+
+class NextModule extends CQNode.Module {
+  onGroupMessage(data, resp) {
+    return resp.reply(`MyModule不处理此消息`);
+  }
+}
+
+CQNode.createRobot({
+  modules: [
+    new MyModule(),
+    new NextModule(), // <- CQNode会按顺序传递消息
+  ],
+});
+```
+
+> 预计行为：  
+> __[群聊]__  
+> 
+> __user__: aaa  
+> __robot__: MyModule不处理此消息  
+>
+> __user__: 111  
+>
+> __user__: `@robot` 123  
+> __robot__: `@user` 收到消息: 123  
+
+## 冒泡
+利用冒泡机制，可以用`onMessage`一个消息处理函数来同时处理群聊和私聊  
+参考[消息处理](../docs/module#消息处理)
+
+[下一步 API](./api)
