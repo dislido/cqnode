@@ -50,7 +50,7 @@ class Notify extends CQNode.Module {
 
 ---
 
-所有的API都返回一个`Promise`，数据结构如下  
+所有api都返回一个`Promise<CQHTTP.ResponseData<T>>`类型的数据，结构如下  
 ```typescript
 interface ResponseData<T> {
   /**
