@@ -200,37 +200,37 @@ interface ResponseData<T> {
 > - `reason` 拒绝理由（仅在拒绝时有效）
 
 ## getLoginInfo
-> `getLoginInfo(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetLoginInfoResponseData](#cqhttpgetlogininforesponsedata)`>>`  
+> `getLoginInfo(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetLoginInfoResponseData`](#cqhttpgetlogininforesponsedata)`>>`  
 > 获取登录号信息
 
 ## getStrangerInfo
-> `getStrangerInfo(userId: number, noCache?: boolean): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetStrangerInfoResponseData](#cqhttpgetstrangerinforesponsedata)`>>`  
+> `getStrangerInfo(userId: number, noCache?: boolean): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetStrangerInfoResponseData`](#cqhttpgetstrangerinforesponsedata)`>>`  
 > 获取陌生人信息
 > - `user_id` QQ 号
 > - `no_cache` 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
 
 ## getGroupList
-> `getGroupList(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetGroupListResponseData](#cqhttpgetgrouplistresponsedata)`[]>>`  
+> `getGroupList(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetGroupListResponseData`](#cqhttpgetgrouplistresponsedata)`[]>>`  
 > 获取群列表
 
 ## getGroupMemberInfo
-> `getGroupMemberInfo(groupId: number, userId: number, noCache?: boolean): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetGroupMemberInfoResponseData](#cqhttpgetgroupmemberinforesponsedata)`>>`  
+> `getGroupMemberInfo(groupId: number, userId: number, noCache?: boolean): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetGroupMemberInfoResponseData`](#cqhttpgetgroupmemberinforesponsedata)`>>`  
 > 获取群成员信息
 > - `group_id` 群号
 > - `user_id` QQ 号
 > - `no_cache` 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
 
 ## getGroupMemberList
-> `getGroupMemberList(groupId: number): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetGroupMemberInfoResponseData](#cqhttpgetgroupmemberinforesponsedata)`[]>>`  
+> `getGroupMemberList(groupId: number): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetGroupMemberInfoResponseData`](#cqhttpgetgroupmemberinforesponsedata)`[]>>`  
 > 获取群成员列表
 > - `group_id` 群号
 
 ## getCookies
-> `getCookies(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetCookiesResponseData](#cqhttpgetcookiesresponsedata)`>>`  
+> `getCookies(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetCookiesResponseData`](#cqhttpgetcookiesresponsedata)`>>`  
 > 获取 cookies
 
 ## getCsrfToken
-> `getCsrfToken(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetCsrfTokenResponseData](#cqhttpgetcsrftokenresponsedata)`>>`  
+> `getCsrfToken(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetCsrfTokenResponseData`](#cqhttpgetcsrftokenresponsedata)`>>`  
 > 获取 csrf token
 
 ## getCredentials
@@ -238,36 +238,36 @@ interface ResponseData<T> {
 > 获取 qq 相关接口凭证 即 getCookies getCsrfToken 两个接口的合并。
 
 ## getRecord
-> `getRecord(file: string, outFormat: string, fullPath?: boolean): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetFileResponseData](#cqhttpgetfileresponsedata)`>>`  
+> `getRecord(file: string, outFormat: string, fullPath?: boolean): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetFileResponseData`](#cqhttpgetfileresponsedata)`>>`  
 > 获取语音 其实并不是真的获取语音，而是转换语音到指定的格式，然后返回语音文件名（data\record 目录下）。注意，要使用此接口，需要安装 酷Q 的 语音组件。
 > - `file` 收到的语音文件名（CQ 码的 file 参数），如 0B38145AA44505000B38145AA4450500.silk
 > - `out_format` 要转换到的格式，目前支持 mp3、amr、wma、m4a、spx、ogg、wav、flac
 > - `full_path` 是否返回文件的绝对路径（Windows 环境下建议使用，Docker 中不建议）
 
 ## getImage
-> `getImage(file: string): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetFileResponseData](#cqhttpgetfileresponsedata)`>>`  
+> `getImage(file: string): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetFileResponseData`](#cqhttpgetfileresponsedata)`>>`  
 > 获取图片
 > - `file` 收到的图片文件名（CQ 码的 file 参数），如 6B4DE3DFD1BD271E3297859D41C530F5.jpg
 
 ## canSendImage
-> `canSendImage(): Promise<CQHTTP.ResponseData<`[`CQHTTP.CanSendResponseData](#cqhttpcansendresponsedata)`>>`  
+> `canSendImage(): Promise<CQHTTP.ResponseData<`[`CQHTTP.CanSendResponseData`](#cqhttpcansendresponsedata)`>>`  
 > 检查是否可以发送图片
 
 ## canSendRecord
-> `canSendRecord(): Promise<CQHTTP.ResponseData<`[`CQHTTP.CanSendResponseData](#cqhttpcansendresponsedata)`>>`  
+> `canSendRecord(): Promise<CQHTTP.ResponseData<`[`CQHTTP.CanSendResponseData`](#cqhttpcansendresponsedata)`>>`  
 > 检查是否可以发送语音
 
 ## getStatus
-> `getStatus(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetStatusResponseData](#cqhttpgetstatusresponsedata)`>>`  
+> `getStatus(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetStatusResponseData`](#cqhttpgetstatusresponsedata)`>>`  
 > 获取插件运行状态  
 > _通常情况下建议只使用 online 和 good 这两个字段来判断运行状态，因为随着插件的更新，其它字段有可能频繁变化。  其中，online 字段的在线状态检测有两种方式，可通过 online_status_detection_method 配置项切换，默认通过读取 酷Q 日志数据库实现，可切换为 get_stranger_info 以通过测试陌生人查询接口的可用性来检测_
 
 ## getVersionInfo
-> `getVersionInfo(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetVersionInfoResponseData]  (#cqhttpgetversioninforesponsedata)`>>`  
+> `getVersionInfo(): Promise<CQHTTP.ResponseData<`[`CQHTTP.GetVersionInfoResponseData`](#cqhttpgetversioninforesponsedata)`>>`  
 > 获取 酷q 及 http api 插件的版本信息
 
 ## setRestartPlugin
-> `setRestartPlugin(delay?: number): Promise<CQHTTP.ResponseData<`[`CQHTTP.EmptyResponseData`]  (#cqhttpemptyresponsedata)`>>`  
+> `setRestartPlugin(delay?: number): Promise<CQHTTP.ResponseData<`[`CQHTTP.EmptyResponseData`](#cqhttpemptyresponsedata)`>>`  
 > 重启 http api 插件 由于重启插件同时需要重启 API 服务，这意味着当前的 API 请求会被中断，因此需在异步地重启插件，接口返回的 status 是 async。
 > - `delay` 要延迟的毫秒数，如果默认情况下无法重启，可以尝试设置延迟为 2000 左右
 
