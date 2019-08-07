@@ -32,9 +32,9 @@ class Notify extends CQNode.Module {
     if (!reg) return false;
 
     const time = parseInt(reg[1]) * 1000;
-    const str = regret[2];
+    const str = reg[2];
 
-    this.addNotify(time, () => this.cqnode.api.sendGroupMsg(`[CQ:at,qq=${userId}]设置的提醒：${str}`));
+    setTimeout(() => this.cqnode.api.sendGroupMsg(`[CQ:at,qq=${userId}]设置的提醒：${str}`), time);
     return resp.reply(`提醒设置完毕`);
   }
 };

@@ -20,7 +20,6 @@ const MyModule = new CQNode.ModuleFactory()
   })
   .createModule();
 ```
-此外，ModuleFactory也十分适合编写简短的小模块
 
 ## 消息处理
 `ModuleFactory`实现了class写法中所有的消息处理函数，可以链式调用

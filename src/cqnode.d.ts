@@ -72,7 +72,7 @@ declare interface ConfigObject {
 declare interface CQNodeInf {
   /** inf是否已获取 */
   inited: boolean,
-  /** api.getLoginInfo, 当前登录号信息 */
+  /** 当前登录号信息 */
   loginInfo: {
     nickname: string,
     userId: number,
