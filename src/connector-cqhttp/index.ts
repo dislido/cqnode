@@ -7,11 +7,13 @@ import { toUnderScoreCase, toCamelCase, decodeHtml } from '../util';
 /** CQHTTP设置 */
 declare interface CQHTTPConfig {
   /** 接收消息端口，对应post_url的端口 */
-  LISTEN_PORT?: number,
+  LISTEN_PORT?: number;
   /** 调用API端口，对应port */
-  API_PORT?: number,
+  API_PORT?: number;
   /** response超时时间 */
-  TIMEOUT?: number,
+  TIMEOUT?: number;
+  /** access_token */
+  ACCESS_TOKEN?: string;
 }
 
 export default class CQHttpConnector {
@@ -19,6 +21,7 @@ export default class CQHttpConnector {
   API_PORT: number;
   LISTEN_PORT: number;
   TIMEOUT: number;
+  ACCESS_TOKEN?: string;
   user: any;
   api: CQAPI = new Proxy(api, {
     get: (target: any, apiName: string) => (...args: any[]) => {
@@ -35,7 +38,11 @@ export default class CQHttpConnector {
    * @param cqnode cqnode实例
    * @param config CQHTTP设置
    */
-  constructor(public cqnode: Robot, { LISTEN_PORT = 8080, API_PORT = 5700, TIMEOUT = 10000 }: CQHTTPConfig = {}) {
+  constructor(public cqnode: Robot, {
+    LISTEN_PORT = 8080,
+    API_PORT = 5700,
+    TIMEOUT = 10000,
+    ACCESS_TOKEN }: CQHTTPConfig = {}) {
     this.server = http.createServer((req, resp) => {
       let data = '';
       req.on('data', (chunk) => {
@@ -48,6 +55,7 @@ export default class CQHttpConnector {
     this.API_PORT = API_PORT;
     this.LISTEN_PORT = LISTEN_PORT;
     this.TIMEOUT = TIMEOUT;
+    this.ACCESS_TOKEN = ACCESS_TOKEN;
   }
 
   /**
@@ -68,19 +76,29 @@ export default class CQHttpConnector {
    */
   requestAPI(path: string, body?: object) {
     const content = body ? JSON.stringify(body) : '';
+    const reqOpt: any = {
+      host: '127.0.0.1',
+      port: this.API_PORT,
+      path,
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'Content-length': content.length,
+      },
+    };
+    if (this.ACCESS_TOKEN) reqOpt.headers['Authorization'] = `Bearer ${this.ACCESS_TOKEN}`;
     return new Promise((resolve, reject) => {
       let data = '';
-      http.request({
-        host: '127.0.0.1',
-        port: this.API_PORT,
-        path,
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-          'Content-length': content.length,
-        },
-      }, (res) => {
+      http.request(reqOpt, (res) => {
         res.setEncoding('utf8');
+        switch (res.statusCode) {
+          case 400: throw new Error('cqnode: POST 请求的正文格式不正确');
+          case 401: throw new Error('cqnode: access token 未提供');
+          case 403: throw new Error('cqnode: access token 不正确');
+          case 404: throw new Error('cqnode: API 不存在');
+          case 406: throw new Error('cqnode: POST 请求的 Content-Type 不支持');
+        }
+
         res.on('data', (chunk) => {
           data += chunk;
         }).on('end', () => {

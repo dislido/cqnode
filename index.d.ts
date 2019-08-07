@@ -54,6 +54,7 @@ interface CQNodeConfig {
     LISTEN_PORT: number;
     API_PORT: number;
     TIMEOUT: number;
+    ACCESS_TOKEN?: string;
   }
 }
 
@@ -76,6 +77,8 @@ interface ConfigObject {
     API_PORT?: number;
     /** 事件处理超时时长（毫秒） */
     TIMEOUT?: number;
+    /** access_token */
+    ACCESS_TOKEN?: string;
   };
   /**
    * atme判断字符串  
