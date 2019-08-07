@@ -51,6 +51,8 @@ CQNode配置对象，各属性默认值如下
     API_PORT: 5700,
     /** 事件处理超时时长（毫秒） */
     TIMEOUT: 10000,
+    /** access_token */
+    ACCESS_TOKEN: undefined,
   },
 
   /**

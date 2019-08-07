@@ -14,7 +14,7 @@ export default class Robot extends EventEmitter {
   connect: CQHttpConnector;
   modules: CQNodeModule[];
   inf = { inited: false } as CQNodeInf;
-  api: CQAPI;
+  api: CQAPI & CQNodeAPI;
   private cqnodeAPI: CQNodeAPI = {
     groupRadio: (message: string, groups: number[] = this.inf.groupList.map(it => it.group_id), autoEscape?: boolean) => {
       return groups.map(group =>  this.api.sendGroupMsg(group, message, autoEscape));
@@ -32,7 +32,7 @@ export default class Robot extends EventEmitter {
         if (name in this.cqnodeAPI) return this.cqnodeAPI[name as keyof CQNodeAPI];
         return;
       },
-    });
+    }) as CQAPI & CQNodeAPI;
     this.init();
   }
 

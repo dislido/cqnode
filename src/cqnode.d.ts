@@ -1,6 +1,21 @@
 import { ServerResponse } from "http";
 import CQNodeModule from "./robot-module";
 
+declare namespace Module {
+  type EventResult = boolean | void | CQResponse.Response;
+  type EventReturns = EventResult | Promise<EventResult>;
+  /** 模块信息 */
+  interface Inf {
+    /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，‘/’会被替换为‘.’ */
+    packageName?: string;
+    /** 模块名 */
+    name?: string;
+    /** 模块帮助信息 */
+    help?: string;
+    /** 模块简介 */
+    description?: string;
+  }
+}
 declare interface CQNodeConfig {
   /** 管理员 */
   admin: number[];
@@ -53,9 +68,6 @@ declare interface ConfigObject {
   atmeTrigger?: string | true | Array<string | true>;
 }
 
-type EventResult = boolean | void | CQResponse.Response;
-type EventReturns = EventResult | Promise<EventResult>;
-
 /** CQNode运行时信息 */
 declare interface CQNodeInf {
   /** inf是否已获取 */
@@ -88,17 +100,6 @@ declare interface CQNodeInf {
   groupList: CQHTTP.GetGroupListResponseData[];
 }
 
-/** 模块信息 */
-declare interface CQNodeModuleInf {
-  /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，‘/’会被替换为‘.’ */
-  packageName?: string;
-  /** 模块名 */
-  name?: string;
-  /** 模块帮助信息 */
-  help?: string;
-  /** 模块简介 */
-  description?: string;
-}
 declare namespace CQResponse {
   /** CQNode事件响应对象 */
   interface Response {
@@ -214,7 +215,6 @@ declare namespace CQResponse {
   /** 心跳 */
   interface HeartbeatMeta extends Meta {}
 }
-
 
 declare interface CQNodeAPI {
   groupRadio: (message: string, groups?: number[], autoEscape?: boolean) => Promise<CQHTTP.ResponseData<CQHTTP.SendMsgResponseData>>[];
