@@ -4,7 +4,8 @@ import WorkpathManager from './workpath-manager';
 import { checkConfig } from './util';
 import CQHttpConnector from './connector-cqhttp';
 import CQNodeModule from './robot-module';
-import { CQNodeConfig, CQNodeInf, CQNodeAPI, ConfigObject } from './cqnode';
+import { CQNodeConfig, CQNodeInf, ConfigObject } from './cqnode';
+import registerEvent from './register-event';
 
 
 export default class Robot extends EventEmitter {
@@ -14,26 +15,18 @@ export default class Robot extends EventEmitter {
   connect: CQHttpConnector;
   modules: CQNodeModule[];
   inf = { inited: false } as CQNodeInf;
-  api: CQAPI & CQNodeAPI;
-  private cqnodeAPI: CQNodeAPI = {
-    groupRadio: (message: string, groups: number[] = this.inf.groupList.map(it => it.group_id), autoEscape?: boolean) => {
-      return groups.map(group =>  this.api.sendGroupMsg(group, message, autoEscape));
-    },
-  };
-
+  api: CQAPI;
   constructor(config: ConfigObject) {
     super();
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath);
     this.connect = new CQHttpConnector(this, this.config.connector);
-    this.api = new Proxy(this.connect.api, {
-      get: (target, name: keyof (CQAPI & CQNodeAPI)) => {
-        if (name in target) return target[name as keyof CQAPI];
-        if (name in this.cqnodeAPI) return this.cqnodeAPI[name as keyof CQNodeAPI];
-        return;
-      },
-    }) as CQAPI & CQNodeAPI;
+    this.api = this.connect.api;
+
     this.init();
+
+    this.setMaxListeners(13);
+    registerEvent(this);
   }
 
   async init() {

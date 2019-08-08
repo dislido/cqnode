@@ -43,7 +43,6 @@ const CQNode = require('@dislido/CQNode');
 
 CQNode.createRobot();
 
-
 // 如果你修改了默认的端口，那么你的代码应该是这样
 // 假设port = 6000, post_url = 8999
 /* 

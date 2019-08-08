@@ -1,6 +1,8 @@
 import Robot from "./cqnode-robot";
 import CQNodePlugin from "./robot-plugin";
 
+type HookName = 'onEventReceived' | 'onResponse' | 'onRequestAPI';
+
 export default class PluginManager {
   plugins: CQNodePlugin[] = [];
   constructor(public cqnode: Robot) {}
@@ -20,14 +22,15 @@ export default class PluginManager {
    * @param {string} hookName 钩子名
    * @param {object} data 钩子提供的参数数据对象，对该对象的修改会改变事件相关数据
    */
-  emit(hookName: string, data: object) {
-    // const plugins = this.plugins.filter(plugin => typeof plugin[hookName] === 'function');
-    // try {
-    //   if (plugins.find(plugin => (plugin[hookName])(data) === false)) return false;
-    // } catch (e) {
-    //   console.error(`[error]plugin error:(${hookName})`, e);
-    //   return false;
-    // }
-    // return true;
+  emit(hookName: HookName, data: object) {
+    const plugins = this.plugins.filter(plugin => plugin[hookName] === CQNodePlugin.prototype[hookName]);
+    try {
+      // @ts-ignore
+      if (plugins.find(plugin => (plugin[hookName])(data) === false)) return false;
+    } catch (e) {
+      console.error(`[error]plugin error:(${hookName})`, e);
+      return false;
+    }
+    return data;
   }
 };

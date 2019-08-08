@@ -306,7 +306,6 @@ declare namespace CQEvent {
     };
   }
 }
-
 /** CQHTTP API */
 declare namespace CQHTTP {
   interface ResponseData<T> {
@@ -689,6 +688,75 @@ declare interface CQAPI {
   cleanPluginLog(): Promise<CQHTTP.ResponseData<CQHTTP.EmptyResponseData>>;
 }
 
+
+declare namespace Module {
+  type EventResult = boolean | void | CQResponse.Response;
+  type EventReturns = EventResult | Promise<EventResult>;
+  /** 模块信息 */
+  interface Inf {
+    /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，`/`会被替换为`.` */
+    packageName: string;
+    /** 模块名 */
+    name: string;
+    /** 模块帮助信息 */
+    help: string;
+    /** 模块简介 */
+    description: string;
+  }
+}
+interface CQNodeConfig {
+  /** 管理员 */
+  admin: number[];
+  /** 加载的模块 */
+  modules: Module[];
+  /** @wip 加载的插件 */
+  // plugins: any[];
+  /** 数据文件夹 */
+  workpath: string;
+  /**
+   * atme判断字符串  
+   * 以该字符串开头的信息会被任务at了本机器人  
+   * 默认使用QQ的at  
+   * 空字符串表示将任何消息当作at了本机器人
+   */
+  atmeTrigger: Array<string | true>;
+  connector: {
+    LISTEN_PORT: number;
+    API_PORT: number;
+    TIMEOUT: number;
+    ACCESS_TOKEN?: string;
+  }
+}
+interface ConfigObject {
+  /** 
+   * 管理员
+   */
+  admin?: number | number[];
+  /** 加载的模块 */
+  modules?: Module[];
+  /** 加载的插件 */
+  // plugins?: any[];
+  /** 数据文件夹 */
+  workpath?: string;
+  /** HTTP API 连接配置 */
+  connector?: {
+    /** 事件监听接口 */
+    LISTEN_PORT?: number;
+    /** HTTP API接口 */
+    API_PORT?: number;
+    /** 事件处理超时时长（毫秒） */
+    TIMEOUT?: number;
+    /** access_token */
+    ACCESS_TOKEN?: string;
+  };
+  /**
+   * atme判断字符串  
+   * 以该字符串开头的信息会被任务at了本机器人  
+   * 默认使用QQ的at  
+   * 空字符串表示将任何消息当作at了本机器人
+   */
+  atmeTrigger?: string | true | Array<string | true>;
+}
 /** CQNode运行时信息 */
 interface CQNodeInf {
   /** inf是否已获取 */
@@ -721,84 +789,6 @@ interface CQNodeInf {
   /** 群列表 */
   groupList: CQHTTP.GetGroupListResponseData[];
 }
-
-interface CQNodeConfig {
-  /** 管理员 */
-  admin: number[];
-  /** 加载的模块 */
-  modules: Module[];
-  /** @wip 加载的插件 */
-  // plugins: any[];
-  /** 数据文件夹 */
-  workpath: string;
-  /**
-   * atme判断字符串  
-   * 以该字符串开头的信息会被任务at了本机器人  
-   * 默认使用QQ的at  
-   * 空字符串表示将任何消息当作at了本机器人
-   */
-  atmeTrigger: Array<string | true>;
-  connector: {
-    LISTEN_PORT: number;
-    API_PORT: number;
-    TIMEOUT: number;
-    ACCESS_TOKEN?: string;
-  }
-}
-
-interface ConfigObject {
-  /** 
-   * 管理员
-   */
-  admin?: number | number[];
-  /** 加载的模块 */
-  modules?: Module[];
-  /** 加载的插件 */
-  // plugins?: any[];
-  /** 数据文件夹 */
-  workpath?: string;
-  /** HTTP API 连接配置 */
-  connector?: {
-    /** 事件监听接口 */
-    LISTEN_PORT?: number;
-    /** HTTP API接口 */
-    API_PORT?: number;
-    /** 事件处理超时时长（毫秒） */
-    TIMEOUT?: number;
-    /** access_token */
-    ACCESS_TOKEN?: string;
-  };
-  /**
-   * atme判断字符串  
-   * 以该字符串开头的信息会被任务at了本机器人  
-   * 默认使用QQ的at  
-   * 空字符串表示将任何消息当作at了本机器人
-   */
-  atmeTrigger?: string | true | Array<string | true>;
-}
-
-interface CQNodeAPI {
-  /**
-   * 群广播消息，将消息发送给指定的所有群
-   * @param message 要发送的内容
-   * @param groups 群号数组，默认为群列表中的所有群
-   * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码），只在 message 字段是字符串时有效
-   * @returns 每个消息的发送结果的Promise数组
-   */
-  groupRadio: (message: string, groups?: number[], autoEscape?: boolean) => Promise<CQHTTP.ResponseData<CQHTTP.SendMsgResponseData>>[];
-}
-
-interface Robot {
-  /** 已加载的模块 */
-  modules: Module[];
-  /** CQ HTTP API */
-  api: CQAPI & CQNodeAPI;
-  /** CQNode运行时信息 */
-  inf: CQNodeInf;
-  /** CQNode配置 */
-  config: CQNodeConfig;
-}
-
 /** CQNode事件响应对象 */
 declare namespace CQResponse {
   /** CQNode事件响应对象 */
@@ -915,22 +905,16 @@ declare namespace CQResponse {
   interface HeartbeatMeta extends Meta {}
 }
 
-declare namespace Module {
-  type EventResult = boolean | void | CQResponse.Response;
-  type EventReturns = EventResult | Promise<EventResult>;
-  /** 模块信息 */
-  interface Inf {
-    /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，`/`会被替换为`.` */
-    packageName: string;
-    /** 模块名 */
-    name: string;
-    /** 模块帮助信息 */
-    help: string;
-    /** 模块简介 */
-    description: string;
-  }
+interface Robot {
+  /** 已加载的模块 */
+  modules: Module[];
+  /** CQ HTTP API */
+  api: CQAPI;
+  /** CQNode运行时信息 */
+  inf: CQNodeInf;
+  /** CQNode配置 */
+  config: CQNodeConfig;
 }
-
 /** CQNode模块 */
 export class Module {
   /** 模块绑定的CQNode */
@@ -976,10 +960,7 @@ export class Module {
   /** 获取本模块的数据文件目录 */
   getFilepath(): string;
 }
-
-
 export function createRobot(config: ConfigObject): Robot;
-
 export class ModuleFactory {
   constructor(config?: { noDuplicate: boolean });
   createConstructor(inf?: Module.Inf, initfn?: (...args: any) => void): typeof Module;

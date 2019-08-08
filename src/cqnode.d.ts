@@ -215,7 +215,3 @@ declare namespace CQResponse {
   /** 心跳 */
   interface HeartbeatMeta extends Meta {}
 }
-
-declare interface CQNodeAPI {
-  groupRadio: (message: string, groups?: number[], autoEscape?: boolean) => Promise<CQHTTP.ResponseData<CQHTTP.SendMsgResponseData>>[];
-}

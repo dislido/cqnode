@@ -49,7 +49,7 @@ export default class CQHttpConnector {
         data += chunk;
       }).on('end', () => {
         resp.setHeader('Content-Type', 'application/json');
-        this.onMsgReceived(toCamelCase(JSON.parse(decodeHtml(data))) as CQEvent.Event, resp);
+        this.onEventReceived(toCamelCase(JSON.parse(decodeHtml(data))) as CQEvent.Event, resp);
       });
     }).listen(LISTEN_PORT);
     this.API_PORT = API_PORT;
@@ -59,11 +59,11 @@ export default class CQHttpConnector {
   }
 
   /**
-   * 接收消息事件
-   * @param {Object} event 接收到的消息对象
+   * 接收事件
+   * @param {Object} event 接收到的事件对象
    * @param {http.ServerResponse} resp 响应对象
    */
-  onMsgReceived(event: CQEvent.Event, resp: http.ServerResponse) {
+  onEventReceived(event: CQEvent.Event, resp: http.ServerResponse) {
     this.cqnode.emit(eventType.assertEventName(event), toCamelCase(event), resp);
     if (this.TIMEOUT) setTimeout(() => !resp.finished && resp.end(), this.TIMEOUT);
   }

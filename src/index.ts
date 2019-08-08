@@ -7,10 +7,7 @@ import ModuleFactory from './module-factory';
 
 const CQNode = {
   createRobot(config: CQNodeConfig) {
-    const cqnode = new Robot(config);
-    cqnode.setMaxListeners(13);
-    registerEvent(cqnode);
-    return cqnode;
+    return new Robot(config);
   },
   Module: Module,
   ModuleFactory,
