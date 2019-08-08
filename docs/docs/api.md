@@ -61,7 +61,6 @@ interface ResponseData<T> {
 >> [`setRestartPlugin`](#setrestartplugin) 重启http api插件  
 >> [`cleanDataDir`](#cleandatadir) 清理数据目录  
 >> [`cleanPluginLog`](#cleanpluginlog) 清理插件日志  
->> [`groupRadio`](#groupradio) 群广播消息，将消息发送给指定的所有群 
 >
 > 返回数据 
 >> [`CQHTTP.SendMsgResponseData`](#cqhttpsendmsgresponsedata)   
@@ -279,13 +278,6 @@ interface ResponseData<T> {
 ## cleanPluginLog
 > `cleanPluginLog(): Promise<CQHTTP.ResponseData<`[`CQHTTP.EmptyResponseData`](#cqhttpemptyresponsedata)`>>`  
 > 清理插件日志 用于清空插件的日志文件。
-
-## groupRadio
-> `groupRadio(message: string, groups?: number[], autoEscape?: boolean): Promise<CQHTTP.ResponseData<`[`CQHTTP.SendMsgResponseData`](#cqhttpsendmsgresponsedata)`>>[]`  
-> 群广播消息，将消息发送给指定的所有群
-> - `message` 要发送的内容
-> - `groups` 群号数组，默认为群列表中的所有群
-> - `autoEscape` 消息内容是否作为纯文本发送（即不解析 CQ 码），只在 message 字段是字符串时有效
 
 ## CQHTTP.SendMsgResponseData
 > `message_id`: `number` 消息ID  
