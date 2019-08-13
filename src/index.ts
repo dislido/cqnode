@@ -1,6 +1,5 @@
 import Robot from './cqnode-robot';
 import Module from './robot-module';
-import registerEvent from './register-event';
 import { CQNodeConfig } from './cqnode';
 import ModuleFactory from './module-factory';
 
