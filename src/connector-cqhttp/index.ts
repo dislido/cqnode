@@ -1,7 +1,7 @@
 import * as http from 'http';
 import Robot from '../cqnode-robot';
 import api from './api';
-import * as eventType from './event-type';
+import { assertEventName } from './event-type';
 import { toUnderScoreCase, toCamelCase, decodeHtml } from '../util';
 
 /** CQHTTP设置 */
@@ -64,7 +64,11 @@ export default class CQHttpConnector {
    * @param {http.ServerResponse} resp 响应对象
    */
   onEventReceived(event: CQEvent.Event, resp: http.ServerResponse) {
-    this.cqnode.emit(eventType.assertEventName(event), toCamelCase(event), resp);
+    let eventName = assertEventName(event);
+    let eventObj = toCamelCase(event) as CQEvent.Event;
+    const plgret = this.cqnode.pluginManager.emit('onEventReceived', { eventName, event: eventObj });
+    if (!plgret) return;
+    this.cqnode.emit(plgret.eventName, plgret.event, resp);
     if (this.TIMEOUT) setTimeout(() => !resp.finished && resp.end(), this.TIMEOUT);
   }
 

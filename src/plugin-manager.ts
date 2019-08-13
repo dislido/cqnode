@@ -1,7 +1,6 @@
 import Robot from "./cqnode-robot";
 import CQNodePlugin from "./robot-plugin";
-
-type HookName = 'onEventReceived' | 'onResponse' | 'onRequestAPI';
+import { Plugin } from './cqnode';
 
 export default class PluginManager {
   plugins: CQNodePlugin[] = [];
@@ -12,7 +11,8 @@ export default class PluginManager {
    * @param {object} plugin 插件对象
    */
   registerPlugin(plugin: CQNodePlugin) {
-    if (plugin.onRegister) plugin.onRegister(this.cqnode);
+    plugin.cqnode = this.cqnode;
+    plugin.onRegister();
     this.plugins.push(plugin);
   }
 
@@ -22,13 +22,12 @@ export default class PluginManager {
    * @param {string} hookName 钩子名
    * @param {object} data 钩子提供的参数数据对象，对该对象的修改会改变事件相关数据
    */
-  emit(hookName: HookName, data: object) {
-    const plugins = this.plugins.filter(plugin => plugin[hookName] === CQNodePlugin.prototype[hookName]);
+  emit<T extends Plugin.HookName>(hookName: T, data: Plugin.HookDataMap[T]) {
+    const plugins = this.plugins.filter(plugin => plugin[hookName] !== CQNodePlugin.prototype[hookName]);
     try {
-      // @ts-ignore
-      if (plugins.find(plugin => (plugin[hookName])(data) === false)) return false;
+      if (plugins.find(plugin => plugin[hookName](data) === false)) return false;
     } catch (e) {
-      console.error(`[error]plugin error:(${hookName})`, e);
+      console.error(`[error]plugin error:(${hookName}) `, e);
       return false;
     }
     return data;

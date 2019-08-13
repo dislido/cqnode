@@ -1,5 +1,6 @@
-import { ServerResponse } from "http";
-import CQNodeModule from "./robot-module";
+import { ServerResponse } from 'http';
+import CQNodeModule from './robot-module';
+import Plugin from './robot-plugin';
 
 declare namespace Module {
   type EventResult = boolean | void | CQResponse.Response;
@@ -14,6 +15,21 @@ declare namespace Module {
     help?: string;
     /** 模块简介 */
     description?: string;
+  }
+}
+declare namespace Plugin {
+  type HookName = Exclude<keyof Plugin, 'onRegister' | 'cqnode'>;
+  type HookDataMap  = {
+    onEventReceived: {
+      eventName: string;
+      event: CQEvent.Event;
+    };
+    onResponse: {
+  
+    };
+    onRequestAPI: {
+  
+    };
   }
 }
 declare interface CQNodeConfig {
@@ -215,3 +231,4 @@ declare namespace CQResponse {
   /** 心跳 */
   interface HeartbeatMeta extends Meta {}
 }
+

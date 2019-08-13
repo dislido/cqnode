@@ -20,6 +20,7 @@ export default class Robot extends EventEmitter {
     super();
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath);
+    this.pluginManager = new PluginManager(this);
     this.connect = new CQHttpConnector(this, this.config.connector);
     this.api = this.connect.api;
 
@@ -41,8 +42,8 @@ export default class Robot extends EventEmitter {
     } else {
       this.inf.inited = true;
     }
-    // this.pluginManager = new PluginManager(this);
-    // this.config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
+
+    this.config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
 
     this.modules = this.config.modules;
     this.modules.forEach((modRef, index) => this.loadModule(index));

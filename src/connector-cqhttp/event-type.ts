@@ -1,45 +1,75 @@
-const assertField: unique symbol = Symbol('assertFieldSymbol');
-interface EventTypeTree {
-  [assertField] : string;
-  [key: string]: string | EventTypeTree;
+export function isMessage(event: CQEvent.Event): event is CQEvent.Message {
+  return event.postType === 'message';
 }
-const EventTypeTree = {
-  [assertField]: 'postType',
-  message: {
-    [assertField]: 'messageType',
-    private: 'PrivateMessage',
-    group: 'GroupMessage',
-    discuss: 'DiscussMessage',
-  },
-  notice: {
-    [assertField]: 'noticeType',
-    group_upload: 'GroupUploadNotice',
-    group_admin: 'GroupAdminNotice',
-    group_decrease: 'GroupDecreaseNotice',
-    group_increase: 'GroupIncreaseNotice',
-    friend_add: 'FriendAddNotice',
-  },
-  request: {
-    [assertField]: 'requestType',
-    friend: 'FriendRequest',
-    group: 'GroupRequest',
-  },
-  meta_event: {
-    [assertField]: 'metaEventType',
-    lifecycle: 'LifecycleMeta',
-    heartbeat: 'HeartbeatMeta',
-  }
-};
-
-function traversalMsgTypeAssertTree (event: CQEvent.Event, obj: EventTypeTree): string {
-  const fieldName = obj[assertField];
-  // @ts-ignore
-  const fieldValue = event[fieldName];
-  if (!fieldValue) throw new Error(`CQNode Error: unknown Event:\n${JSON.stringify(event)}`);
-  if (typeof obj[fieldValue] === 'string') return obj[fieldValue] as string;
-  return traversalMsgTypeAssertTree(event, obj[fieldValue] as EventTypeTree);
+export function isNotice(event: CQEvent.Event): event is CQEvent.Notice {
+  return event.postType === 'notice';
+}
+export function isRequest(event: CQEvent.Event): event is CQEvent.Request {
+  return event.postType === 'request';
+}
+export function isMetaEvent(event: CQEvent.Event): event is CQEvent.Meta {
+  return event.postType === 'meta_event';
 }
 
-export function assertEventName(event: CQEvent.Event) {
-  return traversalMsgTypeAssertTree(event, EventTypeTree);
+export function isPrivateMessage(event: CQEvent.Event): event is CQEvent.PrivateMessage {
+  return isMessage(event) && event.messageType === 'private';
+}
+export function isDiscussMessage(event: CQEvent.Event): event is CQEvent.DiscussMessage {
+  return isMessage(event) && event.messageType === 'discuss';
+}
+export function isGroupMessage(event: CQEvent.Event): event is CQEvent.GroupMessage {
+  return isMessage(event) && event.messageType === 'group';
+}
+
+export function isGroupUploadNotice(event: CQEvent.Event): event is CQEvent.GroupUploadNotice {
+  return isNotice(event) && event.noticeType === 'group_upload';
+}
+export function isGroupAdminNotice(event: CQEvent.Event): event is CQEvent.GroupAdminNotice {
+  return isNotice(event) && event.noticeType === 'group_admin';
+}
+export function isGroupDecreaseNotice(event: CQEvent.Event): event is CQEvent.GroupDecreaseNotice {
+  return isNotice(event) && event.noticeType === 'group_decrease';
+}
+export function isGroupIncreaseNotice(event: CQEvent.Event): event is CQEvent.GroupIncreaseNotice {
+  return isNotice(event) && event.noticeType === 'group_increase';
+}
+export function isFriendAddNotice(event: CQEvent.Event): event is CQEvent.FriendAddNotice {
+  return isNotice(event) && event.noticeType === 'friend_add';
+}
+
+export function isFriendRequest(event: CQEvent.Event): event is CQEvent.FriendRequest {
+  return isRequest(event) && event.requestType === 'friend';
+}
+export function isGroupRequest(event: CQEvent.Event): event is CQEvent.GroupRequest {
+  return isRequest(event) && event.requestType === 'group';
+}
+
+export function isLifecycleMeta(event: CQEvent.Event): event is CQEvent.LifecycleMeta {
+  return isMetaEvent(event) && event.metaEventType === 'lifecycle';
+}
+export function isHeartbeatMeta(event: CQEvent.Event): event is CQEvent.HeartbeatMeta {
+  return isMetaEvent(event) && event.metaEventType === 'heartbeat';
+}
+
+type eventName = 'PrivateMessage' | 'DiscussMessage' |
+'GroupMessage' | 'GroupUploadNotice' | 'GroupAdminNotice' | 'GroupDecreaseNotice' | 'GroupIncreaseNotice' |
+'FriendAddNotice' | 'FriendRequest' | 'GroupRequest' | 'LifecycleMeta' | 'HeartbeatMeta';
+
+export function assertEventName(event: CQEvent.Event): eventName {
+  const eventType = [
+    isGroupMessage,
+    isPrivateMessage,
+    isDiscussMessage,
+    isHeartbeatMeta,
+    isGroupUploadNotice,
+    isGroupAdminNotice,
+    isGroupDecreaseNotice,
+    isGroupIncreaseNotice,
+    isFriendAddNotice,
+    isFriendRequest,
+    isGroupRequest,
+    isLifecycleMeta,
+  ].find(it => it(event));
+  if (!eventType) throw new Error(`CQNode Error: unknown Event:\n${JSON.stringify(event)}`);
+  return eventType.name.substr(2) as eventName;
 }

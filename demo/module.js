@@ -1,7 +1,6 @@
 /**
  * 编写一个模块
  */
-
 const CQNode = require('..');
 
 class MyModule extends CQNode.Module {

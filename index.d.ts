@@ -960,24 +960,104 @@ export class Module {
   /** 获取本模块的数据文件目录 */
   getFilepath(): string;
 }
+/** CQNode插件 */
+export class Plugin {
+  onRegister(): void;
+}
+/**
+ * 创建机器人
+ * @param config 机器人配置
+ */
 export function createRobot(config: ConfigObject): Robot;
+/** 创建模块 */
 export class ModuleFactory {
   constructor(config?: { noDuplicate: boolean });
+  /** 创建模块 */
   createConstructor(inf?: Module.Inf, initfn?: (...args: any) => void): typeof Module;
-  onGroupMessage(fn: (data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage) => Module.EventReturns): ModuleFactory;
+  /** 模块启动 */
   onRun(fn: () => void): ModuleFactory;
+  /** 模块停止 */
   onStop(fn: () => void): ModuleFactory;
+  /** 收到事件 */
   onEvent(fn: (data: CQEvent.Event, resp: CQResponse.Response) => Module.EventReturns): ModuleFactory;
+  /** 收到消息 */
   onMessage(fn: (data: CQEvent.Message, resp: CQResponse.Message) => Module.EventReturns): ModuleFactory;
+  /** 收到私聊消息 */
   onPrivateMessage(fn: (data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage) => Module.EventReturns): ModuleFactory;
+  /** 收到群消息 */
+  onGroupMessage(fn: (data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage) => Module.EventReturns): ModuleFactory;
+  /** 收到讨论组消息 */
   onDiscussMessage(fn: (data: CQEvent.DiscussMessage, resp: CQResponse.DiscussMessage) => Module.EventReturns): ModuleFactory;
+  /** 收到通知 */
   onNotice(fn: (data: CQEvent.Notice, resp: CQResponse.Empty) => Module.EventReturns): ModuleFactory;
+  /** 收到群文件上传通知 */
   onGroupUploadNotice(fn: (data: CQEvent.GroupUploadNotice, resp: CQResponse.Empty) => Module.EventReturns): ModuleFactory;
+  /** 收到群管理员变动通知 */
   onGroupAdminNotice(fn: (data: CQEvent.GroupAdminNotice, resp: CQResponse.Empty) => Module.EventReturns): ModuleFactory;
+  /** 收到群成员减少通知 */
   onGroupDecreaseNotice(fn: (data: CQEvent.GroupDecreaseNotice, resp: CQResponse.Empty) => Module.EventReturns): ModuleFactory;
+  /** 收到群成员增加通知 */
   onGroupIncreaseNotice(fn: (data: CQEvent.GroupIncreaseNotice, resp: CQResponse.Empty) => Module.EventReturns): ModuleFactory;
+  /** 收到好友添加通知 */
   onFriendAddNotice(fn: (data: CQEvent.FriendAddNotice, resp: CQResponse.Empty) => Module.EventReturns): ModuleFactory;
+  /** 收到请求 */
   onRequest(fn: (data: CQEvent.Request, resp: CQResponse.Request) => Module.EventReturns): ModuleFactory;
+  /** 收到加好友请求 */
   onFriendRequest(fn: (data: CQEvent.FriendRequest, resp: CQResponse.FriendRequest) => Module.EventReturns): ModuleFactory;
+  /** 收到加群请求 */
   onGroupRequest(fn: (data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest) => Module.EventReturns): ModuleFactory;
+}
+
+/**
+ * 工具库
+ */
+export namespace util {
+  /**
+   * 事件类型判断工具
+   */
+  namespace eventType {
+    type eventName = 'PrivateMessage' | 'DiscussMessage' | 'GroupMessage' | 'GroupUploadNotice' |
+      'GroupAdminNotice' | 'GroupDecreaseNotice' | 'GroupIncreaseNotice' | 'FriendAddNotice' |
+      'FriendRequest' | 'GroupRequest' | 'LifecycleMeta' | 'HeartbeatMeta';
+    /** 是否是消息事件 */
+    function isMessage(event: CQEvent.Event): event is CQEvent.Message;
+    /** 是否是通知事件 */
+    function isNotice(event: CQEvent.Event): event is CQEvent.Notice;
+    /** 是否是请求事件 */
+    function isRequest(event: CQEvent.Event): event is CQEvent.Request;
+    /** 是否是元事件 */
+    function isMetaEvent(event: CQEvent.Event): event is CQEvent.Meta;
+    
+    /** 是否是私聊消息事件 */
+    function isPrivateMessage(event: CQEvent.Event): event is CQEvent.PrivateMessage;
+    /** 是否是讨论组消息事件 */
+    function isDiscussMessage(event: CQEvent.Event): event is CQEvent.DiscussMessage;
+    /** 是否是群消息事件 */
+    function isGroupMessage(event: CQEvent.Event): event is CQEvent.GroupMessage;
+    
+    /** 是否是群文件上传通知事件 */
+    function isGroupUploadNotice(event: CQEvent.Event): event is CQEvent.GroupUploadNotice;
+    /** 是否是群管理员变动通知事件 */
+    function isGroupAdminNotice(event: CQEvent.Event): event is CQEvent.GroupAdminNotice;
+    /** 是否是群成员减少通知事件 */
+    function isGroupDecreaseNotice(event: CQEvent.Event): event is CQEvent.GroupDecreaseNotice;
+    /** 是否是群成员增加通知事件 */
+    function isGroupIncreaseNotice(event: CQEvent.Event): event is CQEvent.GroupIncreaseNotice;
+    /** 是否是好友添加通知事件 */
+    function isFriendAddNotice(event: CQEvent.Event): event is CQEvent.FriendAddNotice;
+    
+    /** 是否是加好友请求事件 */
+    function isFriendRequest(event: CQEvent.Event): event is CQEvent.FriendRequest;
+    /** 是否是加群请求事件 */
+    function isGroupRequest(event: CQEvent.Event): event is CQEvent.GroupRequest;
+    
+    /** 是否是生命周期元事件 */
+    function isLifecycleMeta(event: CQEvent.Event): event is CQEvent.LifecycleMeta;
+    /** 是否是心跳元事件 */
+    function isHeartbeatMeta(event: CQEvent.Event): event is CQEvent.HeartbeatMeta;
+    
+    /** 获取事件名 */
+    function assertEventName(event: CQEvent.Event): eventName;
+    
+  }
 }
