@@ -15,6 +15,7 @@
     "type": "git",
     "url": "https://github.com/dislido/cqnode"
   },
+  "types": "index",
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^11.13.5"

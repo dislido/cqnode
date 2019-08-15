@@ -15,12 +15,13 @@ class MyModule extends CQNode.Module {
   }
   /**
    * 添加这些类型声明可以获得代码提示，如果你使用TypeScript会更加方便
-   * @param {CQNode.CQEvent.Message} data 
+   * @param {CQNode.CQEvent.Event} data 
    * @param {CQNode.CQResponse.Message} resp 
    */
   onMessage(data, resp) {
     return resp.reply(`received: ${data.msg}`);
   }
+  
   /**
    * @param {CQNode.CQEvent.GroupMessage} data 
    * @param {CQNode.CQResponse.GroupMessage} resp 
