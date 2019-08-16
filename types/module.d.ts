@@ -1,5 +1,5 @@
 import { CQResponse } from './response';
-import { CQEvent } from './cq-http/events';
+import { CQEvent } from './cq-http';
 import { Robot } from './robot';
 
 declare namespace Module {
@@ -8,20 +8,20 @@ declare namespace Module {
   /** 模块信息 */
   interface Inf {
     /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，`/`会被替换为`.` */
-    packageName: string;
+    packageName?: string;
     /** 模块名 */
-    name: string;
+    name?: string;
     /** 模块帮助信息 */
-    help: string;
+    help?: string;
     /** 模块简介 */
-    description: string;
+    description?: string;
   }
 }
 
 /** CQNode模块 */
 declare class Module {
   /** 模块绑定的CQNode */
-  cqnode: Robot;
+  cqnode?: Robot;
   /** 模块是否处于运行状态 */
   isRunning: boolean;
   /** 模块信息 */

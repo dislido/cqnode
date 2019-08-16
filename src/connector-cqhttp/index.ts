@@ -3,6 +3,7 @@ import Robot from '../cqnode-robot';
 import api from './api';
 import { assertEventName } from './event-type';
 import { toUnderScoreCase, toCamelCase, decodeHtml } from '../util';
+import { CQEvent, CQAPI } from '../../types/cq-http';
 
 /** CQHTTP设置 */
 declare interface CQHTTPConfig {

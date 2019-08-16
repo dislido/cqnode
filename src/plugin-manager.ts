@@ -1,6 +1,5 @@
 import Robot from "./cqnode-robot";
-import CQNodePlugin from "./robot-plugin";
-import { Plugin } from './cqnode';
+import CQNodePlugin, { HookName } from "./robot-plugin";
 
 export default class PluginManager {
   plugins: CQNodePlugin[] = [];
@@ -22,10 +21,10 @@ export default class PluginManager {
    * @param {string} hookName 钩子名
    * @param {object} data 钩子提供的参数数据对象，对该对象的修改会改变事件相关数据
    */
-  emit<T extends Plugin.HookName>(hookName: T, data: Plugin.HookDataMap[T]) {
+  emit<T extends HookName>(hookName: T, data: Parameters<CQNodePlugin[T]>[0]) {
     const plugins = this.plugins.filter(plugin => plugin[hookName] !== CQNodePlugin.prototype[hookName]);
     try {
-      if (plugins.find(plugin => plugin[hookName](data) === false)) return false;
+      if (plugins.find(plugin => plugin[hookName](data as any) === false)) return false;
     } catch (e) {
       console.error(`[error]plugin error:(${hookName}) `, e);
       return false;

@@ -1,5 +1,7 @@
-import { CQResponse, Module } from './cqnode';
 import CQNodeModule from './robot-module';
+import { CQEvent } from '../types/cq-http';
+import { CQResponse } from '../types/response';
+import { Module } from '../types/module';
 
 export default class ModuleFactory {
   proto: any = {};

@@ -1,14 +1,14 @@
-import * as EventEmitter from 'events';
+import * as event from 'events';
 import PluginManager from './plugin-manager';
 import WorkpathManager from './workpath-manager';
 import { checkConfig } from './util';
 import CQHttpConnector from './connector-cqhttp';
 import CQNodeModule from './robot-module';
-import { CQNodeConfig, CQNodeInf, ConfigObject } from './cqnode';
 import registerEvent from './register-event';
+import { CQAPI, CQEvent } from '../types/cq-http';
+import { CQNodeConfig, CQNodeInf, ConfigObject } from '../types/robot';
 
-
-export default class Robot extends EventEmitter {
+export default class Robot extends event.EventEmitter {
   config: CQNodeConfig;
   workpathManager: WorkpathManager;
   pluginManager: PluginManager;
@@ -30,7 +30,7 @@ export default class Robot extends EventEmitter {
     registerEvent(this);
   }
 
-  async init() {
+  private async init() {
     console.log('cqnode: 初始化中......');
     const isInfInited = await this.initInf();
     if (!isInfInited) {

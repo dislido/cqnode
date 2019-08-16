@@ -1,3 +1,4 @@
+import { EventName, CQEvent } from './cq-http';
 /**
  * 工具库
  */
@@ -6,9 +7,7 @@ export namespace util {
    * 事件类型判断工具
    */
   namespace eventType {
-    type eventName = 'PrivateMessage' | 'DiscussMessage' | 'GroupMessage' | 'GroupUploadNotice' |
-      'GroupAdminNotice' | 'GroupDecreaseNotice' | 'GroupIncreaseNotice' | 'FriendAddNotice' |
-      'FriendRequest' | 'GroupRequest' | 'LifecycleMeta' | 'HeartbeatMeta';
+
     /** 是否是消息事件 */
     function isMessage(event: CQEvent.Event): event is CQEvent.Message;
     /** 是否是通知事件 */
@@ -47,7 +46,7 @@ export namespace util {
     function isHeartbeatMeta(event: CQEvent.Event): event is CQEvent.HeartbeatMeta;
     
     /** 获取事件名 */
-    function assertEventName(event: CQEvent.Event): eventName;
+    function assertEventName(event: CQEvent.Event): EventName;
     
   }
 }

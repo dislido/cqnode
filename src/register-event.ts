@@ -1,6 +1,7 @@
 import Robot from "./cqnode-robot";
 import { ServerResponse } from "http";
-import { CQResponse } from "./cqnode";
+import { CQEvent } from "../types/cq-http";
+import { CQResponse } from "../types/response";
 
 function checkAtme(this: Robot, data: CQEvent.Message) {
   Object.assign(data, {
@@ -147,7 +148,8 @@ function registerGroupUploadNotice(cqnode: Robot) {
     originalResponse: response,
     responseBody: {},
     send(message: string, autoEscape?: boolean) {
-      cqnode.api.sendGroupMsg(data.groupId, message, autoEscape)
+      cqnode.api.sendGroupMsg(data.groupId, message, autoEscape);
+      return this;
     },
   });
   cqnode.on('GroupUploadNotice', (data: CQEvent.GroupUploadNotice, response: ServerResponse) => {
@@ -160,7 +162,8 @@ function registerGroupAdminNotice(cqnode: Robot) {
     originalResponse: response,
     responseBody: {},
     send(message: string, autoEscape?: boolean) {
-      cqnode.api.sendGroupMsg(data.groupId, message, autoEscape)
+      cqnode.api.sendGroupMsg(data.groupId, message, autoEscape);
+      return this;
     },
   });
   cqnode.on('GroupAdminNotice', (data: CQEvent.GroupAdminNotice, response: ServerResponse) => {
@@ -173,7 +176,8 @@ function registerGroupDecreaseNotice(cqnode: Robot) {
     originalResponse: response,
     responseBody: {},
     send(message: string, autoEscape?: boolean) {
-      cqnode.api.sendGroupMsg(data.groupId, message, autoEscape)
+      cqnode.api.sendGroupMsg(data.groupId, message, autoEscape);
+      return this;
     },
   });
   cqnode.on('GroupDecreaseNotice', (data: CQEvent.GroupDecreaseNotice, response: ServerResponse) => {
@@ -186,7 +190,8 @@ function registerGroupIncreaseNotice(cqnode: Robot) {
     originalResponse: response,
     responseBody: {},
     send(message: string, autoEscape?: boolean) {
-      cqnode.api.sendGroupMsg(data.groupId, message, autoEscape)
+      cqnode.api.sendGroupMsg(data.groupId, message, autoEscape);
+      return this;
     },
   });
   cqnode.on('GroupIncreaseNotice', (data: CQEvent.GroupIncreaseNotice, response: ServerResponse) => {
@@ -199,7 +204,8 @@ function registerFriendAddNotice(cqnode: Robot) {
     originalResponse: response,
     responseBody: {},
     send(message: string, autoEscape?: boolean) {
-      cqnode.api.sendPrivateMsg(data.userId, message, autoEscape)
+      cqnode.api.sendPrivateMsg(data.userId, message, autoEscape);
+      return this;
     },
   });
   cqnode.on('FriendAddNotice', (data: CQEvent.FriendAddNotice, response: ServerResponse) => {

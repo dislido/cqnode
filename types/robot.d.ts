@@ -1,13 +1,15 @@
 import { Module } from './module';
-import { CQAPI, CQHTTP } from './cq-http/api';
+import { CQAPI, CQHTTP } from './cq-http';
+import { EventEmitter } from 'events';
+import WorkpathManager from './workpath-manager';
 
 interface CQNodeConfig {
   /** 管理员 */
   admin: number[];
   /** 加载的模块 */
   modules: Module[];
-  /** @wip 加载的插件 */
-  // plugins: any[];
+  /** 加载的插件 */
+  plugins: any[];
   /** 数据文件夹 */
   workpath: string;
   /**
@@ -33,7 +35,7 @@ export interface ConfigObject {
   /** 加载的模块 */
   modules?: Module[];
   /** 加载的插件 */
-  // plugins?: any[];
+  plugins?: any[];
   /** 数据文件夹 */
   workpath?: string;
   /** HTTP API 连接配置 */
@@ -88,13 +90,14 @@ interface CQNodeInf {
   groupList: CQHTTP.GetGroupListResponseData[];
 }
 
-export interface Robot {
-  /** 已加载的模块 */
-  modules: Module[];
-  /** CQ HTTP API */
-  api: CQAPI;
-  /** CQNode运行时信息 */
-  inf: CQNodeInf;
+export declare class Robot extends EventEmitter{
   /** CQNode配置 */
   config: CQNodeConfig;
+  /** 已加载的模块 */
+  modules: Module[];
+  /** CQNode运行时信息 */
+  inf: CQNodeInf;
+  /** CQ HTTP API */
+  api: CQAPI;
+  workpathManager: WorkpathManager;
 }

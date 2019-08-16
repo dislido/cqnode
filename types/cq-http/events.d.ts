@@ -304,3 +304,7 @@ export namespace CQEvent {
     };
   }
 }
+
+export type EventName = 'PrivateMessage' | 'DiscussMessage' | 'GroupMessage' | 'GroupUploadNotice' |
+  'GroupAdminNotice' | 'GroupDecreaseNotice' | 'GroupIncreaseNotice' | 'FriendAddNotice' |
+  'FriendRequest' | 'GroupRequest' | 'LifecycleMeta' | 'HeartbeatMeta';

@@ -1,4 +1,4 @@
-import { CQNodeConfig, ConfigObject } from "./cqnode";
+import { CQNodeConfig, ConfigObject } from "../types/robot";
 import CQNode from ".";
 import CQNodeModule from "./robot-module";
 import CQNodePlugin from "./robot-plugin";

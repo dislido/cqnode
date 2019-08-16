@@ -1,3 +1,5 @@
+import { CQEvent } from "../../types/cq-http";
+
 export function isMessage(event: CQEvent.Event): event is CQEvent.Message {
   return event.postType === 'message';
 }
@@ -51,11 +53,11 @@ export function isHeartbeatMeta(event: CQEvent.Event): event is CQEvent.Heartbea
   return isMetaEvent(event) && event.metaEventType === 'heartbeat';
 }
 
-type eventName = 'PrivateMessage' | 'DiscussMessage' |
+export type EventName = 'PrivateMessage' | 'DiscussMessage' |
 'GroupMessage' | 'GroupUploadNotice' | 'GroupAdminNotice' | 'GroupDecreaseNotice' | 'GroupIncreaseNotice' |
 'FriendAddNotice' | 'FriendRequest' | 'GroupRequest' | 'LifecycleMeta' | 'HeartbeatMeta';
 
-export function assertEventName(event: CQEvent.Event): eventName {
+export function assertEventName(event: CQEvent.Event): EventName {
   const eventType = [
     isGroupMessage,
     isPrivateMessage,
@@ -71,5 +73,5 @@ export function assertEventName(event: CQEvent.Event): eventName {
     isLifecycleMeta,
   ].find(it => it(event));
   if (!eventType) throw new Error(`CQNode Error: unknown Event:\n${JSON.stringify(event)}`);
-  return eventType.name.substr(2) as eventName;
+  return eventType.name.substr(2) as EventName;
 }

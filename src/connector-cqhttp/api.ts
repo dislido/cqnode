@@ -1,4 +1,5 @@
 import { toUnderScoreCase } from '../util';
+import { CQAPI } from '../../types/cq-http';
 
 export default {
   sendPrivateMsg(userId: number, message: string, autoEscape: boolean = false) {

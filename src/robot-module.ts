@@ -1,6 +1,8 @@
 import * as fs from 'fs';
-import Robot from './cqnode-robot';
-import { CQResponse, Module } from './cqnode';
+import { CQEvent } from '../types/cq-http';
+import { Module } from '../types/module';
+import { CQResponse } from '../types/response';
+import { Robot } from '../types/robot';
 
 export default class CQNodeModule {
   cqnode?: Robot;

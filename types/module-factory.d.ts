@@ -1,5 +1,5 @@
 import { Module } from './module';
-import { CQEvent } from './cq-http/events';
+import { CQEvent } from './cq-http';
 import { CQResponse } from './response';
 
 /** 创建模块 */
