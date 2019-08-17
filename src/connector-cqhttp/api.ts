@@ -61,13 +61,13 @@ export default {
     return toUnderScoreCase({ flag, subType, approve, reason });
   },
   getLoginInfo() {
-    return toUnderScoreCase({  });
+    return toUnderScoreCase({});
   },
   getStrangerInfo(userId: number, noCache = false) {
     return toUnderScoreCase({ userId, noCache });
   },
   getGroupList() {
-    return toUnderScoreCase({  });
+    return toUnderScoreCase({});
   },
   getGroupMemberInfo(groupId: number, userId: number, noCache = false) {
     return toUnderScoreCase({ groupId, userId, noCache });
@@ -76,13 +76,13 @@ export default {
     return toUnderScoreCase({ groupId });
   },
   getCookies() {
-    return toUnderScoreCase({  });
+    return toUnderScoreCase({});
   },
   getCsrfToken() {
-    return toUnderScoreCase({  });
+    return toUnderScoreCase({});
   },
   getCredentials() {
-    return toUnderScoreCase({  });
+    return toUnderScoreCase({});
   },
   getRecord(file: string, outFormat: string, fullPath = false) {
     return toUnderScoreCase({ file, outFormat, fullPath });
@@ -91,16 +91,16 @@ export default {
     return toUnderScoreCase({ file });
   },
   canSendImage() {
-    return toUnderScoreCase({  });
+    return toUnderScoreCase({});
   },
   canSendRecord() {
-    return toUnderScoreCase({  });
+    return toUnderScoreCase({});
   },
   getStatus() {
-    return toUnderScoreCase({  });
+    return toUnderScoreCase({});
   },
   getVersionInfo() {
-    return toUnderScoreCase({  });
+    return toUnderScoreCase({});
   },
   setRestartPlugin(delay = 0) {
     return toUnderScoreCase({ delay });
@@ -109,6 +109,6 @@ export default {
     return toUnderScoreCase({ dataDir });
   },
   cleanPluginLog() {
-    return toUnderScoreCase({  });
+    return toUnderScoreCase({});
   },
 } as CQAPI;

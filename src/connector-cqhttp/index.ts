@@ -3,7 +3,8 @@ import Robot from '../cqnode-robot';
 import api from './api';
 import { assertEventName } from './event-type';
 import { toUnderScoreCase, toCamelCase, decodeHtml } from '../util';
-import { CQEvent, CQAPI } from '../../types/cq-http';
+import CQAPI from './api';
+import { CQEvent } from '../../types/cq-http';
 
 /** CQHTTP设置 */
 declare interface CQHTTPConfig {
@@ -24,7 +25,7 @@ export default class CQHttpConnector {
   TIMEOUT: number;
   ACCESS_TOKEN?: string;
   user: any;
-  api: CQAPI = new Proxy(api, {
+  api: typeof CQAPI = new Proxy(api, {
     get: (target: any, apiName: string) => (...args: any[]) => {
       if (typeof apiName === 'symbol') return;
       if (!target[apiName]) {

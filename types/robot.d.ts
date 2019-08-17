@@ -90,7 +90,7 @@ interface CQNodeInf {
   groupList: CQHTTP.GetGroupListResponseData[];
 }
 
-export declare class Robot extends EventEmitter{
+export class Robot extends EventEmitter {
   /** CQNode配置 */
   config: CQNodeConfig;
   /** 已加载的模块 */
@@ -99,5 +99,6 @@ export declare class Robot extends EventEmitter{
   inf: CQNodeInf;
   /** CQ HTTP API */
   api: CQAPI;
+  /** @WIP workpath */
   workpathManager: WorkpathManager;
 }
