@@ -1,6 +1,7 @@
 import Robot from './cqnode-robot';
 import { EventName } from './connector-cqhttp/event-type';
 import { ServerResponse } from 'http';
+import CQNodeModule from './robot-module';
 import { CQAPI, CQEvent } from '../types/cq-http';
 
 export type HookName = Exclude<keyof CQNodePlugin, 'onRegister' | 'cqnode'>;
@@ -12,11 +13,14 @@ export type HookData  = {
     event: CQEvent.Event;
   };
   onResponse: {
-    originamResponse: ServerResponse;
+    originalResponse: ServerResponse;
     body: object;
+    /** 处理此消息的Module,若为空则没有模块处理此消息 */
+    handlerModule?: CQNodeModule;
   };
   onRequestAPI: {
     apiName: keyof CQAPI;
+    params: Parameters<CQAPI[keyof CQAPI]>
   };
 };
 
@@ -24,6 +28,7 @@ export default class CQNodePlugin {
   cqnode: Robot;
 
   onEventReceived(data: HookData['onEventReceived']): false | object { return false; }
+  /** 无论返回什么，response.end()都会被调用，handlerModule存在时，返回false会阻止cqnode返回任何数据，即无视body内容 */
   onResponse(data: HookData['onResponse']): false | object { return false; }
   onRequestAPI(data: HookData['onRequestAPI']): false | object { return false; }
 

@@ -110,7 +110,19 @@ export default class Robot extends event.EventEmitter {
     this.workpathManager = new WorkpathManager(this.config.workpath);
     this.pluginManager = new PluginManager(this);
     this.connect = new CQHttpConnector(this, this.config.connector);
-    this.api = this.connect.api;
+    this.api = new Proxy(this.connect.api, {
+      get: (target: typeof CQAPI, p: keyof typeof CQAPI) => {
+        if (typeof target[p] !== 'function') return target[p];
+        return (...args: Parameters<typeof CQAPI[keyof typeof CQAPI]>) => {
+          const plgret = this.pluginManager.emit('onRequestAPI', {
+            apiName: p,
+            params: args,
+          });
+          if (!plgret) throw new Error(`CQNode Error: 对api的请求被阻止：${p}`);
+          return target[plgret.apiName].apply(plgret.params);
+        };
+      }
+    });
 
     this.init();
 

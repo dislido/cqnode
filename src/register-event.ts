@@ -42,19 +42,32 @@ async function callModuleEvent(cqnode: Robot, eventFunctionName: 'onFriendReques
 async function callModuleEvent(cqnode: Robot, eventFunctionName: 'onGroupRequest', data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest): Promise<void>;
 async function callModuleEvent(cqnode: Robot, eventFunctionName: 'onPrivateMessage', data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage): Promise<void>;
 async function callModuleEvent(cqnode: Robot, eventFunctionName: 'onGroupMessage', data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage): Promise<void>;
-async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data: any, resp: any) {
+async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data: CQEvent.Event, resp: CQResponse.Response) {
   for (let i = 0; i < cqnode.modules.length; ++i) {
     const currentModule = cqnode.modules[i];
     try {
-      const result = await currentModule[eventFunctionName](data, resp);
+      const result = await currentModule[eventFunctionName](data as any, resp as any);
       if (result) {
-        resp.originalResponse.end(JSON.stringify(resp.responseBody));
+        const plgret = cqnode.pluginManager.emit('onResponse', {
+          originalResponse: resp.originalResponse,
+          body: resp.responseBody,
+          handlerModule: currentModule,
+        })
+        if (!plgret) {
+          resp.originalResponse.end();
+          return;
+        }
+        if (!resp.originalResponse.finished) resp.originalResponse.end(JSON.stringify(resp.responseBody));
         return;
       };
     } catch (err) {
       console.error('CQNode module error: ', err);
     }
   }
+  cqnode.pluginManager.emit('onResponse', {
+    originalResponse: resp.originalResponse,
+    body: resp.responseBody,
+  })
   resp.originalResponse.end();
 }
 
