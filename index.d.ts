@@ -7,7 +7,6 @@ export * from './types/cq-http';
 
 export * from './types/module';
 export * from './types/util';
-export * from './types/module-factory';
 export * from './types/plugin';
 /**
  * 创建机器人

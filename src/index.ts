@@ -1,7 +1,6 @@
 import Robot from './cqnode-robot';
 import Module from './robot-module';
 import Plugin from './robot-plugin';
-import ModuleFactory from './module-factory';
 import * as eventType from './connector-cqhttp/event-type';
 import ConfigObject from './cqnode-robot';
 
@@ -11,7 +10,6 @@ const CQNode = {
   },
   Module,
   Plugin,
-  ModuleFactory,
   util: {
     eventType,
   },

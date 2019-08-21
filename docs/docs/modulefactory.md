@@ -14,7 +14,7 @@ class MyModule extends CQNode.Module {
 ``` 
 而使用`ModuleFactory`来创建模块则可以省去这个步骤，`data`和`resp`会自动获得类型检查和代码提示  
 ```javascript
-const MyModule = new CQNode.ModuleFactory()
+const MyModule = new CQNode.Module.Factory()
   .onMessage((data, resp) => {
     return resp.reply(`received: ${data.msg}`);
   })
@@ -24,7 +24,7 @@ const MyModule = new CQNode.ModuleFactory()
 ## 消息处理
 `ModuleFactory`实现了class写法中所有的消息处理函数，可以链式调用
 ```javascript
-const mf = new CQNode.ModuleFactory();
+const mf = new CQNode.Module.Factory();
 
 mf.onMessage((data, resp) => {
   return false;
@@ -56,7 +56,7 @@ CQNode.createRobot({
 ## 检查重复声明
 `ModuleFactory`默认会在声明重复的消息处理函数报错，可以设置`noDuplicate`来关闭它，此时后声明的消息处理函数会覆盖先声明的
 ```javascript
-const mf = new CQNode.ModuleFactory();
+const mf = new CQNode.Module.Factory();
 
 mf.onMessage((data, resp) => {
   return false;
@@ -65,7 +65,7 @@ mf.onMessage((data, resp) => {
 });
 // ModuleFactoryError: duplicate onMessage
 
-const mf2 = new CQNode.ModuleFactory({ noDuplicate: false });
+const mf2 = new CQNode.Module.Factory({ noDuplicate: false });
 mf.onMessage((data, resp) => {
   return false;
 }).onMessage((data, resp) => {
