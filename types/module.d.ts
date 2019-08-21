@@ -2,6 +2,7 @@ import { CQResponse } from './response';
 import { CQEvent } from './cq-http';
 import { Robot } from './robot';
 
+/** CQNode模块 */
 declare namespace Module {
   type EventResult = boolean | void | CQResponse.Response;
   type EventReturns = EventResult | Promise<EventResult>;
@@ -67,7 +68,7 @@ declare class Module {
 
 /** 创建模块 */
 export class ModuleFactory {
-  constructor(config?: { noDuplicate: boolean });
+  constructor(config?: { noDuplicate?: boolean });
   /** 创建模块 */
   createConstructor(inf?: Module.Inf, initfn?: (...args: any) => void): typeof Module;
   /** 模块启动 */

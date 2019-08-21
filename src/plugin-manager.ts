@@ -23,12 +23,20 @@ export default class PluginManager {
    */
   emit<T extends HookName>(hookName: T, data: Parameters<CQNodePlugin[T]>[0]) {
     const plugins = this.plugins.filter(plugin => plugin[hookName] !== CQNodePlugin.prototype[hookName]);
+    let currData = data;
     try {
-      if (plugins.find(plugin => plugin[hookName](data as any) === false)) return false;
+      if (plugins.find(plugin => {
+        const plgret = plugin[hookName](currData as any);
+        if (typeof plgret === 'object') {
+          currData = plgret as Parameters<CQNodePlugin[T]>[0];
+          return false;
+        }
+        return !plgret;
+      })) return false;
     } catch (e) {
       console.error(`[error]plugin error:(${hookName}) `, e);
       return false;
     }
-    return data;
+    return currData;
   }
 };

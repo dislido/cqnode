@@ -1,26 +1,75 @@
-import { EventName, CQEvent } from './cq-http';
+import { EventName, CQEvent, CQAPI } from './cq-http';
+import { ServerResponse } from 'http';
+import { Module } from './module';
+import { Robot } from './robot';
 
-declare namespace Plugin {
-  type HookName = Exclude<keyof Plugin, 'onRegister' | 'cqnode'>;
-  type HookDataMap  = {
-    /** 接收到事件 */
-    onEventReceived: {
-      /** 事件名 */
-      eventName: EventName;
-      /** 事件Event对象 */
-      event: CQEvent.Event;
-    };
-    /** 使用Response回复 */
-    onResponse: {
-  
-    };
-    /** 调用API */
-    onRequestAPI: {
-  
-    };
-  }
+export type HookName = Exclude<keyof Plugin, 'onRegister' | 'cqnode'>;
+declare namespace HookData  {
+  export type onEventReceived = {
+    /**
+     * 接收到的事件名，是下列事件名之一：
+     * - `PrivateMessage`
+     * - `DiscussMessage`
+     * - `GroupMessage`
+     * - `GroupUploadNotice`
+     * - `GroupAdminNotice`
+     * - `GroupDecreaseNotice`
+     * - `GroupIncreaseNotice`
+     * - `FriendAddNotice`
+     * - `FriendRequest`
+     * - `GroupRequest`
+     * - `LifecycleMeta`
+     * - `HeartbeatMeta`
+     */
+    eventName: EventName;
+    /** 事件Event对象 */
+    event: CQEvent.Event;
+  };
+  export type onResponse = {
+    /** 事件Event对象 */
+    event: CQEvent.Event;
+    /** 原始ServerResponse对象 */
+    originalResponse: ServerResponse;
+    /** 将要进行响应的responseBody内容 */
+    body: object;
+    /** 处理该事件的Module，若为`undefined`，则没有Module处理此事件 */
+    handlerModule?: Module;
+  };
+  export type onRequestAPI = {
+    /** 调用API的模块 */
+    caller: Module;
+    /** 调用的API函数名 */
+    apiName: keyof CQAPI;
+    /** 传递给API函数的参数数组 */
+    params: Parameters<CQAPI[keyof CQAPI]>;
+  };
 }
-/** CQNode插件 */
-export class Plugin {
+
+
+export default class CQNodePlugin {
+  static Factory: typeof PluginFactory;
+  cqnode: Robot;
+
+  /** 在接收到事件时触发 */
+  onEventReceived(data: HookData.onEventReceived): boolean | HookData.onEventReceived;
+  /** 在Module响应事件时或所有Module都不处理该事件时触发  */
+  onResponse(data: HookData.onResponse): boolean | HookData.onResponse;
+  /** 在Module调用API时触发（即使用`this.cqnode.api`时） */
+  onRequestAPI(data: HookData.onRequestAPI): boolean | HookData.onRequestAPI;
+  /** 本模块注册完成时触发 */
   onRegister(): void;
+}
+
+export class PluginFactory {
+  constructor(config?: { noDuplicate?: boolean });
+  private duplicateError(name: string): void;
+  createConstructor(initfn?: (...args: any) => void): typeof CQNodePlugin;
+  /** 在接收到事件时触发 */
+  onEventReceived(fn: (data: HookData.onEventReceived) => boolean | HookData.onEventReceived): this;
+  /** 在Module响应事件时或所有Module都不处理该事件时触发  */
+  onResponse(fn: (data: HookData.onResponse) => boolean | HookData.onResponse): this;
+  /** 在Module调用API时触发（即使用`this.cqnode.api`时） */
+  onRequestAPI(fn: (data: HookData.onRequestAPI) => boolean | HookData.onRequestAPI): this;
+  /** 本模块注册完成时触发 */
+  onRegister(): this;
 }

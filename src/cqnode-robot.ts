@@ -110,19 +110,7 @@ export default class Robot extends event.EventEmitter {
     this.workpathManager = new WorkpathManager(this.config.workpath);
     this.pluginManager = new PluginManager(this);
     this.connect = new CQHttpConnector(this, this.config.connector);
-    this.api = new Proxy(this.connect.api, {
-      get: (target: typeof CQAPI, p: keyof typeof CQAPI) => {
-        if (typeof target[p] !== 'function') return target[p];
-        return (...args: Parameters<typeof CQAPI[keyof typeof CQAPI]>) => {
-          const plgret = this.pluginManager.emit('onRequestAPI', {
-            apiName: p,
-            params: args,
-          });
-          if (!plgret) throw new Error(`CQNode Error: 对api的请求被阻止：${p}`);
-          return target[plgret.apiName].apply(plgret.params);
-        };
-      }
-    });
+    this.api = this.connect.api;
 
     this.init();
 
@@ -188,7 +176,7 @@ export default class Robot extends event.EventEmitter {
   loadModule(modIndex: number) {
     try {
       const m = this.modules[modIndex];
-      m.cqnode = this;
+      m.cqnode = this.proxy(m);
       m.isRunning = true;
       m.onRun();
       return true;
@@ -210,5 +198,30 @@ export default class Robot extends event.EventEmitter {
       console.error(e);
     }
     return false;
+  }
+
+  proxy(mod: CQNodeModule) {
+    const apiProxy = new Proxy(this.api, {
+      get: (api, p) => {
+        if (!Reflect.has(api, p)) return undefined;
+        return new Proxy<Function>(Reflect.get(api, p), {
+          apply: (target, thisArg, argArray) => {
+            const plgret = this.pluginManager.emit('onRequestAPI', {
+              get caller() { return mod; },
+              apiName: p as keyof typeof CQAPI,
+              params: argArray,
+            });
+            if (plgret === false) throw new Error('CQNode Error: API请求被拦截');
+            return api[plgret.apiName].apply(thisArg, plgret.params);
+          }
+        });
+      }
+    });
+    return new Proxy(this, {
+      get(cqn, p) {
+        if (p === 'api') return apiProxy;
+        return Reflect.get(cqn, p);
+      },
+    });
   }
 }
