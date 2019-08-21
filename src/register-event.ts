@@ -14,7 +14,7 @@ function checkAtme(this: Robot, data: CQEvent.Message) {
     return;
   }
   if (data.messageType !== 'group' && data.messageType !== 'discuss') return;
-  const atmeTrigger = this.config.atmeTrigger instanceof Array ? this.config.atmeTrigger : [this.config.atmeTrigger];
+  const atmeTrigger = this.config.atmeTrigger;
   data.atme = atmeTrigger.some(p => {
     if (p === true && data.msg.startsWith(`[CQ:at,qq=${data.selfId}]`)) {
       data.msg = data.msg.substring(`[CQ:at,qq=${data.selfId}]`.length).trim();
@@ -48,16 +48,18 @@ async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data
     try {
       const result = await currentModule[eventFunctionName](data as any, resp as any);
       if (result) {
-        const plgret = cqnode.pluginManager.emit('onResponse', {
-          originalResponse: resp.originalResponse,
+        const hookData = {
+          get event() { return data; },
+          get originalResponse() { return resp.originalResponse; },
           body: resp.responseBody,
-          handlerModule: currentModule,
-        })
+          get handlerModule() { return currentModule; },
+        };
+        const plgret = cqnode.pluginManager.emit('onResponse', hookData)
         if (!plgret) {
           resp.originalResponse.end();
           return;
         }
-        if (!resp.originalResponse.finished) resp.originalResponse.end(JSON.stringify(resp.responseBody));
+        if (!resp.originalResponse.finished) resp.originalResponse.end(JSON.stringify(hookData.body));
         return;
       };
     } catch (err) {
@@ -65,8 +67,10 @@ async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data
     }
   }
   cqnode.pluginManager.emit('onResponse', {
-    originalResponse: resp.originalResponse,
+    get event() { return data; },
+    get originalResponse() { return resp.originalResponse; },
     body: resp.responseBody,
+    get handlerModule() { return undefined; },
   })
   resp.originalResponse.end();
 }
@@ -75,10 +79,6 @@ function registerPrivateMessageEvent(cqnode: Robot) {
   const getResponse = (data: CQEvent.PrivateMessage, response: ServerResponse): CQResponse.PrivateMessage => ({
     originalResponse: response,
     responseBody: {},
-    send(message: string) { 
-      cqnode.connect.api.sendPrivateMsg(data.userId, message);
-      return this;
-    },
     reply(message, autoEscape = false) {
       this.responseBody.reply = message;
       this.responseBody.auto_escape = autoEscape;
@@ -95,10 +95,6 @@ function registerGroupMessageEvent(cqnode: Robot) {
   const getResponse = (data: CQEvent.GroupMessage, response: ServerResponse): CQResponse.GroupMessage => ({
     originalResponse: response,
     responseBody: {},
-    send(message, autoEscape?) {
-      cqnode.connect.api.sendGroupMsg(data.groupId, message, autoEscape);
-      return this;
-    },
     reply(message, autoEscape = false) {
       this.responseBody.reply = message;
       if (autoEscape) this.responseBody.autoEscape = true;
@@ -145,10 +141,6 @@ function registerDiscussMessageEvent(cqnode: Robot) {
       this.responseBody.auto_escape = autoEscape;
       return this;
     },
-    send(message, autoEscape) {
-      cqnode.connect.api.sendDiscussMsg(data.discussId, message, autoEscape);
-      return this;
-    }
   });
   cqnode.on('DiscussMessage', (data: CQEvent.DiscussMessage, response: ServerResponse) => {
     checkAtme.call(cqnode, data);

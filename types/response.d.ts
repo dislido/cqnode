@@ -16,12 +16,6 @@ export namespace CQResponse {
   /** 消息类事件 */
   interface Message extends Response {
     /**
-     * 向消息来源私聊/群/讨论组发送消息，不使用response而是使用API发送消息
-     * @param message 回复信息
-     * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码）
-     */
-    send(message: string, autoEscape?: boolean): this;
-    /**
      * 使用response响应回复消息
      * @param message 回复信息
      * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码）

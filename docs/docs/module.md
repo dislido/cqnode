@@ -34,13 +34,6 @@ CQNode功能模块基类，通过继承此类来编写模块，在代码提示�
 
 ## module.cqnode
 模块绑定的[CQNode.Robot](./robot)实例，仅在模块已启动时可访问，否则为`undefined`
-```javascript
-class MyModule extends CQNode.Module {
-  getCQNode() {
-    if (this.isRunning) return this.cqnode;
-  }
-}
-```
 
 ## module.isRunning
 当前模块是否运行中，会在[`onRun`](#moduleonrun)被调用前设为`true`,在[`onStop`](#moduleonstop)被调用后设为`false`
@@ -179,11 +172,6 @@ onMessage(data: CQEvent.Message, resp: CQResponse.Message)
 
 ### CQResponse.Message
 实现了[`CQResponse.Response`](#cqresponseresponse)接口，还有以下额外的方法
-
-> `send(message: string, autoEscape?: boolean): void`  
-> 向消息来源私聊/群/讨论组发送消息，不使用response而是使用API发送消息  
-> - `message` 回复信息  
-> - `autoEscape` 消息内容是否作为纯文本发送（即不解析 CQ 码）  
 
 > `reply(message: string, autoEscape?: boolean): this`  
 > 使用response响应回复消息  
