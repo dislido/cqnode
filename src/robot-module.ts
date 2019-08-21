@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import Robot from './cqnode-robot';
 import { CQResponse } from '../types/response';
 import { CQEvent } from '../types/cq-http';
+import ModuleFactory from './module-factory';
 
 type EventResult = boolean | void | CQResponse.Response;
 export type EventReturns = EventResult | Promise<EventResult>;
@@ -18,6 +19,7 @@ export interface CQNodeModuleInf {
 }
 
 export default class CQNodeModule {
+  static Factory = ModuleFactory;
   cqnode?: Robot;
   isRunning = false;
   constructor(public inf: CQNodeModuleInf = {}) {

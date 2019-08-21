@@ -1,6 +1,7 @@
 import { CQResponse } from './response';
 import { CQEvent } from './cq-http';
 import { Robot } from './robot';
+import { ModuleFactory } from './module-factory';
 
 declare namespace Module {
   type EventResult = boolean | void | CQResponse.Response;
@@ -20,6 +21,7 @@ declare namespace Module {
 
 /** CQNode模块 */
 declare class Module {
+  static Factory: typeof ModuleFactory;
   /** 模块绑定的CQNode */
   cqnode?: Robot;
   /** 模块是否处于运行状态 */
