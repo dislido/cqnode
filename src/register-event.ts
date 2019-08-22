@@ -3,19 +3,22 @@ import { ServerResponse } from "http";
 import { CQEvent } from "../types/cq-http";
 import { CQResponse } from "../types/response";
 
+const plgData = (data: CQEvent.Message) => (p: "username" | "atme" | "msg", val: any) => Reflect.has(data, p) ? data[p] : val;
+
 function checkAtme(this: Robot, data: CQEvent.Message) {
+  const pd = plgData(data);
   Object.assign(data, {
-    username: data.sender.card || data.sender.nickname,
-    atme: false,
-    msg: data.message.trim(),
+    username: pd('username', data.sender.card || data.sender.nickname),
+    atme: pd('atme', false),
+    msg: pd('msg', data.message.trim()),
   });
   if (data.messageType === 'private') {
-    data.atme = true;
+    data.atme = pd('atme', true);
     return;
   }
   if (data.messageType !== 'group' && data.messageType !== 'discuss') return;
   const atmeTrigger = this.config.atmeTrigger;
-  data.atme = atmeTrigger.some(p => {
+  data.atme = pd('atme', atmeTrigger.some(p => {
     if (p === true && data.msg.startsWith(`[CQ:at,qq=${data.selfId}]`)) {
       data.msg = data.msg.substring(`[CQ:at,qq=${data.selfId}]`.length).trim();
       return true;
@@ -25,7 +28,7 @@ function checkAtme(this: Robot, data: CQEvent.Message) {
       return true;
     }
     return false;
-  });
+  }));
 }
 
 type NoticeEventName = 'onGroupUploadNotice' | 'onGroupAdminNotice' | 'onGroupDecreaseNotice' | 'onGroupIncreaseNotice' | 'onFriendAddNotice';

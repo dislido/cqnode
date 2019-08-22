@@ -54,30 +54,6 @@ onEventReceived(data: {
 
 ```javascript
 /** 
- * 将私聊消息修改为群消息类型  
- * 因为不同事件的event内容不同，在进行此类操作时建议尽量补全修改后的消息类型的event内容防止发生错误
- */
-onEventReceived(data) {
-  if (data.eventName === 'PrivateMessage') {
-    data.eventName === 'GroupMessage';
-    Object.assign(data.event, {
-      messageType: 'private',
-      subType: 'normal',
-      groupId: 1145141919,
-      anonymous: null,
-      sender: {
-        ...data.event.sender,
-        role: 'member',
-        title: '',
-      }，
-    })
-  }
-  return true;
-}
-```
-
-```javascript
-/** 
  * 屏蔽用户QQ号114514的消息
  */
 onEventReceived(data) {
