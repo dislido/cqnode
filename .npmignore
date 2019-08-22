@@ -1,8 +1,8 @@
-README.md
-node_modules
-tsconfig.json
-src
-docs
 demo
+docs
+node_modules
+src
+README.md
+tsconfig.json
 /.*
 !/.npmignore
