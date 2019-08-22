@@ -5,9 +5,9 @@ export as namespace CQNode;
 export * from './types/response';
 export * from './types/cq-http';
 
-export * from './types/module';
+export { Module } from './types/module';
+export { Plugin } from './types/plugin';
 export * from './types/util';
-export * from './types/plugin';
 /**
  * 创建机器人
  * @param config 机器人配置

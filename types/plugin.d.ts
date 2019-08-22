@@ -46,7 +46,7 @@ declare namespace HookData  {
 }
 
 
-export default class CQNodePlugin {
+export class Plugin {
   static Factory: typeof PluginFactory;
   cqnode: Robot;
 
@@ -60,10 +60,10 @@ export default class CQNodePlugin {
   onRegister(): void;
 }
 
-export class PluginFactory {
+declare class PluginFactory {
   constructor(config?: { noDuplicate?: boolean });
   private duplicateError(name: string): void;
-  createConstructor(initfn?: (...args: any) => void): typeof CQNodePlugin;
+  createConstructor(initfn?: (...args: any) => void): typeof Plugin;
   /** 在接收到事件时触发 */
   onEventReceived(fn: (data: HookData.onEventReceived) => boolean | HookData.onEventReceived): this;
   /** 在Module响应事件时或所有Module都不处理该事件时触发  */

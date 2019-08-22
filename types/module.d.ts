@@ -2,7 +2,6 @@ import { CQResponse } from './response';
 import { CQEvent } from './cq-http';
 import { Robot } from './robot';
 
-/** CQNode模块 */
 declare namespace Module {
   type EventResult = boolean | void | CQResponse.Response;
   type EventReturns = EventResult | Promise<EventResult>;
@@ -20,7 +19,7 @@ declare namespace Module {
 }
 
 /** CQNode模块 */
-declare class Module {
+export class Module {
   static Factory: typeof ModuleFactory;
   /** 模块绑定的CQNode */
   cqnode?: Robot;
@@ -67,7 +66,7 @@ declare class Module {
 }
 
 /** 创建模块 */
-export class ModuleFactory {
+declare class ModuleFactory {
   constructor(config?: { noDuplicate?: boolean });
   /** 创建模块 */
   createConstructor(inf?: Module.Inf, initfn?: (...args: any) => void): typeof Module;

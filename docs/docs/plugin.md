@@ -22,8 +22,10 @@ const pf = new CQNode.Plugin.Factory()
 
 钩子函数可选的返回值：
 - `false` 拦截此事件
-- 返回`true` 应用对`data`的修改，并让事件继续进行
-- 返回`object` 将替换`data`，并让事件继续进行
+- `true` 应用对`data`的修改，并让事件继续进行
+- `object` 将替换`data`，并让事件继续进行
+- `undefind` 同`true`
+- 返回其他类型的值`a`时，将认为返回了与`a`对应的`boolean`值（`!!a`）
 
 
 ## plugin.onEventReceived

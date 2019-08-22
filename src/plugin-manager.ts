@@ -31,6 +31,7 @@ export default class PluginManager {
           currData = plgret as Parameters<CQNodePlugin[T]>[0];
           return false;
         }
+        if (plgret === undefined) return false;
         return !plgret;
       })) return false;
     } catch (e) {
