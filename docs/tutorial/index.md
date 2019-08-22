@@ -4,3 +4,4 @@
 > - [第一个模块](./firstmodule)
 > - [消息处理](./messagehandling)
 > - [API](./api)
+> - [插件](./plugin)
