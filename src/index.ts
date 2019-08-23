@@ -3,6 +3,7 @@ import Module from './robot-module';
 import Plugin from './robot-plugin';
 import * as eventType from './connector-cqhttp/event-type';
 import ConfigObject from './cqnode-robot';
+import { parseCQCodeString } from './util';
 
 const CQNode = {
   createRobot(config: ConfigObject) {
@@ -12,6 +13,9 @@ const CQNode = {
   Plugin,
   util: {
     eventType,
+    CQCode: {
+      parseString: parseCQCodeString,
+    },
   },
 };
 

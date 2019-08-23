@@ -7,7 +7,6 @@ export namespace util {
    * 事件类型判断工具
    */
   namespace eventType {
-
     /** 是否是消息事件 */
     function isMessage(event: CQEvent.Event): event is CQEvent.Message;
     /** 是否是通知事件 */
@@ -47,6 +46,19 @@ export namespace util {
     
     /** 获取事件名 */
     function assertEventName(event: CQEvent.Event): EventName;
-    
+  }
+  namespace CQCode {
+    type CQCodeData = {
+      type: string;
+      data: {
+        [key: string]: string;
+      }
+    };
+    /**
+     * 解析CQ码字符串为对象形式
+     * @param code CQ码字符串
+     * @returns 解析的对象，若CQ码格式不正确则返回`undefined`
+     */
+    function parseCQCodeString(code: string): CQCodeData | undefined;
   }
 }

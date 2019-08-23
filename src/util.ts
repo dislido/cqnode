@@ -1,4 +1,4 @@
-import { CQNodeConfig, ConfigObject } from "./cqnode-robot";
+import Robot, { CQNodeConfig, ConfigObject } from "./cqnode-robot";
 import CQNode from ".";
 import CQNodeModule from "./robot-module";
 import CQNodePlugin from "./robot-plugin";
@@ -69,4 +69,35 @@ export function toCamelCase(t: any) {
 export function decodeHtml(str: string) {
   const s = str.replace(/&#[\d]{2,4};/g, hex => String.fromCharCode(parseInt(hex.slice(2, -1), 10)));
   return s.replace(/&amp;/g, '&');
+}
+
+export const nullCQNode = new Proxy({}, {
+  get() {
+    throw new Error('CQNode Error: 模块/插件未运行，不能使用CQNode');
+  }
+}) as Robot;
+
+type CQCodeData = {
+  type: string;
+  data: {
+    [key: string]: string;
+  }
+};
+export function parseCQCodeString(code: string) {
+  const ret = /\[CQ:([^,]+)(.*)\]/.exec(code);
+  if (!ret) return;
+  const result: CQCodeData = {
+    type: ret[1],
+    data: {},
+  };
+  if (ret[2]) {
+    const data = ret[2].split(',');
+    data.shift();
+    data.forEach(it => {
+      const split = it.indexOf('=');
+      const [k, v] = [it.substr(0, split), it.substr(split + 1)];
+      result.data[k] = v;
+    })
+  }
+  return result;
 }

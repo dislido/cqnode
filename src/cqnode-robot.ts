@@ -1,13 +1,12 @@
 import * as event from 'events';
 import PluginManager from './plugin-manager';
 import WorkpathManager from './workpath-manager';
-import { checkConfig } from './util';
+import { checkConfig, nullCQNode } from './util';
 import CQHttpConnector from './connector-cqhttp';
 import CQNodeModule from './robot-module';
 import registerEvent from './register-event';
 import CQAPI from './connector-cqhttp/api';
 import { CQEvent, CQHTTP } from '../types/cq-http';
-import { nullCQNode } from './cqnode-util';
 
 export interface ConfigObject {
   /** 
