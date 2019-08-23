@@ -19,7 +19,7 @@ export interface CQNodeModuleInf {
 
 export default class CQNodeModule {
   static Factory: typeof ModuleFactory;
-  cqnode?: Robot;
+  cqnode: Robot;
   isRunning = false;
   constructor(public inf: CQNodeModuleInf = {}) {
     if (this.inf.packageName) this.inf.packageName = this.inf.packageName.replace(/\//g, '.');

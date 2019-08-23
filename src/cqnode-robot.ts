@@ -7,6 +7,7 @@ import CQNodeModule from './robot-module';
 import registerEvent from './register-event';
 import CQAPI from './connector-cqhttp/api';
 import { CQEvent, CQHTTP } from '../types/cq-http';
+import { nullCQNode } from './cqnode-util';
 
 export interface ConfigObject {
   /** 
@@ -191,7 +192,7 @@ export default class Robot extends event.EventEmitter {
       const m = this.modules[modIndex];
       if (!m) return false;
       m.onStop();
-      m.cqnode = undefined;
+      m.cqnode = nullCQNode;
       m.isRunning = false;
       return true;
     } catch (e) {

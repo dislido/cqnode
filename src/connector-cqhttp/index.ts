@@ -27,7 +27,6 @@ export default class CQHttpConnector {
   user: any;
   api: typeof CQAPI = new Proxy(api, {
     get: (target: any, apiName: string) => (...args: any[]) => {
-      if (typeof apiName === 'symbol') return;
       if (!target[apiName]) {
         console.warn('CONode warn: no API: ', apiName);
         return;

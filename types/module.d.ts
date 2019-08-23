@@ -21,8 +21,8 @@ declare namespace Module {
 /** CQNode模块 */
 export class Module {
   static Factory: typeof ModuleFactory;
-  /** 模块绑定的CQNode */
-  cqnode?: Robot;
+  /** 模块绑定的CQNode，只在模块已启动的状态下允许使用 */
+  cqnode: Robot;
   /** 模块是否处于运行状态 */
   isRunning: boolean;
   /** 模块信息 */
