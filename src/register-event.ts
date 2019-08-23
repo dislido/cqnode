@@ -3,22 +3,35 @@ import { ServerResponse } from "http";
 import { CQEvent } from "../types/cq-http";
 import { CQResponse } from "../types/response";
 
-const plgData = (data: CQEvent.Message) => (p: "username" | "atme" | "msg", val: any) => Reflect.has(data, p) ? data[p] : val;
-
+function unfreeze(data: CQEvent.Message) {
+  ['username', 'atme', 'msg'].forEach(p => {
+    if (Reflect.has(data, p)) {
+      Reflect.defineProperty(data, p, { writable: true });
+    }
+  });
+}
 function checkAtme(this: Robot, data: CQEvent.Message) {
-  const pd = plgData(data);
+  ['username', 'atme', 'msg'].forEach(p => {
+    if (Reflect.has(data, p)) {
+      Reflect.defineProperty(data, p, {
+        configurable: true,
+        writable: false,
+        value: Reflect.get(data, p),
+      });
+    }
+  });
   Object.assign(data, {
-    username: pd('username', data.sender.card || data.sender.nickname),
-    atme: pd('atme', false),
-    msg: pd('msg', data.message.trim()),
+    username: data.sender.card || data.sender.nickname,
+    atme: false,
+    msg: data.message.trim(),
   });
   if (data.messageType === 'private') {
-    data.atme = pd('atme', true);
+    data.atme = true;
     return;
   }
   if (data.messageType !== 'group' && data.messageType !== 'discuss') return;
   const atmeTrigger = this.config.atmeTrigger;
-  data.atme = pd('atme', atmeTrigger.some(p => {
+  data.atme = atmeTrigger.some(p => {
     if (p === true && data.msg.startsWith(`[CQ:at,qq=${data.selfId}]`)) {
       data.msg = data.msg.substring(`[CQ:at,qq=${data.selfId}]`.length).trim();
       return true;
@@ -28,7 +41,7 @@ function checkAtme(this: Robot, data: CQEvent.Message) {
       return true;
     }
     return false;
-  }));
+  });
 }
 
 type NoticeEventName = 'onGroupUploadNotice' | 'onGroupAdminNotice' | 'onGroupDecreaseNotice' | 'onGroupIncreaseNotice' | 'onFriendAddNotice';
@@ -90,6 +103,7 @@ function registerPrivateMessageEvent(cqnode: Robot) {
   });
   cqnode.on('PrivateMessage', (data: CQEvent.PrivateMessage, response: ServerResponse) => {
     checkAtme.call(cqnode, data);
+    unfreeze(data);
     callModuleEvent(cqnode, 'onPrivateMessage', data, getResponse(data, response));
   });
 }
@@ -123,6 +137,7 @@ function registerGroupMessageEvent(cqnode: Robot) {
   });
   cqnode.on('GroupMessage', (data: CQEvent.GroupMessage, response: ServerResponse) => {
     checkAtme.call(cqnode, data);
+    unfreeze(data);
     callModuleEvent(cqnode, 'onGroupMessage', data, getResponse(data, response));
   });
 }
@@ -143,6 +158,7 @@ function registerDiscussMessageEvent(cqnode: Robot) {
   });
   cqnode.on('DiscussMessage', (data: CQEvent.DiscussMessage, response: ServerResponse) => {
     checkAtme.call(cqnode, data);
+    unfreeze(data);
     callModuleEvent(cqnode, 'onDiscussMessage', data, getResponse(data, response));
   });
 }
