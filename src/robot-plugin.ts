@@ -17,7 +17,9 @@ namespace HookData  {
     /** 原始ServerResponse对象 */
     originalResponse: ServerResponse;
     /** 将要进行响应的responseBody内容 */
-    body: object;
+    body: {
+      [field: string]: any;
+    };
     /** 处理此消息的Module,若为空则没有模块处理此消息 */
     handlerModule?: CQNodeModule;
   };
@@ -34,11 +36,11 @@ export default class CQNodePlugin {
   cqnode: Robot;
 
   /** 在接收到事件时触发 */
-  onEventReceived(data: HookData.onEventReceived): boolean | HookData.onEventReceived { return true; }
+  onEventReceived(data: HookData.onEventReceived): boolean | HookData.onEventReceived | void { return true; }
   /** 无论返回什么，response.end()都会被调用，handlerModule存在时，返回false会阻止cqnode返回任何数据，即无视body内容 */
-  onResponse(data: HookData.onResponse): boolean | HookData.onResponse { return true; }
+  onResponse(data: HookData.onResponse): boolean | HookData.onResponse | void { return true; }
   /** 拦截Module对API的调用，不影响Plugin的API调用 */
-  onRequestAPI(data: HookData.onRequestAPI): boolean | HookData.onRequestAPI { return true; }
+  onRequestAPI(data: HookData.onRequestAPI): boolean | HookData.onRequestAPI | void { return true; }
 
   onRegister() {}
 }
@@ -64,17 +66,17 @@ export class PluginFactory {
     }][0];
     return pluginConstructor;
   }
-  onEventReceived(fn: (data: HookData.onEventReceived) => boolean | HookData.onEventReceived) {
+  onEventReceived(fn: (data: HookData.onEventReceived) => boolean | HookData.onEventReceived | void) {
     if (this.noDuplicate && this.proto.onEventReceived) this.duplicateError('onEventReceived');
     this.proto.onEventReceived = fn;
     return this;
   }
-  onResponse(fn: (data: HookData.onResponse) => boolean | HookData.onResponse) {
+  onResponse(fn: (data: HookData.onResponse) => boolean | HookData.onResponse | void) {
     if (this.noDuplicate && this.proto.onResponse) this.duplicateError('onResponse');
     this.proto.onResponse = fn;
     return this;
   }
-  onRequestAPI(fn: (data: HookData.onRequestAPI) => boolean | HookData.onRequestAPI) {
+  onRequestAPI(fn: (data: HookData.onRequestAPI) => boolean | HookData.onRequestAPI | void) {
     if (this.noDuplicate && this.proto.onRequestAPI) this.duplicateError('onRequestAPI');
     this.proto.onRequestAPI = fn;
     return this;

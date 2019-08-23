@@ -4,7 +4,7 @@ import { Module } from './module';
 import { Robot } from './robot';
 
 export type HookName = Exclude<keyof Plugin, 'onRegister' | 'cqnode'>;
-declare namespace HookData  {
+export declare namespace HookData  {
   export type onEventReceived = {
     /**
      * 接收到的事件名，是下列事件名之一：
@@ -31,7 +31,7 @@ declare namespace HookData  {
     /** 原始ServerResponse对象 */
     originalResponse: ServerResponse;
     /** 将要进行响应的responseBody内容 */
-    body: object;
+    body: any;
     /** 处理该事件的Module，若为`undefined`，则没有Module处理此事件 */
     handlerModule?: Module;
   };
@@ -51,11 +51,11 @@ export class Plugin {
   cqnode: Robot;
 
   /** 在接收到事件时触发 */
-  onEventReceived(data: HookData.onEventReceived): boolean | HookData.onEventReceived;
+  onEventReceived(data: HookData.onEventReceived): boolean | HookData.onEventReceived | void;
   /** 在Module响应事件时或所有Module都不处理该事件时触发  */
-  onResponse(data: HookData.onResponse): boolean | HookData.onResponse;
+  onResponse(data: HookData.onResponse): boolean | HookData.onResponse | void;
   /** 在Module调用API时触发（即使用`this.cqnode.api`时） */
-  onRequestAPI(data: HookData.onRequestAPI): boolean | HookData.onRequestAPI;
+  onRequestAPI(data: HookData.onRequestAPI): boolean | HookData.onRequestAPI | void;
   /** 本模块注册完成时触发 */
   onRegister(): void;
 }
@@ -65,11 +65,11 @@ declare class PluginFactory {
   private duplicateError(name: string): void;
   createConstructor(initfn?: (...args: any) => void): typeof Plugin;
   /** 在接收到事件时触发 */
-  onEventReceived(fn: (data: HookData.onEventReceived) => boolean | HookData.onEventReceived): this;
+  onEventReceived(fn: (data: HookData.onEventReceived) => boolean | HookData.onEventReceived | void): this;
   /** 在Module响应事件时或所有Module都不处理该事件时触发  */
-  onResponse(fn: (data: HookData.onResponse) => boolean | HookData.onResponse): this;
+  onResponse(fn: (data: HookData.onResponse) => boolean | HookData.onResponse | void): this;
   /** 在Module调用API时触发（即使用`this.cqnode.api`时） */
-  onRequestAPI(fn: (data: HookData.onRequestAPI) => boolean | HookData.onRequestAPI): this;
+  onRequestAPI(fn: (data: HookData.onRequestAPI) => boolean | HookData.onRequestAPI | void): this;
   /** 本模块注册完成时触发 */
   onRegister(): this;
 }

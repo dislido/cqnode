@@ -5,8 +5,9 @@ export as namespace CQNode;
 export * from './types/response';
 export * from './types/cq-http';
 
+export { Robot } from './types/robot';
 export { Module } from './types/module';
-export { Plugin } from './types/plugin';
+export { Plugin, HookData } from './types/plugin';
 export * from './types/util';
 /**
  * 创建机器人

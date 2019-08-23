@@ -33,3 +33,15 @@ class Repeat extends CQNode.Module {
 [`ModuleFactory`](./modulefactory)不需要提供类型声明就能提供代码提示  
 
 ![ModuleFactory代码提示](../assets/img/typeinferrence-3.png)
+
+## 在插件中启用代码提示
+插件的参数类型声明在`CQNode.HookData`中
+```javascript
+class T extends CQNode.Plugin {
+  /**
+   * @param {CQNode.HookData.onResponse} data 
+   */
+  onResponse(data) {}
+}
+```
+同样可以通过[`PluginFactory`](./plugin)获取代码提示

@@ -16,7 +16,7 @@ export namespace CQResponse {
   /** 消息类事件 */
   interface Message extends Response {
     /**
-     * 使用response响应回复消息
+     * 回复消息
      * @param message 回复信息
      * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码）
      */
@@ -28,12 +28,6 @@ export namespace CQResponse {
 
   /** 群消息事件 */
   interface GroupMessage extends Message {
-    /**
-     * 向发送者发送私聊消息
-     * @param message 回复信息
-     * @param autoEscape 消息内容是否作为纯文本发送（即不解析 CQ 码）
-     */
-    sendPrivate(message: string, autoEscape?: boolean): this;
     /** 是否要在回复开头at发送者，发送者是匿名用户时无效 */
     at(at: boolean): this;
     /** 撤回该消息 */

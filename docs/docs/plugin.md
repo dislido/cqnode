@@ -25,6 +25,8 @@ const pf = new CQNode.Plugin.Factory()
 - `true` 应用对`data`的修改，并让事件继续进行
 - `object` 将替换`data`，并让事件继续进行
 - `undefind` 同`true`
+
+允许但不建议使用的返回值：
 - 返回其他类型的值`a`时，将认为返回了与`a`对应的`boolean`类型值（`!!a`）
 
 

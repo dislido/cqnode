@@ -100,11 +100,7 @@ function registerGroupMessageEvent(cqnode: Robot) {
     responseBody: {},
     reply(message, autoEscape = false) {
       this.responseBody.reply = message;
-      if (autoEscape) this.responseBody.autoEscape = true;
-      return this;
-    },
-    sendPrivate(message: string, autoEscape?) {
-      cqnode.connect.api.sendPrivateMsg(data.userId, message, autoEscape);
+      if (autoEscape) this.responseBody.auto_escape = true;
       return this;
     },
     at(at = true) {
