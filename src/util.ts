@@ -83,7 +83,12 @@ type CQCodeData = {
     [key: string]: string;
   }
 };
-export function parseCQCodeString(code: string) {
+
+export function CQCode(type: string, data: { [key:string]: string } = {}) {
+  const dataEntries = Object.entries(data);
+  return `[CQ:${type}${dataEntries.length > 0 ? ',':''}${dataEntries.map(it => it.join('=')).join(',')}]`;
+}
+CQCode.parseCQCodeString = function parseCQCodeString(code: string) {
   const ret = /\[CQ:([^,]+)(.*)\]/.exec(code);
   if (!ret) return;
   const result: CQCodeData = {
@@ -100,4 +105,4 @@ export function parseCQCodeString(code: string) {
     })
   }
   return result;
-}
+};

@@ -47,6 +47,12 @@ export namespace util {
     /** 获取事件名 */
     function assertEventName(event: CQEvent.Event): EventName;
   }
+  /**
+   * 生成CQCode字符串
+   * @param type CQCode类型
+   * @param data CQCode数据
+   */
+  function CQCode(type: string, data?: { [key:string]: string }): string;
   namespace CQCode {
     type CQCodeData = {
       type: string;
