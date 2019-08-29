@@ -59,6 +59,6 @@ export namespace util {
      * @param code CQ码字符串
      * @returns 解析的对象，若CQ码格式不正确则返回`undefined`
      */
-    function parseString(code: string): CQCodeData | undefined;
+    function parseCQCodeString(code: string): CQCodeData | undefined;
   }
 }
