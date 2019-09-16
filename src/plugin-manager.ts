@@ -21,7 +21,7 @@ export default class PluginManager {
    * @param {string} hookName 钩子名
    * @param {object} data 钩子提供的参数数据对象，对该对象的修改会改变事件相关数据
    */
-  emit<T extends HookName>(hookName: T, data: Parameters<CQNodePlugin[T]>[0]) {
+  emit<T extends HookName>(hookName: T, data: Parameters<CQNodePlugin[T]>[0]): Parameters<CQNodePlugin[T]>[0] | false {
     const plugins = this.plugins.filter(plugin => plugin[hookName] !== CQNodePlugin.prototype[hookName]);
     let currData = data;
     try {

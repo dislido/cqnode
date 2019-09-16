@@ -13,6 +13,9 @@ class MyModule extends CQNode.Module {
       description: '模块描述信息',
     });
   }
+  onRun() {
+    console.log(this.cqnode.inf.groupList)
+  }
   /**
    * 添加这些类型声明可以获得代码提示，如果你使用TypeScript会更加方便
    * @param {CQNode.CQEvent.Event} data 
@@ -34,6 +37,9 @@ class MyModule extends CQNode.Module {
 
 CQNode.createRobot({
   modules: [new MyModule()],
+  connector: {
+    LISTEN_PORT: 8080
+  }
 });
 
 /**

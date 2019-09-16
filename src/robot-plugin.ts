@@ -41,6 +41,8 @@ export default class CQNodePlugin {
   onResponse(data: HookData.onResponse): boolean | HookData.onResponse | void { return true; }
   /** 拦截Module对API的调用，不影响Plugin的API调用 */
   onRequestAPI(data: HookData.onRequestAPI): boolean | HookData.onRequestAPI | void { return true; }
+  /** CQNode初始化完毕时触发 */
+  onReady(data: {}): boolean | {} | void { return true; }
 
   onRegister() {}
 }

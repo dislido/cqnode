@@ -135,6 +135,7 @@ export default class Robot extends event.EventEmitter {
 
     this.modules = this.config.modules;
     this.modules.forEach((modRef, index) => this.loadModule(index));
+    this.pluginManager.emit('onReady', {});
     console.log('cqnode: 初始化完成');
   }
 
