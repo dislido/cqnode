@@ -56,6 +56,8 @@ export class Plugin {
   onResponse(data: HookData.onResponse): boolean | HookData.onResponse | void;
   /** 在Module调用API时触发（即使用`this.cqnode.api`时） */
   onRequestAPI(data: HookData.onRequestAPI): boolean | HookData.onRequestAPI | void;
+  /** CQNode初始化完毕时触发 */
+  onReady(data: {}): boolean | {} | void;
   /** 本模块注册完成时触发 */
   onRegister(): void;
 }
