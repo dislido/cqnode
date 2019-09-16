@@ -23,7 +23,7 @@ function checkAtme(this: Robot, data: CQEvent.Message) {
   Object.assign(data, {
     username: data.sender.card || data.sender.nickname,
     atme: false,
-    msg: data.message.trim(),
+    msg: data.rawMessage.trim(),
   });
   if (data.messageType === 'private') {
     data.atme = true;
