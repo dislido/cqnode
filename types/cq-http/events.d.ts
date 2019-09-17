@@ -15,7 +15,12 @@ export namespace CQEvent {
     /** 收到消息的机器人 QQ 号 */
     selfId: number;
   }
-
+  interface MessageObject {
+    type: string;
+    data: {
+      [name: string]: string;
+    }
+  }
   /** 消息类事件 */
   interface Message extends Event {
     postType: 'message';
@@ -30,7 +35,7 @@ export namespace CQEvent {
     /** 发送者 QQ 号 */
     userId: number;
     /** 消息内容 */
-    message: string;
+    message: string | MessageObject;
     /** 原始消息内容 */
     rawMessage: string;
     /** 字体 */
