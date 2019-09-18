@@ -28,6 +28,7 @@ namespace HookData  {
     caller: CQNodeModule;
     apiName: keyof CQAPI;
     params: Parameters<CQAPI[keyof CQAPI]>;
+    function?: Function;
   };
 };
 

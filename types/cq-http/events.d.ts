@@ -49,7 +49,7 @@ export namespace CQEvent {
     /** 是否at了本账号，私聊消息中总是为true */
     atme: boolean;
     /**
-     * 对message进行过预处理操作后的字符串
+     * 对rawMessage进行过预处理操作后的字符串
      * (移除at信息部分，删除首尾空格)
      */
     msg: string;

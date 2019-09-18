@@ -211,8 +211,10 @@ export default class Robot extends event.EventEmitter {
               get caller() { return mod; },
               apiName: p as keyof typeof CQAPI,
               params: argArray,
+              function: undefined,
             });
-            if (plgret === false) throw new Error('CQNode Error: API请求被拦截');
+            if (plgret === false) throw new Error(`CQNode: API请求被拦截: ${mod.inf.name} ${p as string}(${argArray.join(', ')})`);
+            if (plgret.function) return plgret.function.apply(thisArg, plgret.params);
             return api[plgret.apiName].apply(thisArg, plgret.params);
           }
         });
