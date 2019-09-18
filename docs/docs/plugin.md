@@ -102,12 +102,14 @@ onRequestAPI(data: {
   caller: CQNodeModule;
   apiName: keyof typeof CQAPI;
   params: Parameters<CQAPI[keyof CQAPI]>;
+  function: Function;
 })
 ```
 
 - __readonly__ `caller` 调用API的模块
 - `apiName` 调用的API函数名
 - `params` 传递给API函数的参数数组
+- `function` 替换调用的API函数
 
 ```javascript
 /**
