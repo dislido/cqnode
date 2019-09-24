@@ -24,7 +24,11 @@ class MyModule extends CQNode.Module {
   onMessage(data, resp) {
     return resp.reply(`received: ${data.msg}`);
   }
-  
+  onEvent(data) {
+    if (CQNode.util.eventType.isMessage(data)) {
+      data.msg
+    }
+  }
   /**
    * @param {CQNode.CQEvent.GroupMessage} data 
    * @param {CQNode.CQResponse.GroupMessage} resp 
