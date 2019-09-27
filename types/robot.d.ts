@@ -2,6 +2,8 @@ import { Module } from './module';
 import { CQAPI, CQHTTP } from './cq-http';
 import { EventEmitter } from 'events';
 import WorkpathManager from './workpath-manager';
+import { util } from './util';
+import { Plugin } from './plugin';
 
 interface CQNodeConfig {
   /** 管理员 */
@@ -91,6 +93,12 @@ interface CQNodeInf {
 }
 
 export class Robot extends EventEmitter {
+  static CQNode: {
+    createRobot(config: ConfigObject): Robot;
+    Module: typeof Module;
+    Plugin: typeof Plugin;
+    util: typeof util;
+  };
   /** CQNode配置 */
   config: CQNodeConfig;
   /** 已加载的模块 */
@@ -101,4 +109,7 @@ export class Robot extends EventEmitter {
   api: CQAPI;
   /** @WIP workpath */
   workpathManager: WorkpathManager;
+}
+export interface Robot {
+  constructor: typeof Robot;
 }

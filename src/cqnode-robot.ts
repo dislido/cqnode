@@ -1,7 +1,7 @@
 import * as event from 'events';
 import PluginManager from './plugin-manager';
 import WorkpathManager from './workpath-manager';
-import { checkConfig, nullCQNode } from './util';
+import { checkConfig, nullCQNode, CQCode } from './util';
 import CQHttpConnector from './connector-cqhttp';
 import CQNodeModule from './robot-module';
 import registerEvent from './register-event';
@@ -97,6 +97,7 @@ interface CQNodeInf {
 }
 
 export default class Robot extends event.EventEmitter {
+  static CQNode: any;
   config: CQNodeConfig;
   workpathManager: WorkpathManager;
   pluginManager: PluginManager;
