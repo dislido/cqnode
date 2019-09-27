@@ -123,3 +123,9 @@ onRequestAPI(data) {
   return true;
 }
 ```
+
+## plugin.onReady
+CQNodeRobot初始化完毕时触发  
+```typescript
+onReady(data: {})
+```

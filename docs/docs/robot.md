@@ -65,3 +65,11 @@ interface CQNodeInf {
   */
 }
 ```
+
+## Robot.CQNode (>=2.3.0)
+CQNode的引用
+```javascript
+const CQNode = require('@dislido/CQNode');
+
+CQNode.createRobot({}).constructor.CQNode === CQNode; // true
+```
