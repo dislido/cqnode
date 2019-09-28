@@ -29,9 +29,8 @@ export function checkConfig(config: ConfigObject) {
     throw new Error(`config.admin 的类型必须是 number 或 number[]`);
   }
 
-
   if (false === cfg.modules instanceof Array) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
-  if (cfg.modules.some((it: any) => false === it instanceof CQNode.Module)) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
+  // if (cfg.modules.some((it: any) => false === it instanceof CQNode.Module)) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
 
   if (!isArray(cfg.atmeTrigger)) cfg.atmeTrigger = [cfg.atmeTrigger];
   cfg.atmeTrigger = cfg.atmeTrigger.map(it => it === true ? it : `${it}`);
