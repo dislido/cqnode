@@ -53,6 +53,8 @@ interface CQNodeInf {
     /** HTTP API 插件编译配置，debug 或 release */
     pluginBuildConfiguration: string;
   };
+  /** CQNode版本 */
+  CQNodeVersion: string;
   /** 群列表 */
   groupList: CQHTTP.GetGroupListResponseData[];
   /* CQHTTP.GetGroupListResponseData
