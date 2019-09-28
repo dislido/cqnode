@@ -92,6 +92,7 @@ interface CQNodeInf {
     /** HTTP API 插件编译配置，debug 或 release */
     pluginBuildConfiguration: string;
   };
+  CQNodeVersion: string;
   /** 群列表 */
   groupList: CQHTTP.GetGroupListResponseData[];
 }
@@ -103,7 +104,7 @@ export default class Robot extends event.EventEmitter {
   pluginManager: PluginManager;
   connect: CQHttpConnector;
   modules: CQNodeModule[];
-  inf = { inited: false } as CQNodeInf;
+  inf = { inited: false, CQNodeVersion: require('../package.json').version } as CQNodeInf;
   api: typeof CQAPI;
   constructor(config: ConfigObject) {
     super();
