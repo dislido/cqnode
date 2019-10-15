@@ -52,7 +52,7 @@ export namespace util {
    * @param type CQCode类型
    * @param data CQCode数据
    */
-  function CQCode(type: string, data?: { [key:string]: string | number | boolean }): string;
+  function CQCode(type: string, data?: { [key:string]: string | number | boolean }): CQCode.CQCodeString;
   namespace CQCode {
     /** CQCode字符串 */
     class CQCodeString extends String {
