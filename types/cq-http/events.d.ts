@@ -35,7 +35,7 @@ export namespace CQEvent {
     /** 发送者 QQ 号 */
     userId: number;
     /** 消息内容 */
-    message: string | MessageObject;
+    message: string | MessageObject[];
     /** 原始消息内容 */
     rawMessage: string;
     /** 字体 */
