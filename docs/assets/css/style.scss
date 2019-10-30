@@ -54,3 +54,17 @@ a>code {
 blockquote:hover {
   background-color: #00000010;
 }
+
+#main_content {
+  h1, h2, h3, h4, h5, h6 {
+    &[id] {
+      cursor: pointer;
+      &:hover {
+        color: #0F79D0;
+        &::after {
+          content: '🔗';
+        }
+      }
+    }
+  }
+}

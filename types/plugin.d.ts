@@ -41,7 +41,7 @@ export declare namespace HookData  {
     /** 调用的API函数名 */
     apiName: keyof CQAPI;
     /** 传递给API函数的参数数组 */
-    params: Parameters<CQAPI[keyof CQAPI]>;
+    params: Parameters<CQAPI[keyof CQAPI]> & Array<any>;
     /** 替换调用的API函数 */
     function?: Function;
   };
