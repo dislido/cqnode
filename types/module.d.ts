@@ -15,6 +15,7 @@ declare namespace Module {
     help?: string;
     /** 模块简介 */
     description?: string;
+    [key: string]: any;
   }
 }
 

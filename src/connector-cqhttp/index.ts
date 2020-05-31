@@ -50,7 +50,13 @@ export default class CQHttpConnector {
         data += chunk;
       }).on('end', () => {
         resp.setHeader('Content-Type', 'application/json');
-        this.onEventReceived(toCamelCase(JSON.parse(decodeHtml(data))) as CQEvent.Event, resp);
+        let event: CQEvent.Event | null = null;
+        try {
+          event = toCamelCase(JSON.parse(decodeHtml(data))) as CQEvent.Event;
+        } catch (e) {
+          console.error(`[cqnode error]: parse Event failed: `, data);
+        }
+        if (event) this.onEventReceived(event, resp);
       });
     }).listen(LISTEN_PORT);
     this.API_PORT = API_PORT;
