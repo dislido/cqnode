@@ -54,7 +54,7 @@ export default class CQHttpConnector {
         try {
           event = toCamelCase(JSON.parse(decodeHtml(data))) as CQEvent.Event;
         } catch (e) {
-          console.error(`[cqnode error]: parse Event failed: `, data);
+          console.error(`[cqnode error]: parse Event failed ->`, data, '<-');
         }
         if (event) this.onEventReceived(event, resp);
       });
