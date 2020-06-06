@@ -1,13 +1,13 @@
 {
   "name": "@dislido/cqnode",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "description": "no description",
   "main": "dist/index.js",
   "author": "dislido",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "release": "tsc&&npm publish"
+    "release": "npm i&&tsc&&npm publish"
   },
   "engines": {
     "node": ">=10.0.0"
