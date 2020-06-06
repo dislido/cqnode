@@ -94,7 +94,7 @@ export default class CQHttpConnector {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
-        'Content-length': content.length,
+        'Content-length': Buffer.byteLength(content),
       },
     };
     if (this.ACCESS_TOKEN) reqOpt.headers['Authorization'] = `Bearer ${this.ACCESS_TOKEN}`;
