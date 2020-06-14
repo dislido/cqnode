@@ -97,6 +97,7 @@ export class ModuleFactory {
   createConstructor(inf: CQNodeModuleInf = {}, initfn?: (...args: any) => void): typeof CQNodeModule {
     if (initfn instanceof Function && initfn.prototype === undefined) throw new Error('ModuleFactoryError: createConstructor的init函数不能为箭头函数');
     const proto = this.proto;
+    // 清楚class name
     const moduleConstructor = [class extends CQNodeModule {
       constructor(...args: any) {
         super(inf)
