@@ -19,6 +19,7 @@
   "types": "index",
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^11.13.5"
+    "@types/node": "^11.13.5",
+    "typescript": "^3.9.5"
   }
 }
