@@ -2,21 +2,7 @@ import * as fs from 'fs';
 import Robot from './cqnode-robot';
 import { CQResponse } from '../types/response';
 import { CQEvent } from '../types/cq-http';
-
-type EventResult = boolean | void | CQResponse.Response;
-export type EventReturns = EventResult | Promise<EventResult>;
-/** 模块信息 */
-export interface CQNodeModuleInf {
-  /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，`/`会被替换为`.` */
-  packageName?: string;
-  /** 模块名 */
-  name?: string;
-  /** 模块帮助信息 */
-  help?: string;
-  /** 模块简介 */
-  description?: string;
-  [key: string]: any;
-}
+import { CQNodeModuleInf, EventReturns } from 'types/module';
 
 export default class CQNodeModule {
   static Factory: typeof ModuleFactory;
@@ -70,17 +56,11 @@ export default class CQNodeModule {
     return this.onRequest(data, resp);
   }
 
-  /**
-   * @todo 递归创建文件夹
-   */
-  getFilepath() {
+  async getFilepath() {
     if (!this.cqnode) throw new Error('在模块启动后才能使用(从onRun到onStop)');
     if (!this.inf.packageName) throw new Error('不能在匿名模块中使用此功能，在inf中添加packageName以启用此功能');
     const filepath = this.cqnode.workpathManager.getWorkPath(`module/${this.inf.packageName}`);
-    if (!fs.existsSync(filepath)) {
-      fs.mkdirSync(filepath);
-    }
-    return filepath;
+    return this.cqnode.workpathManager.ensurePath(filepath);
   }
 }
 
@@ -97,7 +77,7 @@ export class ModuleFactory {
   createConstructor(inf: CQNodeModuleInf = {}, initfn?: (...args: any) => void): typeof CQNodeModule {
     if (initfn instanceof Function && initfn.prototype === undefined) throw new Error('ModuleFactoryError: createConstructor的init函数不能为箭头函数');
     const proto = this.proto;
-    // 清楚class name
+    // 清除class name
     const moduleConstructor = [class extends CQNodeModule {
       constructor(...args: any) {
         super(inf)

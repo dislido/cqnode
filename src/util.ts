@@ -1,5 +1,4 @@
 import Robot, { CQNodeConfig, ConfigObject } from "./cqnode-robot";
-import CQNode from ".";
 import CQNodeModule from "./robot-module";
 import CQNodePlugin from "./robot-plugin";
 
@@ -93,7 +92,9 @@ export function CQCode(type: string, data: { [key:string]: string | number | boo
   const dataEntries = Object.entries(data);
   return new CQCodeString(`[CQ:${type}${dataEntries.length > 0 ? ',':''}${dataEntries.map(it => it.join('=')).join(',')}]`);
 }
-CQCode.CQCodeString = CQCodeString;
+
+CQCode.String = CQCodeString;
+
 CQCode.parseCQCodeString = (code: string) => {
   const ret = /\[CQ:([^,]+)(.*)\]/.exec(code);
   if (!ret) return;
