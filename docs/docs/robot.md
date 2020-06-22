@@ -1,10 +1,11 @@
 # CQNode.Robot
 机器人实例，只能由`CQNode.createRobot()`创建
-- `Robot.modules`: [`CQNode.Module[]`](./module) 已加载的模块
-- `Robot.plugins`: [`CQNode.Plugin[]`](./plugin) 已加载的插件
-- `Robot.api`: [`CQNodeAPI`](./api) CQNode提供的API, 基本与[CQ HTTP API](https://cqhttp.cc/docs/#/API)一致，此外还附加了一些API
-- `Robot.config`: [`CQNodeConfig`](#cqnodeconfig) 配置信息，是对`ConfigObject`进行处理后的对象
-- `Robot.inf`: [`CQNodeInf`](#cqnodeinf) CQNode信息
+- `robot.modules`: [`CQNode.Module[]`](./module) 已加载的模块
+- `robot.plugins`: [`CQNode.Plugin[]`](./plugin) 已加载的插件
+- `robot.api`: [`CQNodeAPI`](./api) CQNode提供的API, 基本与[CQ HTTP API](https://cqhttp.cc/docs/#/API)一致，此外还附加了一些API
+- `robot.config`: [`CQNodeConfig`](#cqnodeconfig) 配置信息，是对`ConfigObject`进行处理后的对象
+- `robot.inf`: [`CQNodeInf`](#cqnodeinf) CQNode信息
+- `robot.workpathManager`: [`WorkpathManager`](./workpath-manager) CQNode文件管理器
 
 ## CQNodeConfig
 统一了类型后的配置对象，各属性意义与[`ConfigObject`](./createrobot#configobject)一致

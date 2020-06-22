@@ -433,6 +433,7 @@ onGroupRequest(data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest)
 ## module.getFilepath
 获得本模块的数据文件目录，仅在设置了[`module.inf.packageName`](#moduleinf)且模块已启动后可用  
 建议将模块保存的文件放在此目录下
+更多文件操作，参考[workpathManager](./workpath-manager)
 ```javascript
 class MyModule extends CQNode.Module {
   constructor() {
