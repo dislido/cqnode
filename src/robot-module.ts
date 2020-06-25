@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import Robot from './cqnode-robot';
 import { CQResponse } from '../types/response';
 import { CQEvent } from '../types/cq-http';
@@ -8,9 +7,7 @@ export default class CQNodeModule {
   static Factory: typeof ModuleFactory;
   cqnode: Robot;
   isRunning = false;
-  constructor(public inf: CQNodeModuleInf = {}) {
-    if (this.inf.packageName) this.inf.packageName = this.inf.packageName.replace(/\//g, '.');
-  }
+  constructor(public inf: CQNodeModuleInf = {}) {}
   onRun() {}
   onStop() {}
   onEvent(event: CQEvent.Event, resp: CQResponse.Response): EventReturns {
@@ -60,7 +57,7 @@ export default class CQNodeModule {
     if (!this.cqnode) throw new Error('在模块启动后才能使用(从onRun到onStop)');
     if (!this.inf.packageName) throw new Error('不能在匿名模块中使用此功能，在inf中添加packageName以启用此功能');
     const filepath = this.cqnode.workpathManager.getWorkPath(`module/${this.inf.packageName}`);
-    return this.cqnode.workpathManager.ensurePath(filepath);
+    return this.cqnode.workpathManager.ensurePath(filepath, null);
   }
 }
 

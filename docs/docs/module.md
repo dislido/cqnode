@@ -47,7 +47,7 @@ CQNode功能模块基类，通过继承此类来编写模块，在代码提示�
 模块信息，在[`constructor`](#constructor)中设置，提供帮助信息和一些其他功能
 ```typescript
 interface Inf {
-  /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，`/`会被替换为`.` */
+  /** 模块包名，应保证唯一，名称中不能包含无法作为文件路径名的字符，建议同npm包名 */
   packageName: string;
   /** 模块名 */
   name: string;
@@ -431,7 +431,7 @@ onGroupRequest(data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest)
 > - `reason` 拒绝理由（仅在拒绝时有效）
 
 ## module.getFilepath
-获得本模块的数据文件目录，仅在设置了[`module.inf.packageName`](#moduleinf)且模块已启动后可用  
+获得本模块的数据文件目录，若目录不存在则会创建目录，仅在设置了[`module.inf.packageName`](#moduleinf)且模块已启动后可用  
 建议将模块保存的文件放在此目录下
 更多文件操作，参考[workpathManager](./workpath-manager)
 ```javascript
@@ -445,8 +445,8 @@ class MyModule extends CQNode.Module {
     });
   }
 
-  onRun() {
-    const filePath = this.getFilepath();
+  async onRun() {
+    const filePath = await this.getFilepath();
     const data = fs.readFileSync(path.resolve(filePath, 'data.txt'));
     this.data = JSON.parse(data);
   }
