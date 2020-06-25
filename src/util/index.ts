@@ -1,6 +1,6 @@
-import Robot, { CQNodeConfig, ConfigObject } from "./cqnode-robot";
-import CQNodeModule from "./robot-module";
-import CQNodePlugin from "./robot-plugin";
+import Robot, { CQNodeConfig, ConfigObject } from "../cqnode-robot";
+import CQNodeModule from "../robot-module";
+import CQNodePlugin from "../robot-plugin";
 
 function isArray(o: any): o is Array<any> {
   return o instanceof Array;
