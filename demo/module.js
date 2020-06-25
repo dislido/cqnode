@@ -26,7 +26,7 @@ class MyModule extends CQNode.Module {
   }
   onEvent(data) {
     if (CQNode.util.eventType.isMessage(data)) {
-      data.msg
+      console.log(data.msg);
     }
   }
   /**
