@@ -1,8 +1,8 @@
 import Robot from './cqnode-robot';
 import Module from './robot-module';
 import Plugin from './robot-plugin';
-import { ConfigObject } from './cqnode-robot';
 import * as util from './util/common';
+import { ConfigObject } from '@/types/robot';
 
 const CQNode = {
   createRobot(config: ConfigObject) {

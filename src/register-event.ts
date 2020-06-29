@@ -43,7 +43,9 @@ function checkAtme(this: Robot, data: CQEvent.Message) {
     return false;
   });
 }
+const groupEventNames = ['onGroupUploadNotice', 'onGroupAdminNotice', 'onGroupDecreaseNotice', 'onGroupIncreaseNotice', 'onGroupMessage'];
 
+type GroupEvent = CQEvent.GroupIncreaseNotice | CQEvent.GroupDecreaseNotice | CQEvent.GroupAdminNotice | CQEvent.GroupUploadNotice | CQEvent.GroupMessage;
 type NoticeEventName = 'onGroupUploadNotice' | 'onGroupAdminNotice' | 'onGroupDecreaseNotice' | 'onGroupIncreaseNotice' | 'onFriendAddNotice';
 type MessageEventName = 'onDiscussMessage' | 'onPrivateMessage' | 'onGroupMessage';
 type RequestEventName = 'onFriendRequest' | 'onGroupRequest';
@@ -59,9 +61,20 @@ async function callModuleEvent(cqnode: Robot, eventFunctionName: 'onGroupRequest
 async function callModuleEvent(cqnode: Robot, eventFunctionName: 'onPrivateMessage', data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage): Promise<void>;
 async function callModuleEvent(cqnode: Robot, eventFunctionName: 'onGroupMessage', data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage): Promise<void>;
 async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data: CQEvent.Event, resp: CQResponse.Response) {
-  for (let i = 0; i < cqnode.modules.length; ++i) {
-    const currentModule = cqnode.modules[i];
+  const moduleCfg = cqnode.config.modules;
+  const groupModuleCfg = groupEventNames.includes(eventFunctionName) && (await cqnode.groupConfig.get((<GroupEvent>data).groupId)).modules;
+
+  for (let i = 0; i < moduleCfg.length; ++i) {
+    const globalModuleConfig = moduleCfg[i];
+    const { entry: modEntry, } = globalModuleConfig;
+    if (groupModuleCfg && groupModuleCfg[modEntry]) {
+      if (groupModuleCfg[modEntry].enable === false) continue;
+    } else if (globalModuleConfig.enable === false) {
+      continue;
+    };
+
     try {
+      const currentModule = cqnode.modules[modEntry].module;
       const result = await currentModule[eventFunctionName](data as any, resp as any);
       if (result) {
         const hookData = {

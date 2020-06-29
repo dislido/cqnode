@@ -1,18 +1,33 @@
 import Robot from "./cqnode-robot";
 import CQNodePlugin, { HookName } from "./robot-plugin";
+import { LoadModuleObject } from "@/types/robot";
 
 export default class PluginManager {
   plugins: CQNodePlugin[] = [];
+  plgCache: {
+    [key: string]: CQNodePlugin;
+  } = {};
   constructor(public cqnode: Robot) {}
 
   /**
    * 注册插件
    * @param {object} plugin 插件对象
    */
-  registerPlugin(plugin: CQNodePlugin) {
-    plugin.cqnode = this.cqnode;
-    plugin.onRegister();
-    this.plugins.push(plugin);
+  registerPlugin(plugin: LoadModuleObject) {
+    const { entry, constructorParams = [], config = {}, meta = {} } = plugin;
+    if (this.plgCache[entry]) return true;
+    try {
+      const PluginClass = require(entry);
+      const plugin = new PluginClass(...constructorParams);
+      this.plgCache[entry] = plugin;
+      plugin.cqnode = this.cqnode;
+      plugin.onRegister();
+      this.plugins.push(plugin);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return e;
+    }
   }
 
   /**

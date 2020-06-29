@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import util from 'util';
 import CQNodeModule from './robot-module';
+import { JSONType } from '@/types/type';
 
 const exists = util.promisify(fs.exists);
 
@@ -27,9 +28,12 @@ export default class WorkpathManager {
   }
 
   async init() {
-    await this.ensurePath(path.resolve(this.workpath, 'module'), null);
-    await this.ensurePath(path.resolve(this.workpath, 'log'), null);
-    await this.ensurePath(path.resolve(this.workpath, 'group'), null);
+    return Promise.all([
+      this.ensurePath(path.resolve(this.workpath, 'module'), null),
+      this.ensurePath(path.resolve(this.workpath, 'log'), null),
+      this.ensurePath(path.resolve(this.workpath, 'group'), null),
+      this.ensurePath(this.workpath, 'config.json', 'null'),
+    ]);
   }
 
   getWorkPath(...to: string[]) {
@@ -77,11 +81,11 @@ export default class WorkpathManager {
    * @param path 路径
    * @param defaultData 文件不存在时写入默认JSON对象，默认为`{}`
    */
-  async readJson(path: string, defaultData: any = {}) {
-    await this.ensurePath(path);
+  async readJson(path: string, defaultData: JSONType = {}) {
+    await this.ensurePath(path, '', JSON.stringify(defaultData));
     const fileBuf = await fs.promises.readFile(path);
     const data = fileBuf.toString();
-    return JSON.parse(data || JSON.stringify(defaultData));
+    return JSON.parse(data);
   }
   
   /**
@@ -91,7 +95,7 @@ export default class WorkpathManager {
    */
   async writeJson(path: string, data: any) {
     await this.ensurePath(path);
-    return fs.promises.writeFile(path, JSON.stringify(data));
+    return fs.promises.writeFile(path, JSON.stringify(data, null, 2));
   }
   /**
    * 获取指定群，指定模块的设置信息

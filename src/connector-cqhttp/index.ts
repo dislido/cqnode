@@ -44,25 +44,32 @@ export default class CQHttpConnector {
     API_PORT = 5700,
     TIMEOUT = 10000,
     ACCESS_TOKEN }: CQHTTPConfig = {}) {
-    this.server = http.createServer((req, resp) => {
-      let data = '';
-      req.on('data', (chunk) => {
-        data += chunk;
-      }).on('end', () => {
-        resp.setHeader('Content-Type', 'application/json');
-        let event: CQEvent.Event | null = null;
-        try {
-          event = toCamelCase(JSON.parse(decodeHtml(data))) as CQEvent.Event;
-        } catch (e) {
-          console.error(`[cqnode error]: parse Event failed ->`, data, '<-');
-        }
-        if (event) this.onEventReceived(event, resp);
-      });
-    }).listen(LISTEN_PORT);
+    
     this.API_PORT = API_PORT;
     this.LISTEN_PORT = LISTEN_PORT;
     this.TIMEOUT = TIMEOUT;
     this.ACCESS_TOKEN = ACCESS_TOKEN;
+  }
+
+  async init() {
+    this.server = await new Promise((res) => {
+      const server = http.createServer((req, resp) => {
+        let data = '';
+        req.on('data', (chunk) => {
+          data += chunk;
+        }).on('end', () => {
+          resp.setHeader('Content-Type', 'application/json');
+          let event: CQEvent.Event | null = null;
+          try {
+            event = toCamelCase(JSON.parse(decodeHtml(data))) as CQEvent.Event;
+          } catch (e) {
+            console.error(`[cqnode error]: parse Event failed ->`, data, '<-');
+          }
+          if (event) this.onEventReceived(event, resp);
+        });
+      }).listen(this.LISTEN_PORT, () => res(server));
+    });
+    return this;
   }
 
   /**

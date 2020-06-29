@@ -1,47 +1,6 @@
-import Robot, { CQNodeConfig, ConfigObject } from "../cqnode-robot";
-import CQNodeModule from "../robot-module";
-import CQNodePlugin from "../robot-plugin";
+import Robot from "../cqnode-robot";
 
 export * from './common';
-
-function isArray(o: any): o is Array<any> {
-  return o instanceof Array;
-}
-/**
- * 检查配置项
- * @param {object} config 配置对象
- */
-export function checkConfig(config: ConfigObject) {
-  const cfg = {
-    admin: [] as number[],
-    modules: [] as CQNodeModule[],
-    plugins: [] as CQNodePlugin[],
-    atmeTrigger: [true] as Array<string | true>,
-    workpath: '.cqnode',
-    connector: {
-      LISTEN_PORT: 8080,
-      API_PORT: 5700,
-      TIMEOUT: 10000,
-    },
-    ...config,
-  };
-  if (!isArray(cfg.admin)) cfg.admin = [cfg.admin];
-  if (cfg.admin.some((it: any) => typeof it !== 'number')) {
-    throw new Error(`config.admin 的类型必须是 number 或 number[]`);
-  }
-
-  if (false === cfg.modules instanceof Array) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
-  // if (cfg.modules.some((it: any) => false === it instanceof CQNode.Module)) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
-
-  if (!isArray(cfg.atmeTrigger)) cfg.atmeTrigger = [cfg.atmeTrigger];
-  cfg.atmeTrigger = cfg.atmeTrigger.map(it => it === true ? it : `${it}`);
-
-  cfg.workpath = `${cfg.workpath}`;
-
-  if (typeof cfg.connector !== 'object') throw new Error('config.connector 必须是对象');
-  
-  return cfg as CQNodeConfig;
-}
 
 export function toUnderScoreCase(obj: object): object;
 export function toUnderScoreCase(str: string): string;

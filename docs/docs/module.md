@@ -47,7 +47,7 @@ CQNode功能模块基类，通过继承此类来编写模块，在代码提示�
 模块信息，在[`constructor`](#constructor)中设置，提供帮助信息和一些其他功能
 ```typescript
 interface Inf {
-  /** 模块包名，应保证唯一，名称中不能包含无法作为文件路径名的字符，建议同npm包名 */
+  /** 模块包名，应保证唯一，CQNode会根据此名称创建文件目录路径，建议同npm包名格式，如果没有指定，CQNode会分配一个模块导入路径相关的值 */
   packageName: string;
   /** 模块名 */
   name: string;
