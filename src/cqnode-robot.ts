@@ -10,6 +10,7 @@ import registerEvent from './register-event';
 import CQAPI from './connector-cqhttp/api';
 import { CQEvent, CQHTTP } from '../types/cq-http';
 import { CQNodeConfig, ConfigObject, CQNodeInf, LoadModuleObject, GroupConfig, CQNodeOptions } from '@/types/robot';
+import { proxyModuleCQNode } from './util/proxy-module-cqnode';
 
 export default class Robot extends event.EventEmitter {
   static CQNode: any;
@@ -120,7 +121,7 @@ export default class Robot extends event.EventEmitter {
       this.modules[entry] = {
         module,
       };
-      module.cqnode = this.proxy(module);
+      module.cqnode = proxyModuleCQNode(module, this);
       module.isRunning = true;
       module.onRun();
       return true;
@@ -175,32 +176,5 @@ export default class Robot extends event.EventEmitter {
       await this.workpathManager.writeJson(this.workpathManager.getWorkPath('config.json'), this.config);
     }
     return true;
-  }
-
-  proxy(mod: CQNodeModule) {
-    const apiProxy = new Proxy(this.api, {
-      get: (api, p) => {
-        if (!Reflect.has(api, p)) return undefined;
-        return new Proxy<Function>(Reflect.get(api, p), {
-          apply: (target, thisArg, argArray) => {
-            const plgret = this.pluginManager.emit('onRequestAPI', {
-              get caller() { return mod; },
-              apiName: p as keyof typeof CQAPI,
-              params: argArray,
-              function: undefined,
-            });
-            if (plgret === false) throw new Error(`CQNode: API请求被拦截: ${mod.inf.name} ${p as string}(${argArray.join(', ')})`);
-            if (plgret.function) return plgret.function.apply(thisArg, plgret.params);
-            return api[plgret.apiName].apply(thisArg, plgret.params);
-          }
-        });
-      }
-    });
-    return new Proxy(this, {
-      get(cqn, p) {
-        if (p === 'api') return apiProxy;
-        return Reflect.get(cqn, p);
-      },
-    });
   }
 }
