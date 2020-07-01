@@ -9,7 +9,7 @@ import CQNodeModule from './robot-module';
 import registerEvent from './register-event';
 import CQAPI from './connector-cqhttp/api';
 import { CQEvent, CQHTTP } from '../types/cq-http';
-import { CQNodeConfig, ConfigObject, CQNodeInf, LoadModuleObject, GroupConfig } from '@/types/robot';
+import { CQNodeConfig, ConfigObject, CQNodeInf, LoadModuleObject, GroupConfig, CQNodeOptions } from '@/types/robot';
 
 export default class Robot extends event.EventEmitter {
   static CQNode: any;
@@ -40,9 +40,9 @@ export default class Robot extends event.EventEmitter {
   } = {};
   inf = { inited: false, CQNodeVersion: require('../package.json').version } as CQNodeInf;
   api: typeof CQAPI;
-  constructor(config: ConfigObject | string = '.cqnode') {
+  constructor(public options: CQNodeOptions = {}, defaultConfig: ConfigObject = {}) {
     super();
-    const [workpath, defaultConfig] = typeof config === 'string' ? [config, {}] : [config.workpath || '.cqnode', config];
+    const { workpath = '.cqnode' } = options;
 
     this.init(workpath, defaultConfig);
   }

@@ -1,6 +1,6 @@
 # CQNode.createRobot
-```javascript
-CQNode.createRobot(config = '.cqnode');
+```typescript
+CQNode.createRobot(options: CQNodeOptions = {}, defaultConfig: ConfigObject = {});
 ```
 创建并启动机器人  
 
@@ -9,6 +9,14 @@ CQNode.createRobot(config = '.cqnode');
 在初次启动时，会根据`workpath`创建CQNode工作目录，配置内容将使用workpath下的config.json
 
 返回创建的机器人实例[`CQNode.Robot`](./robot)
+
+## CQNodeOptions
+cqnode启动参数
+### options.workpath
+```typescript
+  workpath: '.cqnode', // 在当前目录下的.cqnode文件夹中存放数据
+  // workpath: 'D:/cqnode', // 在D:/cqnode文件夹中存放数据
+```
 
 ## ConfigObject
 CQNode默认配置对象
@@ -19,7 +27,6 @@ CQNode默认配置对象
   admin: undefined,
   modules: [],
   plugins: [],
-  workpath: '.cqnode',
 
   /**
    * CoolQ HTTP API 连接配置
@@ -112,12 +119,6 @@ ___此配置项将在未来版本被权限系统替代___
     },
   ],
 }
-```
-
-### config.workpath
-```typescript
-  workpath: '.cqnode', // 在当前目录下的.cqnode文件夹中存放数据
-  // workpath: 'D:/cqnode', // 在D:/cqnode文件夹中存放数据
 ```
 
 ### config.connector

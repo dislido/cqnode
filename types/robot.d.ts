@@ -65,6 +65,10 @@ export interface GroupConfig {
   }
 }
 
+export interface CQNodeOptions {
+  workpath?: string;
+}
+
 export interface CQNodeConfig extends Required<ConfigObject> {
   admin: number[];
   /**
@@ -131,6 +135,8 @@ export class Robot extends EventEmitter {
   };
   /** CQNode配置 */
   config: CQNodeConfig;
+  /** CQNode启动参数 */
+  options: CQNodeOptions;
   /** 群配置 */
   groupConfig: {
     [group: number]: GroupConfig,

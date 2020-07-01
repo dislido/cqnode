@@ -1,11 +1,12 @@
+import path from 'path';
 import Robot from "./cqnode-robot";
 import CQNodePlugin, { HookName } from "./robot-plugin";
 import { LoadModuleObject } from "@/types/robot";
 
 export default class PluginManager {
   plugins: CQNodePlugin[] = [];
-  plgCache: {
-    [key: string]: CQNodePlugin;
+  loadedPlugins: {
+    [key: string]: { plugin: CQNodePlugin };
   } = {};
   constructor(public cqnode: Robot) {}
 
@@ -15,11 +16,11 @@ export default class PluginManager {
    */
   registerPlugin(plugin: LoadModuleObject) {
     const { entry, constructorParams = [], config = {}, meta = {} } = plugin;
-    if (this.plgCache[entry]) return true;
+    if (this.loadedPlugins[entry]) return true;
     try {
-      const PluginClass = require(entry);
+      const PluginClass = require(entry.startsWith('.') ? path.resolve(process.cwd(), entry) : entry);
       const plugin = new PluginClass(...constructorParams);
-      this.plgCache[entry] = plugin;
+      this.loadedPlugins[entry] = { plugin };
       plugin.cqnode = this.cqnode;
       plugin.onRegister();
       this.plugins.push(plugin);
