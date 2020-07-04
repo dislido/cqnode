@@ -1,6 +1,6 @@
-import Robot from "../cqnode-robot";
-import CQNodeModule from "../robot-module";
-import CQAPI from "../connector-cqhttp/api";
+import Robot from '../cqnode-robot';
+import CQNodeModule from '../robot-module';
+import CQAPI from '../connector-cqhttp/api';
 
 export function proxyModuleCQNode(mod: CQNodeModule, cqnode: Robot) {
   const apiProxy = new Proxy(cqnode.api, {

@@ -54,7 +54,7 @@ export default class CQNodeModule {
   }
 
   async getFilepath() {
-    if (!this.cqnode) throw new Error('在模块启动后才能使用(从onRun到onStop)');
+    if (!this.cqnode) throw new Error('在模块加载后才能使用(从onRun到onStop)');
     if (!this.inf.packageName) throw new Error('不能在匿名模块中使用此功能，在inf中添加packageName以启用此功能');
     const filepath = this.cqnode.workpathManager.getWorkPath(`module/${this.inf.packageName}`);
     return this.cqnode.workpathManager.ensurePath(filepath, null);

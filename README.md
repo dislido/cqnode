@@ -13,14 +13,17 @@ CQNode是一个基于[酷Q](https://cqp.cc/)与[CoolQ HTTP API 插件](https://c
 > 只需要几行代码即可实现一个简单的复读功能 
 
 ```javascript
+// repeat.js
 class Repeat extends CQNode.Module {
   onMessage(data, resp) {
     return resp.reply(`收到消息: ${data.msg}`);
   }
 }
 
+// index.js
+const CQNode = require('@dislido/cqnode');
 CQNode.createRobot({
-  modules: [new Repeat()],
+  modules: [{ entry: './repeat' }],
 });
 ```
 
@@ -28,6 +31,7 @@ CQNode.createRobot({
 > 简单的主动发送消息示例
 
 ```javascript
+// timer.js
 class Timer extends CQNode.Module {
   constructor(group) {
     this.group = group;
@@ -45,7 +49,9 @@ class Timer extends CQNode.Module {
   }
 }
 
+// index.js
+const CQNode = require('@dislido/cqnode');
 CQNode.createRobot({
-  modules: [new Timer(1145141919)],
+  modules: [{ entry: './timer', config: { group: 114514 } }],
 });
 ```

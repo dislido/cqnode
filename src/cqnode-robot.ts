@@ -60,7 +60,7 @@ export default class Robot extends event.EventEmitter {
     this.connect = await new CQHttpConnector(this, this.config.connector).init();
     this.api = this.connect.api;
 
-    const isInfInited = await this.initInf();
+    await this.initInf();
 
     this.config.modules.forEach(mod => this.loadModule(mod));
     this.config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
