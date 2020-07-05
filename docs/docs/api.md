@@ -1,5 +1,5 @@
 # CQNodeAPI
-CQNode提供的api，在Module中通过`this.cqnode.api`访问  
+调用CQHTTP api，在Module中通过`this.cqnode.api`访问  
 所有api都返回`Promise<CQHTTP.ResponseData<T>>`类型(或它的数组)的数据，结构如下
 ```typescript
 interface ResponseData<T> {

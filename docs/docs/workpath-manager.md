@@ -9,7 +9,9 @@ CQNode在启动时会创建一个workpath目录用于存储各种信息，默认
    └ [module.inf.packageName]/
      └ (由模块自己定义)
 ```
-workpathManager提供了一些常用工具来操作文件
+workpathManager提供了一些常用函数来操作文件
+
+所有函数的路径参数传入相对路径时默认以workpath为根路径
 
 > [API](#api)
 >> [`getWorkPath`](#getWorkPath) 获取workpath的绝对路径
@@ -28,10 +30,10 @@ class MyModule extends CQNode.Module {
 }
 ```
 
-### getWorkPath
-> `getWorkPath(...to: string[]): string`  
+### resolve
+> `resolve(...to: string[]): string`  
 > 获取workpath的绝对路径
-> - `to` 对workpath进行`path.resolve`
+> - `to` 对workpath进行`path.resolve`的参数
 
 ### ensurePath
 > `ensurePath(dir: string, file?: string | null, defaultFileData?: string): Promise<string>`  

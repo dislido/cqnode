@@ -61,15 +61,9 @@ export function checkConfig(config: ConfigObject) {
 }
 
 export async function loadConfig(this: Robot, defaultConfig: ConfigObject | string) {
-  const basepath = this.workpathManager.getWorkPath();
-  const configFilePath = path.resolve(basepath, 'config.json');
-  const configFile = await this.workpathManager.readJson(configFilePath, null);
+  const configFile = await this.workpath.readJson('config.json', null);
   JSON.stringify(defaultConfig, undefined, 2)
   const config = checkConfig(configFile || defaultConfig);
-  await this.workpathManager.writeJson(configFilePath, defaultConfig);
+  await this.workpath.writeJson('config.json', defaultConfig);
   return config;
-}
-
-export function mergeGroupConfig(baseConfig: ConfigObject, groupConfig: GroupConfig) {
-
 }

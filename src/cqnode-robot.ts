@@ -11,6 +11,8 @@ import CQAPI from './connector-cqhttp/api';
 import { CQEvent, CQHTTP } from '../types/cq-http';
 import { CQNodeConfig, ConfigObject, CQNodeInf, LoadModuleObject, GroupConfig, CQNodeOptions } from '@/types/robot';
 import { proxyModuleCQNode } from './util/proxy-module-cqnode';
+import { proxyCQNodeAPI } from './util/robot-api/proxy-cqnode-api';
+import { CQNodeRobotAPI } from '@/types/cqnode-robot-api';
 
 export default class Robot extends event.EventEmitter {
   static CQNode: any;
@@ -22,11 +24,11 @@ export default class Robot extends event.EventEmitter {
   } = {
     get: async(group: number) => {
       if (this.groupConfig[group]) return this.groupConfig[group];
-      this.groupConfig[group] = await this.workpathManager.readJson(this.workpathManager.getWorkPath(`group/${group}/config.json`));
+      this.groupConfig[group] = await this.workpath.readJson(`group/${group}/config.json`);
       return this.groupConfig[group];
     },
     save: async(group: number, config: GroupConfig) => {
-      await this.workpathManager.writeJson(this.workpathManager.getWorkPath(`group/${group}/config.json`), config);
+      await this.workpath.writeJson(`group/${group}/config.json`, config);
       this.groupConfig[group] = config;
     },
   };
@@ -40,7 +42,7 @@ export default class Robot extends event.EventEmitter {
     };
   } = {};
   inf = { inited: false, CQNodeVersion: require('../package.json').version } as CQNodeInf;
-  api: typeof CQAPI;
+  api: typeof CQAPI & { robot: CQNodeRobotAPI };
   constructor(public options: CQNodeOptions = {}, defaultConfig: ConfigObject = {}) {
     super();
     const { workpath = '.cqnode' } = options;
@@ -51,15 +53,15 @@ export default class Robot extends event.EventEmitter {
   private async init(workpath: string, defaultConfig: ConfigObject) {
     console.log('cqnode: 初始化中......');
 
-    this.workpathManager = new WorkpathManager(workpath);
-    this.workpath = this.workpathManager;
-    await this.workpathManager.init();
+    this.workpath = new WorkpathManager(workpath);
+    this.workpath = this.workpath;
+    await this.workpath.init();
     this.config = await loadConfig.call(this, defaultConfig);
 
     this.pluginManager = new PluginManager(this);
     this.connect = await new CQHttpConnector(this, this.config.connector).init();
-    this.api = this.connect.api;
-
+    this.api = proxyCQNodeAPI(this.connect.api, this);
+    
     await this.initInf();
 
     this.config.modules.forEach(mod => this.loadModule(mod));
@@ -150,14 +152,14 @@ export default class Robot extends event.EventEmitter {
     const module = this.modules[modIndex];
     if (!module) return false;
     if (group) {
-      const groupConfig = await this.groupConfig.get(group);
+      const groupConfig = await this.api.robot.getConfig(group);
       if (!groupConfig.modules) groupConfig.modules = {};
       if (!groupConfig.modules[modIndex]) groupConfig.modules[modIndex] = { enable: true };
       else groupConfig.modules[modIndex].enable = true;
       await this.groupConfig.save(group, groupConfig);
     } else {
       this.config.modules.find(it => it.entry === modIndex)!.enable = true;
-      await this.workpathManager.writeJson(this.workpathManager.getWorkPath('config.json'), this.config);
+      await this.workpath.writeJson('config.json', this.config);
     }
     return true;
   }
@@ -173,7 +175,7 @@ export default class Robot extends event.EventEmitter {
       await this.groupConfig.save(group, groupConfig);
     } else {
       this.config.modules.find(it => it.entry === modIndex)!.enable = false;
-      await this.workpathManager.writeJson(this.workpathManager.getWorkPath('config.json'), this.config);
+      await this.workpath.writeJson('config.json', this.config);
     }
     return true;
   }

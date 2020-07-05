@@ -2,10 +2,11 @@ import Robot from './cqnode-robot';
 import { CQResponse } from '../types/response';
 import { CQEvent } from '../types/cq-http';
 import { CQNodeModuleInf, EventReturns } from 'types/module';
+import { nullCQNode } from './util';
 
 export default class CQNodeModule {
   static Factory: typeof ModuleFactory;
-  cqnode: Robot;
+  cqnode: Robot = nullCQNode;
   isRunning = false;
   constructor(public inf: CQNodeModuleInf = {}) {}
   onRun() {}
@@ -53,11 +54,16 @@ export default class CQNodeModule {
     return this.onRequest(data, resp);
   }
 
+  // 获取本模块的config
+  async getConfig(groupId?: number) {
+    
+  }
+
   async getFilepath() {
     if (!this.cqnode) throw new Error('在模块加载后才能使用(从onRun到onStop)');
     if (!this.inf.packageName) throw new Error('不能在匿名模块中使用此功能，在inf中添加packageName以启用此功能');
-    const filepath = this.cqnode.workpathManager.getWorkPath(`module/${this.inf.packageName}`);
-    return this.cqnode.workpathManager.ensurePath(filepath, null);
+    const filepath = this.cqnode.workpath.getWorkPath(`module/${this.inf.packageName}`);
+    return this.cqnode.workpath.ensurePath(filepath, null);
   }
 }
 

@@ -5,6 +5,7 @@ import WorkpathManager from './workpath-manager';
 import { util } from './util';
 import { Plugin } from './plugin';
 import { JSONType, JSONObjectType } from './type';
+import { CQNodeRobotAPI } from './cqnode-robot-api'; 
 
 /**
  * module加载信息
@@ -154,7 +155,7 @@ export class Robot extends EventEmitter {
   /** CQNode运行时信息 */
   inf: CQNodeInf;
   /** CQ HTTP API */
-  api: CQAPI;
+  api: CQAPI & { robot: CQNodeRobotAPI };
   /**
    * workpath
    * @deprecated 请使用cqnode.workpath

@@ -40,6 +40,10 @@ export default class WorkpathManager {
     return path.resolve(this.workpath, ...to);
   }
 
+  resolve(...pathSegments: string[]) {
+    return path.resolve(this.workpath, ...pathSegments);
+  }
+
   /**
    * 递归创建目录和文件
    * @param dir 目录路径
@@ -82,20 +86,22 @@ export default class WorkpathManager {
    * @param defaultData 文件不存在时写入默认JSON对象，默认为`{}`
    */
   async readJson(path: string, defaultData: JSONType = {}) {
-    await this.ensurePath(path, '', JSON.stringify(defaultData));
-    const fileBuf = await fs.promises.readFile(path);
+    const fullPath = this.resolve(path);
+    await this.ensurePath(fullPath, '', JSON.stringify(defaultData));
+    const fileBuf = await fs.promises.readFile(fullPath);
     const data = fileBuf.toString();
     return JSON.parse(data);
   }
   
   /**
    * 以JSON格式写入文件
-   * @param path 路径
+   * @param path 路径，相对路径以workpath为根路径
    * @param data 写入的JSON对象
    */
   async writeJson(path: string, data: any) {
-    await this.ensurePath(path);
-    return fs.promises.writeFile(path, JSON.stringify(data, null, 2));
+    const fullPath = this.resolve(path);
+    await this.ensurePath(fullPath);
+    return fs.promises.writeFile(fullPath, JSON.stringify(data, null, 2));
   }
   /**
    * 获取指定群，指定模块的设置信息
@@ -105,7 +111,7 @@ export default class WorkpathManager {
    */
   async getGroupModuleConfig(group: string, module: CQNodeModule) {
     if (!this.cache.groupModuleCfg[group]) {
-      const cfg = this.readJson(path.resolve(this.workpath, `group/${group}/config.json`))
+      const cfg = this.readJson(`group/${group}/config.json`);
       this.cache.groupModuleCfg[group] = cfg;
     }
     const groupFieldCfg = this.cache.groupModuleCfg[group];
