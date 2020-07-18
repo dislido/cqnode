@@ -1,5 +1,4 @@
 import Robot from '../../cqnode-robot';
-import * as configFns from './config-fns';
 import { CQAPI } from '@/types/cq-http';
 import { CQNodeRobotAPI } from '@/types/cqnode-robot-api';
 
@@ -11,9 +10,9 @@ export function proxyCQNodeAPI(this: Robot, api: CQAPI) {
 
       if (p === 'robot') {
         return new Proxy({}, {
-          get: (rob, robp) => {
+          get: (_, robp) => {
             if (robp === 'cqnode') return this;
-            if (Reflect.has(configFns, robp)) return Reflect.get(configFns, robp);
+            return undefined;
           }
         });
       }

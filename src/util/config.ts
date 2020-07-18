@@ -1,6 +1,5 @@
 import Robot from "../cqnode-robot";
-import { CQNodeConfig, ConfigObject, GroupConfig } from "@/types/robot";
-import path from "path";
+import { CQNodeConfig, ConfigObject } from "@/types/robot";
 
 export const defaultConfig: CQNodeConfig = {
   admin: [],

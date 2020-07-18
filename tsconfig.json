@@ -14,7 +14,10 @@
     "baseUrl": "",
     "paths": {
       "@/types/*": ["types/*"]
-    }
+    },
+    "noEmitOnError": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "include": [
     "src/**/*",

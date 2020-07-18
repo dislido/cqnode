@@ -7,7 +7,7 @@ export function proxyModuleCQNode(this: Robot, mod: CQNodeModule) {
     get: (api, p) => {
       if (!Reflect.has(api, p)) return undefined;
       return new Proxy<Function>(Reflect.get(api, p), {
-        apply: (target, thisArg, argArray) => {
+        apply: (_, thisArg, argArray) => {
           const plgret = this.pluginManager.emit('onRequestAPI', {
             get caller() { return mod; },
             apiName: p as keyof typeof CQAPI,
