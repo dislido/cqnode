@@ -76,4 +76,4 @@ ${content ? `,content=${content}` : ''}${image ? `,image=${image}` : ''}]`);
   return new CQCodeString(`[CQ:music,type=${type},id=${args[0]}]`);
 };
 CQCode.share = (url: string, title: string, content?: string, image?: string) =>
-  new CQCodeString(`[CQ:share,url={1},title={2}${content ? `,content=${content}` : ''}${image ? `,image=${image}` : ''}]`);
+  new CQCodeString(`[CQ:share,url=${url},title=${title}${content ? `,content=${content}` : ''}${image ? `,image=${image}` : ''}]`);
