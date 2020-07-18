@@ -2,13 +2,13 @@ import Robot from '../cqnode-robot';
 import CQNodeModule from '../robot-module';
 import CQAPI from '../connector-cqhttp/api';
 
-export function proxyModuleCQNode(mod: CQNodeModule, cqnode: Robot) {
-  const apiProxy = new Proxy(cqnode.api, {
+export function proxyModuleCQNode(this: Robot, mod: CQNodeModule) {
+  const apiProxy = new Proxy(this.api, {
     get: (api, p) => {
       if (!Reflect.has(api, p)) return undefined;
       return new Proxy<Function>(Reflect.get(api, p), {
         apply: (target, thisArg, argArray) => {
-          const plgret = cqnode.pluginManager.emit('onRequestAPI', {
+          const plgret = this.pluginManager.emit('onRequestAPI', {
             get caller() { return mod; },
             apiName: p as keyof typeof CQAPI,
             params: argArray,
@@ -21,7 +21,7 @@ export function proxyModuleCQNode(mod: CQNodeModule, cqnode: Robot) {
       });
     }
   });
-  return new Proxy(cqnode, {
+  return new Proxy(this, {
     get(cqn, p) {
       if (p === 'api') return apiProxy;
       return Reflect.get(cqn, p);

@@ -60,7 +60,7 @@ export default class Robot extends event.EventEmitter {
 
     this.pluginManager = new PluginManager(this);
     this.connect = await new CQHttpConnector(this, this.config.connector).init();
-    this.api = proxyCQNodeAPI(this.connect.api, this);
+    this.api = proxyCQNodeAPI.call(this, this.connect.api);
     
     await this.initInf();
 
@@ -123,7 +123,7 @@ export default class Robot extends event.EventEmitter {
       this.modules[entry] = {
         module,
       };
-      module.cqnode = proxyModuleCQNode(module, this);
+      module.cqnode = proxyModuleCQNode.call(this, module);
       module.isRunning = true;
       module.onRun();
       return true;

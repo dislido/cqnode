@@ -2,11 +2,11 @@ import Robot from './cqnode-robot';
 import Module from './robot-module';
 import Plugin from './robot-plugin';
 import * as util from './util/common';
-import { ConfigObject } from '@/types/robot';
+import { ConfigObject, CQNodeOptions } from '@/types/robot';
 
 const CQNode = {
-  createRobot(config: ConfigObject) {
-    return new Robot(config);
+  createRobot(options: CQNodeOptions = {}, defaultConfig: ConfigObject = {}) {
+    return new Robot(options, defaultConfig);
   },
   Module,
   Plugin,
@@ -14,4 +14,4 @@ const CQNode = {
 };
 Robot.CQNode = CQNode;
 
-export default module.exports = CQNode;
+export = CQNode;

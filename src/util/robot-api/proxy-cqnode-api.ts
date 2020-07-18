@@ -3,16 +3,16 @@ import * as configFns from './config-fns';
 import { CQAPI } from '@/types/cq-http';
 import { CQNodeRobotAPI } from '@/types/cqnode-robot-api';
 
-export function proxyCQNodeAPI(api: CQAPI, cqnode: Robot) {
+export function proxyCQNodeAPI(this: Robot, api: CQAPI) {
   return new Proxy(api, {
-    get(api, p, rec) {
+    get: (api, p, rec) => {
       const apiProp = Reflect.get(api, p, rec);
       if (apiProp) return apiProp;
 
       if (p === 'robot') {
         return new Proxy({}, {
-          get(rob, robp) {
-            if (robp === 'cqnode') return cqnode;
+          get: (rob, robp) => {
+            if (robp === 'cqnode') return this;
             if (Reflect.has(configFns, robp)) return Reflect.get(configFns, robp);
           }
         });

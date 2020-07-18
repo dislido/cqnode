@@ -49,13 +49,12 @@ declare namespace CQHTTP {
     age: number;
   }
   
-  interface GetGroupListResponseData {
+  interface GetGroupListResponseData extends Array<{
     /** 群号 */
     group_id: number;
     /** 群名称 */
     group_name: string;
-  }
-  
+  }> {}
   interface GetGroupMemberInfoResponseData {
     /** 群号 */
     group_id: number;
@@ -293,7 +292,7 @@ export interface CQAPI {
   /**
    * 获取群列表
    */
-  getGroupList(): Promise<CQHTTP.ResponseData<CQHTTP.GetGroupListResponseData[]>>;
+  getGroupList(): Promise<CQHTTP.ResponseData<CQHTTP.GetGroupListResponseData>>;
 
   /**
    * 获取群成员信息

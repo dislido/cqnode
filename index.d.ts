@@ -1,4 +1,4 @@
-import { ConfigObject, Robot } from './types/robot';
+import { ConfigObject, Robot, CQNodeOptions } from './types/robot';
 
 export as namespace CQNode;
 
@@ -13,4 +13,4 @@ export * from './types/util';
  * 创建机器人
  * @param config 机器人配置
  */
-export function createRobot(config: ConfigObject): Robot;
+export function createRobot(options?: CQNodeOptions, defaultConfig?: ConfigObject): Robot;

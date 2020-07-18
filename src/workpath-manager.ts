@@ -16,10 +16,10 @@ interface WorkpathCache {
 }
 
 export default class WorkpathManager {
-  workpath: string;
+  basepath: string;
   cache: WorkpathCache;
   constructor(workpath: string) {
-    this.workpath = path.resolve(workpath);
+    this.basepath = path.resolve(workpath);
     this.cache = Object.assign(Object.create(null), {
       groupModuleCfg: {
 
@@ -29,19 +29,19 @@ export default class WorkpathManager {
 
   async init() {
     return Promise.all([
-      this.ensurePath(path.resolve(this.workpath, 'module'), null),
-      this.ensurePath(path.resolve(this.workpath, 'log'), null),
-      this.ensurePath(path.resolve(this.workpath, 'group'), null),
-      this.ensurePath(this.workpath, 'config.json', 'null'),
+      this.ensurePath(path.resolve(this.basepath, 'module'), null),
+      this.ensurePath(path.resolve(this.basepath, 'log'), null),
+      this.ensurePath(path.resolve(this.basepath, 'group'), null),
+      this.ensurePath(this.basepath, 'config.json', 'null'),
     ]);
   }
 
   getWorkPath(...to: string[]) {
-    return path.resolve(this.workpath, ...to);
+    return path.resolve(this.basepath, ...to);
   }
 
   resolve(...pathSegments: string[]) {
-    return path.resolve(this.workpath, ...pathSegments);
+    return path.resolve(this.basepath, ...pathSegments);
   }
 
   /**
@@ -85,7 +85,7 @@ export default class WorkpathManager {
    * @param path 路径
    * @param defaultData 文件不存在时写入默认JSON对象，默认为`{}`
    */
-  async readJson(path: string, defaultData: JSONType = {}) {
+  async readJson<T = any>(path: string, defaultData: JSONType = {}): Promise<T> {
     const fullPath = this.resolve(path);
     await this.ensurePath(fullPath, '', JSON.stringify(defaultData));
     const fileBuf = await fs.promises.readFile(fullPath);
@@ -122,7 +122,7 @@ export default class WorkpathManager {
 
   async saveGroupModuleConfig(group: string) {
     fs.writeFileSync(
-      path.resolve(this.workpath, `group/${group}/modulecfg.json`),
+      path.resolve(this.basepath, `group/${group}/modulecfg.json`),
       JSON.parse(this.cache.groupModuleCfg[group]),
     );
   }

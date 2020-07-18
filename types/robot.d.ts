@@ -124,7 +124,7 @@ export interface CQNodeInf {
   /** CQNode版本 */
   CQNodeVersion: string;
   /** 群列表 */
-  groupList: CQHTTP.GetGroupListResponseData[];
+  groupList: CQHTTP.GetGroupListResponseData;
 }
 
 export class Robot extends EventEmitter {
