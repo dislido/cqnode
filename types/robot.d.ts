@@ -4,6 +4,7 @@ import { EventEmitter } from 'events';
 import WorkpathManager from './workpath-manager';
 import { util } from './util';
 import { Plugin } from './plugin';
+import JsonStorage from './workpath-manager/json-storage';
 
 /**
  * module加载信息
@@ -133,16 +134,16 @@ export class Robot extends EventEmitter {
     util: typeof util;
   };
   /** CQNode配置 */
-  config: CQNodeConfig;
+  config: JsonStorage<CQNodeConfig>;
   /** CQNode启动参数 */
   options: CQNodeOptions;
   /** 群配置 */
   groupConfig: {
-    [group: number]: GroupConfig,
+    [group: number]: JsonStorage<GroupConfig>,
     /** 获取群配置 */
-    get(group: number): Promise<GroupConfig>,
+    get(group: number): GroupConfig | null,
     /** 保存群配置 */
-    save(group: number, config: GroupConfig): Promise<void>,
+    save(group: number, config: GroupConfig): boolean,
   }
   /** 已加载的模块 */
   modules: {

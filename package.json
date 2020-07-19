@@ -1,6 +1,6 @@
 {
   "name": "@dislido/cqnode",
-  "version": "3.0.0-beta1",
+  "version": "3.0.0-beta2",
   "description": "no description",
   "main": "dist/index.js",
   "author": "dislido",
