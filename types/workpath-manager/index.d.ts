@@ -1,4 +1,5 @@
 import { Module } from '../module';
+import JsonStorage from './json-storage';
 
 declare class CQNodeWorkpathError extends Error {}
 
@@ -49,4 +50,12 @@ export default class WorkpathManager {
    * @param data 写入的JSON对象
    */
   writeJson(path: string, data: any): Promise<void>;
+  /**
+   * 读取JSON文件并获取同步对象，可以同步读写对象，做出的修改会自动保存到文件。不会监听文件的改动
+   *
+   * 对同一个path调用多次会返回相同实例，defaultData取第一次调用的传值
+   * @param path 读取的json文件路径，不存在则会创建
+   * @param defaultData 文件不存在时写入默认JSON对象，默认为`{}`
+   */
+  getJsonStorage<T = any>(path: string, defaultData?: T): Promise<JsonStorage<T>>;
 }

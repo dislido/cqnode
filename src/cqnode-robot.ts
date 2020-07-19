@@ -75,10 +75,13 @@ export default class Robot extends event.EventEmitter {
     internalPlugins.forEach(plg => this.pluginManager.registerPlugin(plg));
     config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
 
-    this.pluginManager.emit('onReady', {});
     
     this.setMaxListeners(13);
     registerEvent(this);
+
+    const ready = await this.pluginManager.emit('onReady', {});
+    if (!ready) throw new Error('CQNode killed by plugin.onReady');
+
     console.log('cqnode: 初始化完成');
   }
 
