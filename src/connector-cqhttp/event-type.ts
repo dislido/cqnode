@@ -75,3 +75,11 @@ export function assertEventName(event: CQEvent.Event): EventName {
   if (!eventType) throw new Error(`CQNode Error: unknown Event:\n${JSON.stringify(event)}`);
   return eventType.name.substr(2) as EventName;
 }
+
+export type GroupEvent = CQEvent.GroupUploadNotice | CQEvent.GroupAdminNotice | CQEvent.GroupDecreaseNotice | CQEvent.GroupIncreaseNotice | CQEvent.GroupMessage;
+
+const groupEventNames = ['GroupUploadNotice', 'GroupAdminNotice', 'GroupDecreaseNotice', 'GroupIncreaseNotice', 'GroupMessage'];
+
+export function isGroupEvent(event: CQEvent.Event): event is GroupEvent {
+  return groupEventNames.includes(assertEventName(event));
+}

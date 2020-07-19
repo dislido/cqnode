@@ -30,7 +30,7 @@ function checkAtme(this: Robot, data: CQEvent.Message) {
     return;
   }
   if (data.messageType !== 'group' && data.messageType !== 'discuss') return;
-  const atmeTrigger = this.config.atmeTrigger;
+  const atmeTrigger = this.config.get().atmeTrigger;
   data.atme = atmeTrigger.some(p => {
     if (p === true && data.msg.startsWith(`[CQ:at,qq=${data.selfId}]`)) {
       data.msg = data.msg.substring(`[CQ:at,qq=${data.selfId}]`.length).trim();
@@ -61,8 +61,8 @@ async function callModuleEvent(cqnode: Robot, eventFunctionName: 'onGroupRequest
 async function callModuleEvent(cqnode: Robot, eventFunctionName: 'onPrivateMessage', data: CQEvent.PrivateMessage, resp: CQResponse.PrivateMessage): Promise<void>;
 async function callModuleEvent(cqnode: Robot, eventFunctionName: 'onGroupMessage', data: CQEvent.GroupMessage, resp: CQResponse.GroupMessage): Promise<void>;
 async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data: CQEvent.Event, resp: CQResponse.Response) {
-  const moduleCfg = cqnode.config.modules;
-  const groupModuleCfg = groupEventNames.includes(eventFunctionName) && (await cqnode.groupConfig.get((<GroupEvent>data).groupId)).modules;
+  const moduleCfg = cqnode.config.get().modules;
+  const groupModuleCfg = groupEventNames.includes(eventFunctionName) && cqnode.groupConfig.get((<GroupEvent>data).groupId)!.modules;
 
   for (let i = 0; i < moduleCfg.length; ++i) {
     const globalModuleConfig = moduleCfg[i];
@@ -83,7 +83,7 @@ async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data
           body: resp.responseBody,
           get handlerModule() { return currentModule; },
         };
-        const plgret = cqnode.pluginManager.emit('onResponse', hookData)
+        const plgret = await cqnode.pluginManager.emit('onResponse', hookData)
         if (!plgret) {
           resp.originalResponse.end();
           return;
@@ -95,7 +95,7 @@ async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data
       console.error('CQNode module error: ', err);
     }
   }
-  cqnode.pluginManager.emit('onResponse', {
+  await cqnode.pluginManager.emit('onResponse', {
     get event() { return data; },
     get originalResponse() { return resp.originalResponse; },
     body: resp.responseBody,
@@ -105,7 +105,7 @@ async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data
 }
 
 function registerPrivateMessageEvent(cqnode: Robot) {
-  const getResponse = (data: CQEvent.PrivateMessage, response: ServerResponse): CQResponse.PrivateMessage => ({
+  const getResponse = (_: CQEvent.PrivateMessage, response: ServerResponse): CQResponse.PrivateMessage => ({
     originalResponse: response,
     responseBody: {},
     reply(message, autoEscape = false) {
@@ -122,7 +122,7 @@ function registerPrivateMessageEvent(cqnode: Robot) {
 }
 
 function registerGroupMessageEvent(cqnode: Robot) {
-  const getResponse = (data: CQEvent.GroupMessage, response: ServerResponse): CQResponse.GroupMessage => ({
+  const getResponse = (_: CQEvent.GroupMessage, response: ServerResponse): CQResponse.GroupMessage => ({
     originalResponse: response,
     responseBody: {},
     reply(message, autoEscape = false) {
@@ -156,7 +156,7 @@ function registerGroupMessageEvent(cqnode: Robot) {
 }
 
 function registerDiscussMessageEvent(cqnode: Robot) {
-  const getResponse = (data: CQEvent.DiscussMessage, response: ServerResponse): CQResponse.DiscussMessage => ({
+  const getResponse = (_: CQEvent.DiscussMessage, response: ServerResponse): CQResponse.DiscussMessage => ({
     originalResponse: response,
     responseBody: {},
     at(at = true) {
@@ -277,13 +277,13 @@ function registerGroupRequestEvent(cqnode: Robot) {
 }
 
 function registerLifecycleMetaEvent(cqnode: Robot) {
-  cqnode.on('LifecycleMeta', (data: CQEvent.LifecycleMeta, response: ServerResponse) => {
+  cqnode.on('LifecycleMeta', (_: CQEvent.LifecycleMeta, response: ServerResponse) => {
     response.end();
   });
 }
 
 function registerHeartbeatMetaEvent(cqnode: Robot) {
-  cqnode.on('HeartbeatMeta', (data: CQEvent.HeartbeatMeta, response: ServerResponse) => {
+  cqnode.on('HeartbeatMeta', (_: CQEvent.HeartbeatMeta, response: ServerResponse) => {
     response.end();
   });
 }

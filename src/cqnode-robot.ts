@@ -3,33 +3,35 @@ import path from 'path';
 import PluginManager from './plugin-manager';
 import WorkpathManager from './workpath-manager';
 import { nullCQNode } from './util';
-import { loadConfig } from './util/config';
+import { checkConfig } from './util/config';
 import CQHttpConnector from './connector-cqhttp';
 import CQNodeModule from './robot-module';
 import registerEvent from './register-event';
 import CQAPI from './connector-cqhttp/api';
-import { CQEvent, CQHTTP } from '../types/cq-http';
-import { CQNodeConfig, ConfigObject, CQNodeInf, LoadModuleObject, GroupConfig, CQNodeOptions } from '@/types/robot';
+import { CQEvent } from '../types/cq-http';
+import { ConfigObject, CQNodeInf, LoadModuleObject, GroupConfig, CQNodeOptions, CQNodeConfig } from '@/types/robot';
 import { proxyModuleCQNode } from './util/proxy-module-cqnode';
-import { proxyCQNodeAPI } from './util/robot-api/proxy-cqnode-api';
-import { CQNodeRobotAPI } from '@/types/cqnode-robot-api';
+import { loadGroupConfig } from './util/load-group-config';
+import JsonStorage from './workpath-manager/json-storage';
+import internalPlugins from './internal-plugins';
 
 export default class Robot extends event.EventEmitter {
   static CQNode: any;
-  config: CQNodeConfig;
+  config: JsonStorage<CQNodeConfig>;
+
   groupConfig: {
-    [group: number]: GroupConfig,
-    get(group: number): Promise<GroupConfig>,
-    save(group: number, config: GroupConfig): Promise<void>,
+    [group: number]: JsonStorage<GroupConfig>,
+    get(group: number): GroupConfig | null,
+    set(group: number, config: GroupConfig): boolean,
   } = {
-    get: async(group: number) => {
-      if (this.groupConfig[group]) return this.groupConfig[group];
-      this.groupConfig[group] = await this.workpath.readJson(`group/${group}/config.json`);
-      return this.groupConfig[group];
+    get: (group: number) => {
+      if (this.groupConfig[group]) return this.groupConfig[group].get();
+      return null;
     },
-    save: async(group: number, config: GroupConfig) => {
-      await this.workpath.writeJson(`group/${group}/config.json`, config);
-      this.groupConfig[group] = config;
+    set: (group: number, config: GroupConfig) => {
+      if (!this.groupConfig[group]) return false;
+      this.groupConfig[group].set(config)
+      return true;
     },
   };
   workpath: WorkpathManager;
@@ -42,7 +44,7 @@ export default class Robot extends event.EventEmitter {
     };
   } = {};
   inf = { inited: false, CQNodeVersion: require('../package.json').version } as CQNodeInf;
-  api: typeof CQAPI & { robot: CQNodeRobotAPI };
+  api: typeof CQAPI;
   constructor(public options: CQNodeOptions = {}, defaultConfig: ConfigObject = {}) {
     super();
     const { workpath = '.cqnode' } = options;
@@ -56,16 +58,22 @@ export default class Robot extends event.EventEmitter {
     this.workpath = new WorkpathManager(workpath);
     this.workpath = this.workpath;
     await this.workpath.init();
-    this.config = await loadConfig.call(this, defaultConfig);
+
+    this.config = await this.workpath.getJsonStorage('config.json', defaultConfig as CQNodeConfig);
+    this.config.set(checkConfig(this.config.get()))
+    const config = this.config.get();
 
     this.pluginManager = new PluginManager(this);
-    this.connect = await new CQHttpConnector(this, this.config.connector).init();
-    this.api = proxyCQNodeAPI.call(this, this.connect.api);
+    this.connect = await new CQHttpConnector(this, config.connector).init();
+    this.api = this.connect.api;
     
     await this.initInf();
+    await loadGroupConfig.call(this, this.inf.groupList);
 
-    this.config.modules.forEach(mod => this.loadModule(mod));
-    this.config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
+    config.modules.forEach(mod => this.loadModule(mod));
+
+    internalPlugins.forEach(plg => this.pluginManager.registerPlugin(plg));
+    config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
 
     this.pluginManager.emit('onReady', {});
     
@@ -114,6 +122,7 @@ export default class Robot extends event.EventEmitter {
     this.inf.inited = true;
   }
 
+  /** 加载模块到modules */
   loadModule(mod: LoadModuleObject) {
     const { entry, constructorParams = [] } = mod;
     if (this.modules[entry]) return true;
@@ -133,14 +142,19 @@ export default class Robot extends event.EventEmitter {
     }
   }
 
-  unLoadModule(modIndex: string) {
+  /**
+   * 卸载模块
+   * @param key 模块entry
+   * @deprecated 不会正常工作，只是从modules中删除模块，会导致找不到模块报错
+   */
+  unLoadModule(key: string) {
     try {
-      const m = this.modules[modIndex]?.module;
+      const m = this.modules[key]?.module;
       if (!m) return false;
       m.onStop();
       m.cqnode = nullCQNode;
       m.isRunning = false;
-      Reflect.deleteProperty(this.modules, modIndex);
+      Reflect.deleteProperty(this.modules, key);
       return true;
     } catch (e) {
       console.error(e);
@@ -148,35 +162,40 @@ export default class Robot extends event.EventEmitter {
     }
   }
 
-  async enableModule(modIndex: string, group?: number) {
+  enableModule(modIndex: string, group?: number) {
     const module = this.modules[modIndex];
     if (!module) return false;
     if (group) {
-      const groupConfig = await this.api.robot.getConfig(group);
+      const groupConfig = this.groupConfig.get(group);
+      if (!groupConfig) return false;
       if (!groupConfig.modules) groupConfig.modules = {};
       if (!groupConfig.modules[modIndex]) groupConfig.modules[modIndex] = { enable: true };
       else groupConfig.modules[modIndex].enable = true;
-      await this.groupConfig.save(group, groupConfig);
-    } else {
-      this.config.modules.find(it => it.entry === modIndex)!.enable = true;
-      await this.workpath.writeJson('config.json', this.config);
+      return this.groupConfig.set(group, groupConfig);
     }
+
+    const config = this.config.get();
+    config.modules.find(it => it.entry === modIndex)!.enable = true;
+    this.config.set(config);
+
     return true;
   }
 
-  async disableModule(modIndex: string, group?: number) {
-    const module = this.modules[modIndex];
+  disableModule(key: string, group?: number) {
+    const module = this.modules[key];
     if (!module) return false;
     if (group) {
-      const groupConfig = await this.groupConfig.get(group);
+      const groupConfig = this.groupConfig.get(group);
+      if (!groupConfig) return false;
       const { modules = {} } = groupConfig;
-      if (!modules[modIndex]) modules[modIndex] = { enable: false };
-      else modules[modIndex].enable = false;
-      await this.groupConfig.save(group, groupConfig);
-    } else {
-      this.config.modules.find(it => it.entry === modIndex)!.enable = false;
-      await this.workpath.writeJson('config.json', this.config);
+      if (!modules[key]) modules[key] = { enable: false };
+      else modules[key].enable = false;
+      return this.groupConfig.set(group, groupConfig);
     }
+
+    const config = this.config.get();
+    config.modules.find(it => it.entry === key)!.enable = false;
+    this.config.set(config);
     return true;
   }
 }

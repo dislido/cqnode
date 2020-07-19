@@ -74,13 +74,13 @@ export default class CQHttpConnector {
 
   /**
    * 接收事件
-   * @param {Object} event 接收到的事件对象
-   * @param {http.ServerResponse} resp 响应对象
+   * @param event 接收到的事件对象
+   * @param resp 响应对象
    */
-  onEventReceived(event: CQEvent.Event, resp: http.ServerResponse) {
+  async onEventReceived(event: CQEvent.Event, resp: http.ServerResponse) {
     let eventName = assertEventName(event);
     let eventObj = toCamelCase(event) as CQEvent.Event;
-    const plgret = this.cqnode.pluginManager.emit('onEventReceived', { eventName, event: eventObj });
+    const plgret = await this.cqnode.pluginManager.emit('onEventReceived', { eventName, event: eventObj });
     if (!plgret) return;
     this.cqnode.emit(plgret.eventName, plgret.event, resp);
     if (this.TIMEOUT) setTimeout(() => !resp.finished && resp.end(), this.TIMEOUT);
@@ -88,9 +88,9 @@ export default class CQHttpConnector {
 
   /**
    * 进行API请求
-   * @param {string} path 请求地址
-   * @param {Object} body 请求内容
-   * @returns {Promise<JSON>} 响应数据
+   * @param path 请求地址
+   * @param body 请求内容
+   * @returns 响应数据
    */
   requestAPI(path: string, body?: object) {
     const content = body ? JSON.stringify(body) : '';

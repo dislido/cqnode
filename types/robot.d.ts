@@ -4,8 +4,6 @@ import { EventEmitter } from 'events';
 import WorkpathManager from './workpath-manager';
 import { util } from './util';
 import { Plugin } from './plugin';
-import { JSONType, JSONObjectType } from './type';
-import { CQNodeRobotAPI } from './cqnode-robot-api'; 
 
 /**
  * module加载信息
@@ -14,11 +12,11 @@ export interface LoadModuleObject {
   /** 加载模块路径名或npm包名 */
   entry: string;
   /** 模块构造函数参数 */
-  constructorParams?: JSONType[]; 
+  constructorParams?: any[]; 
   /** 模块默认配置对象 */
-  config?: JSONObjectType; 
+  config?: any; 
   /** 模块meta信息 */
-  meta?: JSONObjectType;
+  meta?: any;
   enable?: boolean;
 }
 
@@ -61,7 +59,7 @@ export interface GroupConfig {
   modules?: {
     [entry: string]: {
       enable?: boolean;
-      config?: JSONType;
+      config?: any;
     };
   }
 }
@@ -155,7 +153,7 @@ export class Robot extends EventEmitter {
   /** CQNode运行时信息 */
   inf: CQNodeInf;
   /** CQ HTTP API */
-  api: CQAPI & { robot: CQNodeRobotAPI };
+  api: CQAPI;
   /**
    * workpath
    * @deprecated 请使用cqnode.workpath

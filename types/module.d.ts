@@ -1,6 +1,7 @@
 import { CQResponse } from './response';
 import { CQEvent } from './cq-http';
 import { Robot } from './robot';
+import { OptionalPromisify } from './type';
 
 /** 模块信息 */
 export interface CQNodeModuleInf {
@@ -16,7 +17,7 @@ export interface CQNodeModuleInf {
 }
 
 type EventResult = boolean | void | CQResponse.Response;
-export type EventReturns = EventResult | Promise<EventResult>;
+export type EventReturns = OptionalPromisify<EventResult>;
 
 /** CQNode模块 */
 export class Module {

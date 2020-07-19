@@ -3,6 +3,7 @@ import { EventName } from './connector-cqhttp/event-type';
 import { ServerResponse } from 'http';
 import CQNodeModule from './robot-module';
 import { CQAPI, CQEvent } from '../types/cq-http';
+import { OptionalPromisify } from '@/types/type';
 
 export type HookName = Exclude<keyof CQNodePlugin, 'onRegister' | 'cqnode'>;
 namespace HookData  {
@@ -37,13 +38,13 @@ export default class CQNodePlugin {
   cqnode: Robot;
 
   /** 在接收到事件时触发 */
-  onEventReceived(data: HookData.onEventReceived): boolean | HookData.onEventReceived | void { return true; }
+  onEventReceived(data: HookData.onEventReceived): OptionalPromisify<boolean | HookData.onEventReceived | void> { return data; }
   /** 无论返回什么，response.end()都会被调用，handlerModule存在时，返回false会阻止cqnode返回任何数据，即无视body内容 */
-  onResponse(data: HookData.onResponse): boolean | HookData.onResponse | void { return true; }
+  onResponse(data: HookData.onResponse): OptionalPromisify<boolean | HookData.onResponse | void> { return data; }
   /** 拦截Module对API的调用，不影响Plugin的API调用 */
-  onRequestAPI(data: HookData.onRequestAPI): boolean | HookData.onRequestAPI | void { return true; }
+  onRequestAPI(data: HookData.onRequestAPI): OptionalPromisify<boolean | HookData.onRequestAPI | void> { return data; }
   /** CQNode初始化完毕时触发 */
-  onReady(data: {}): boolean | {} | void { return true; }
+  onReady(data: {}): boolean | {} | void { return data; }
 
   onRegister() {}
 }

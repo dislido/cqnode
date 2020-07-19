@@ -1,7 +1,7 @@
 import Robot from './cqnode-robot';
 import { CQResponse } from '../types/response';
 import { CQEvent } from '../types/cq-http';
-import { CQNodeModuleInf, EventReturns } from 'types/module';
+import { CQNodeModuleInf, EventReturns } from '@/types/module';
 import { nullCQNode } from './util';
 
 export default class CQNodeModule {
@@ -11,6 +11,7 @@ export default class CQNodeModule {
   constructor(public inf: CQNodeModuleInf = {}) {}
   onRun() {}
   onStop() {}
+  // @ts-ignore
   onEvent(event: CQEvent.Event, resp: CQResponse.Response): EventReturns {
     return false;
   }
@@ -52,11 +53,6 @@ export default class CQNodeModule {
   }
   onGroupRequest(data: CQEvent.GroupRequest, resp: CQResponse.GroupRequest): EventReturns {
     return this.onRequest(data, resp);
-  }
-
-  // 获取本模块的config
-  async getConfig(groupId?: number) {
-    
   }
 
   async getFilepath() {

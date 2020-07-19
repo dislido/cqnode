@@ -15,7 +15,7 @@ export default class PluginManager {
    * @param {object} plugin 插件对象
    */
   registerPlugin(plugin: LoadModuleObject) {
-    const { entry, constructorParams = [], config = {}, meta = {} } = plugin;
+    const { entry, constructorParams = [] } = plugin;
     if (this.loadedPlugins[entry]) return true;
     try {
       const PluginClass = require(entry.startsWith('.') ? path.resolve(process.cwd(), entry) : entry);
@@ -37,19 +37,20 @@ export default class PluginManager {
    * @param {string} hookName 钩子名
    * @param {object} data 钩子提供的参数数据对象，对该对象的修改会改变事件相关数据
    */
-  emit<T extends HookName>(hookName: T, data: Parameters<CQNodePlugin[T]>[0]): Parameters<CQNodePlugin[T]>[0] | false {
+  async emit<T extends HookName>(hookName: T, data: Parameters<CQNodePlugin[T]>[0]): Promise<Parameters<CQNodePlugin[T]>[0] | false> {
     const plugins = this.plugins.filter(plugin => plugin[hookName] !== CQNodePlugin.prototype[hookName]);
     let currData = data;
     try {
-      if (plugins.find(plugin => {
-        const plgret = plugin[hookName](currData as any);
+      for (let plugin of plugins) {
+        // @ts-ignore plgret可能为promise，ts类型推断错误
+        const plgret = await plugin[hookName](currData as any);
         if (typeof plgret === 'object') {
           currData = plgret as Parameters<CQNodePlugin[T]>[0];
-          return false;
+          continue;
         }
-        if (plgret === undefined) return false;
-        return !plgret;
-      })) return false;
+        if (plgret === undefined) continue;
+        if (!plgret) return false;
+      }
     } catch (e) {
       console.error(`[error]plugin error:(${hookName}) `, e);
       return false;

@@ -1,30 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import util from 'util';
-import CQNodeModule from './robot-module';
-import { JSONType } from '@/types/type';
+import JsonStorage from './json-storage';
 
 const exists = util.promisify(fs.exists);
 
 class CQNodeWorkpathError extends Error {}
 
-
-interface WorkpathCache {
-  groupModuleCfg: {
-    [key: string]: any;
-  }
-}
-
 export default class WorkpathManager {
   basepath: string;
-  cache: WorkpathCache;
   constructor(workpath: string) {
     this.basepath = path.resolve(workpath);
-    this.cache = Object.assign(Object.create(null), {
-      groupModuleCfg: {
-
-      },
-    });
   }
 
   async init() {
@@ -36,6 +22,9 @@ export default class WorkpathManager {
     ]);
   }
 
+  /**
+   * @deprecated 使用resolve
+   */
   getWorkPath(...to: string[]) {
     return path.resolve(this.basepath, ...to);
   }
@@ -85,7 +74,7 @@ export default class WorkpathManager {
    * @param path 路径
    * @param defaultData 文件不存在时写入默认JSON对象，默认为`{}`
    */
-  async readJson<T = any>(path: string, defaultData: JSONType = {}): Promise<T> {
+  async readJson<T = any>(path: string, defaultData: any = {}): Promise<T> {
     const fullPath = this.resolve(path);
     await this.ensurePath(fullPath, '', JSON.stringify(defaultData));
     const fileBuf = await fs.promises.readFile(fullPath);
@@ -103,45 +92,17 @@ export default class WorkpathManager {
     await this.ensurePath(fullPath);
     return fs.promises.writeFile(fullPath, JSON.stringify(data, null, 2));
   }
+
   /**
-   * 获取指定群，指定模块的设置信息
-   * @deprecated 不稳定的API，未来可能会改变或删除
-   * @param {string} group 群号码
-   * @param {object} module 模块引用
+   * 读取JSON文件并获取同步对象，可以同步读写对象，做出的修改会自动保存到文件。不会监听文件的改动
+   *
+   * 对同一个path调用多次会返回相同实例，defaultData取第一次调用的传值
+   * @param path 读取的json文件路径，不存在则会创建
+   * @param defaultData 文件不存在时写入默认JSON对象，默认为`{}`
    */
-  async getGroupModuleConfig(group: string, module: CQNodeModule) {
-    if (!this.cache.groupModuleCfg[group]) {
-      const cfg = this.readJson(`group/${group}/config.json`);
-      this.cache.groupModuleCfg[group] = cfg;
-    }
-    const groupFieldCfg = this.cache.groupModuleCfg[group];
-    if (!module.inf.packageName) throw new Error('无法在匿名模块中使用此功能，添加inf.packageName以启用此功能');
-    if (!groupFieldCfg[module.inf.packageName]) groupFieldCfg[module.inf.packageName] = {};
-    return groupFieldCfg[module.inf.packageName];
-  }
-
-  async saveGroupModuleConfig(group: string) {
-    fs.writeFileSync(
-      path.resolve(this.basepath, `group/${group}/modulecfg.json`),
-      JSON.parse(this.cache.groupModuleCfg[group]),
-    );
-  }
-};
-
-/*
-.cqnode {
-  group {
-    [groupid] {
-      modulecfg.json
-    }
-  }
-  module {
-    [packageName.replace(/\//g, '.')] {
-
-    }
-  }
-  log {
-
+  async getJsonStorage<T = any>(path: string, defaultData: T = {} as T) {
+    const storage = new JsonStorage(path, defaultData, this);
+    await storage.ready();
+    return storage;
   }
 }
- */

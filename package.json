@@ -1,6 +1,6 @@
 {
   "name": "@dislido/cqnode",
-  "version": "3.0.0-beta0",
+  "version": "3.0.0-beta1",
   "description": "no description",
   "main": "dist/index.js",
   "author": "dislido",
@@ -20,6 +20,6 @@
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^11.13.5",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.7"
   }
 }
