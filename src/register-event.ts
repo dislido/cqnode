@@ -1,7 +1,7 @@
-import Robot from "./cqnode-robot";
-import { ServerResponse } from "http";
-import { CQEvent } from "../types/cq-http";
-import { CQResponse } from "../types/response";
+import Robot from './cqnode-robot';
+import { ServerResponse } from 'http';
+import { CQEvent } from '../types/connector';
+import { CQResponse } from '../types/response';
 
 function unfreeze(data: CQEvent.Message) {
   ['username', 'atme', 'msg'].forEach(p => {
@@ -70,14 +70,14 @@ async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data
           body: resp.responseBody,
           get handlerModule() { return currentModule; },
         };
-        const plgret = cqnode.pluginManager.emit('onResponse', hookData)
+        const plgret = cqnode.pluginManager.emit('onResponse', hookData);
         if (!plgret) {
           resp.originalResponse.end();
           return;
         }
         if (!resp.originalResponse.finished) resp.originalResponse.end(JSON.stringify(hookData.body));
         return;
-      };
+      }
     } catch (err) {
       console.error('CQNode module error: ', err);
     }
@@ -87,7 +87,7 @@ async function callModuleEvent(cqnode: Robot, eventFunctionName: EventName, data
     get originalResponse() { return resp.originalResponse; },
     body: resp.responseBody,
     get handlerModule() { return undefined; },
-  })
+  });
   resp.originalResponse.end();
 }
 

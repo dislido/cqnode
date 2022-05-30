@@ -1,12 +1,12 @@
 import * as event from 'events';
 import PluginManager from './plugin-manager';
 import WorkpathManager from './workpath-manager';
-import { checkConfig, nullCQNode, CQCode } from './util';
-import CQHttpConnector from './connector-cqhttp';
+import { checkConfig, nullCQNode } from './util';
+import OicqConnector, { OicqConfig } from './connector-oicq';
 import CQNodeModule from './robot-module';
 import registerEvent from './register-event';
-import CQAPI from './connector-cqhttp/api';
-import { CQEvent, CQHTTP } from '../types/cq-http';
+import CQAPI from './connector-oicq/api';
+import { CQEvent, CQHTTP } from '../types/connector';
 
 export interface ConfigObject {
   /** 
@@ -19,17 +19,8 @@ export interface ConfigObject {
   plugins?: any[];
   /** 数据文件夹 */
   workpath?: string;
-  /** HTTP API 连接配置 */
-  connector?: {
-    /** 事件监听接口 */
-    LISTEN_PORT?: number;
-    /** HTTP API接口 */
-    API_PORT?: number;
-    /** 事件处理超时时长（毫秒） */
-    TIMEOUT?: number;
-    /** access_token */
-    ACCESS_TOKEN?: string;
-  };
+  /** 连接配置 */
+  connector?: OicqConfig;
   /**
    * atme判断字符串  
    * 以该字符串开头的信息会被任务at了本机器人  
@@ -50,17 +41,12 @@ export interface CQNodeConfig {
   workpath: string;
   /**
    * atme判断字符串  
-   * 以该字符串开头的信息会被任务at了本机器人  
+   * 以该字符串开头的信息会被认为at了本机器人，并在消息中添加atme=true标识  
    * 默认使用QQ的at  
    * 空字符串表示将任何消息当作at了本机器人
    */
   atmeTrigger: Array<string | true>;
-  connector: {
-    LISTEN_PORT: number;
-    API_PORT: number;
-    TIMEOUT: number;
-    ACCESS_TOKEN?: string;
-  }
+  connector: OicqConfig;
 }
 
 /** CQNode运行时信息 */
@@ -72,26 +58,6 @@ interface CQNodeInf {
     nickname: string;
     userId: number;
   };
-  /** 插件运行状态 */
-  status: {
-    /** 当前 QQ 在线，null 表示无法查询到在线状态 */
-    online: boolean;
-    /** HTTP API 插件状态符合预期，意味着插件已初始化，内部插件都在正常运行，且 QQ 在线 */
-    good: boolean;
-  };
-  /** 酷Q 及 HTTP API 插件的版本信息 */
-  versionInfo: {
-    /** 酷Q 根目录路径 */
-    coolqDirectory: string;
-    /** 酷Q 版本，air 或 pro */
-    coolqEdition: string;
-    /** HTTP API 插件版本，例如 2.1.3 */
-    pluginVersion: string;
-    /** HTTP API 插件 build 号 */
-    pluginBuildNumber: number;
-    /** HTTP API 插件编译配置，debug 或 release */
-    pluginBuildConfiguration: string;
-  };
   CQNodeVersion: string;
   /** 群列表 */
   groupList: CQHTTP.GetGroupListResponseData[];
@@ -102,16 +68,17 @@ export default class Robot extends event.EventEmitter {
   config: CQNodeConfig;
   workpathManager: WorkpathManager;
   pluginManager: PluginManager;
-  connect: CQHttpConnector;
+  connect: OicqConnector;
   modules: CQNodeModule[];
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   inf = { inited: false, CQNodeVersion: require('../package.json').version } as CQNodeInf;
-  api: typeof CQAPI;
+  api: any; // typeof CQAPI;
   constructor(config: ConfigObject) {
     super();
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath);
     this.pluginManager = new PluginManager(this);
-    this.connect = new CQHttpConnector(this, this.config.connector);
+    this.connect = new OicqConnector(this, this.config.connector);
     this.api = this.connect.api;
 
     this.init();
@@ -147,28 +114,13 @@ export default class Robot extends event.EventEmitter {
   async initInf() {
     try {
       await Promise.all([
-        (async () => this.api.getLoginInfo().then(inf => {
+        (async () => this.api.getLoginInfo().then((inf: any) => {
           this.inf.loginInfo = {
             nickname: inf.data.nickname,
             userId: inf.data.user_id,
           };
         }))(),
-        (() => this.api.getStatus().then(inf => {
-          this.inf.status = {
-            online: inf.data.online,
-            good: inf.data.good,
-          };
-        }))(),
-        (() => this.api.getVersionInfo().then(inf => {
-          this.inf.versionInfo = {
-            coolqDirectory: inf.data.coolq_directory,
-            coolqEdition: inf.data.coolq_edition,
-            pluginVersion: inf.data.plugin_version,
-            pluginBuildNumber: inf.data.plugin_build_number,
-            pluginBuildConfiguration: inf.data.plugin_build_configuration,
-          };
-        }))(),
-        (() => this.api.getGroupList().then(inf => {
+        (() => this.api.getGroupList().then((inf: any) => {
           this.inf.groupList = inf.data;
         }))()
       ]);
@@ -210,12 +162,12 @@ export default class Robot extends event.EventEmitter {
     const apiProxy = new Proxy(this.api, {
       get: (api, p) => {
         if (!Reflect.has(api, p)) return undefined;
-        return new Proxy<Function>(Reflect.get(api, p), {
+        return new Proxy(Reflect.get(api, p), {
           apply: (target, thisArg, argArray) => {
             const plgret = this.pluginManager.emit('onRequestAPI', {
               get caller() { return mod; },
               apiName: p as keyof typeof CQAPI,
-              params: argArray,
+              params: argArray as any,
               function: undefined,
             });
             if (plgret === false) throw new Error(`CQNode: API请求被拦截: ${mod.inf.name} ${p as string}(${argArray.join(', ')})`);

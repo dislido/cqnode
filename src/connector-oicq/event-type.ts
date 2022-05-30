@@ -1,4 +1,4 @@
-import { CQEvent } from "../../types/cq-http";
+import { CQEvent } from '../../types/connector';
 
 export function isMessage(event: CQEvent.Event): event is CQEvent.Message {
   return event.postType === 'message';
@@ -73,5 +73,9 @@ export function assertEventName(event: CQEvent.Event): EventName {
     isLifecycleMeta,
   ].find(it => it(event));
   if (!eventType) throw new Error(`CQNode Error: unknown Event:\n${JSON.stringify(event)}`);
-  return eventType.name.substr(2) as EventName;
+  return eventType.name.slice(2) as EventName;
+}
+
+export class CQNodeEvent {
+
 }

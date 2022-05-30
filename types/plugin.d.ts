@@ -1,4 +1,4 @@
-import { EventName, CQEvent, CQAPI } from './cq-http';
+import { EventName, CQEvent, CQAPI } from './connector';
 import { ServerResponse } from 'http';
 import { Module } from './module';
 import { Robot } from './robot';
@@ -43,7 +43,7 @@ export declare namespace HookData  {
     /** 传递给API函数的参数数组 */
     params: Parameters<CQAPI[keyof CQAPI]> & Array<any>;
     /** 替换调用的API函数 */
-    function?: Function;
+    function?: (...args: any) => any;
   };
 }
 
@@ -59,7 +59,7 @@ export class Plugin {
   /** 在Module调用API时触发（即使用`this.cqnode.api`时） */
   onRequestAPI(data: HookData.onRequestAPI): boolean | HookData.onRequestAPI | void;
   /** CQNode初始化完毕时触发 */
-  onReady(data: {}): boolean | {} | void;
+  onReady(data: any): boolean | any | void;
   /** 本模块注册完成时触发 */
   onRegister(): void;
 }

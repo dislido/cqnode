@@ -1,5 +1,5 @@
 import { CQResponse } from './response';
-import { CQEvent } from './cq-http';
+import { CQEvent } from './connector';
 import { Robot } from './robot';
 
 /** 模块信息 */

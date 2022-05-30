@@ -3,7 +3,7 @@ import { ConfigObject, Robot } from './types/robot';
 export as namespace CQNode;
 
 export * from './types/response';
-export * from './types/cq-http';
+export * from './types/connector';
 
 export { Robot } from './types/robot';
 export { Module } from './types/module';

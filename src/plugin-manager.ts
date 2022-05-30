@@ -40,4 +40,4 @@ export default class PluginManager {
     }
     return currData;
   }
-};
+}

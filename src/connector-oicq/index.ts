@@ -2,28 +2,19 @@ import * as http from 'http';
 import Robot from '../cqnode-robot';
 import api from './api';
 import { assertEventName } from './event-type';
-import { toUnderScoreCase, toCamelCase, decodeHtml } from '../util';
 import CQAPI from './api';
-import { CQEvent } from '../../types/cq-http';
+import { CQEvent } from '../../types/connector';
+import { createClient, Client } from 'oicq';
 
-/** CQHTTP设置 */
-declare interface CQHTTPConfig {
-  /** 接收消息端口，对应post_url的端口 */
-  LISTEN_PORT?: number;
-  /** 调用API端口，对应port */
-  API_PORT?: number;
-  /** response超时时间 */
-  TIMEOUT?: number;
-  /** access_token */
-  ACCESS_TOKEN?: string;
+export interface OicqConfig {
+  /** 登录qq号 */
+  account: number;
+  /** qq密码，不传则使用扫码登录 */
+  password?: string; 
+  timeout?: number;
 }
 
-export default class CQHttpConnector {
-  server: http.Server;
-  API_PORT: number;
-  LISTEN_PORT: number;
-  TIMEOUT: number;
-  ACCESS_TOKEN?: string;
+export default class OicqConnector {
   user: any;
   api: typeof CQAPI = new Proxy(api, {
     get: (target: any, apiName: string) => (...args: any[]) => {
@@ -31,38 +22,33 @@ export default class CQHttpConnector {
         console.warn('CONode warn: no API: ', apiName);
         return;
       }
-      return this.requestAPI(`/${toUnderScoreCase(apiName)}`, target[apiName](...args));
+      return this.requestAPI(`/${apiName}`, target[apiName](...args));
     },
   });
+  client: Client;
   /**
-   * cq-http插件的连接器
+   * oicq插件的连接器
    * @param cqnode cqnode实例
    * @param config CQHTTP设置
    */
-  constructor(public cqnode: Robot, {
-    LISTEN_PORT = 8080,
-    API_PORT = 5700,
-    TIMEOUT = 10000,
-    ACCESS_TOKEN }: CQHTTPConfig = {}) {
-    this.server = http.createServer((req, resp) => {
-      let data = '';
-      req.on('data', (chunk) => {
-        data += chunk;
-      }).on('end', () => {
-        resp.setHeader('Content-Type', 'application/json');
-        let event: CQEvent.Event | null = null;
-        try {
-          event = toCamelCase(JSON.parse(decodeHtml(data))) as CQEvent.Event;
-        } catch (e) {
-          console.error(`[cqnode error]: parse Event failed ->`, data, '<-');
-        }
-        if (event) this.onEventReceived(event, resp);
-      });
-    }).listen(LISTEN_PORT);
-    this.API_PORT = API_PORT;
-    this.LISTEN_PORT = LISTEN_PORT;
-    this.TIMEOUT = TIMEOUT;
-    this.ACCESS_TOKEN = ACCESS_TOKEN;
+  constructor(public cqnode: Robot, private config: OicqConfig) {
+    const { account } = config;
+    this.client = createClient(account, { log_level: 'off' });
+
+    const eventListener = (e: any) => this.onEventReceived(e, {} as any);
+    this.client.on('message', eventListener);
+    this.client.on('request', eventListener);
+    this.client.on('notice', eventListener);
+    this.client.on('system', eventListener);
+  }
+
+  init() {
+    this.client.once('system.login.qrcode', () => {
+      //扫码后按回车登录
+      console.log('扫码成功后请按回车');
+      process.stdin.once('data', () => this.client.login());
+    }).login(this.config.password);
+    return new Promise(res => this.client.once('system.online', res));
   }
 
   /**
@@ -71,12 +57,11 @@ export default class CQHttpConnector {
    * @param {http.ServerResponse} resp 响应对象
    */
   onEventReceived(event: CQEvent.Event, resp: http.ServerResponse) {
-    let eventName = assertEventName(event);
-    let eventObj = toCamelCase(event) as CQEvent.Event;
+    const eventName = assertEventName(event);
+    const eventObj = event as CQEvent.Event;
     const plgret = this.cqnode.pluginManager.emit('onEventReceived', { eventName, event: eventObj });
     if (!plgret) return;
     this.cqnode.emit(plgret.eventName, plgret.event, resp);
-    if (this.TIMEOUT) setTimeout(() => !resp.finished && resp.end(), this.TIMEOUT);
   }
 
   /**
@@ -89,7 +74,6 @@ export default class CQHttpConnector {
     const content = body ? JSON.stringify(body) : '';
     const reqOpt: any = {
       host: '127.0.0.1',
-      port: this.API_PORT,
       path,
       method: 'POST',
       headers: {
@@ -97,7 +81,6 @@ export default class CQHttpConnector {
         'Content-length': Buffer.byteLength(content),
       },
     };
-    if (this.ACCESS_TOKEN) reqOpt.headers['Authorization'] = `Bearer ${this.ACCESS_TOKEN}`;
     return new Promise((resolve, reject) => {
       let data = '';
       http.request(reqOpt, (res) => {
@@ -118,5 +101,4 @@ export default class CQHttpConnector {
       }).on('error', err => reject(err)).end(content);
     });
   }
-};
-
+}

@@ -1,5 +1,5 @@
 import { Module } from './module';
-import { CQAPI, CQHTTP } from './cq-http';
+import { CQAPI, CQHTTP } from './connector';
 import { EventEmitter } from 'events';
 import WorkpathManager from './workpath-manager';
 import { util } from './util';

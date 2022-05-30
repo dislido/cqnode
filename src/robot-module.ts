@@ -1,8 +1,8 @@
-import * as fs from 'fs';
 import Robot from './cqnode-robot';
 import { CQResponse } from '../types/response';
-import { CQEvent } from '../types/cq-http';
+import { CQEvent } from '../types/connector';
 import { CQNodeModuleInf, EventReturns } from 'types/module';
+import EventProcessor from './event-processor';
 
 export default class CQNodeModule {
   static Factory: typeof ModuleFactory;
@@ -13,6 +13,11 @@ export default class CQNodeModule {
   }
   onRun() {}
   onStop() {}
+
+  processEvent(ep: EventProcessor) {
+
+  }
+
   onEvent(event: CQEvent.Event, resp: CQResponse.Response): EventReturns {
     return false;
   }
@@ -80,7 +85,7 @@ export class ModuleFactory {
     // 清除class name
     const moduleConstructor = [class extends CQNodeModule {
       constructor(...args: any) {
-        super(inf)
+        super(inf);
         Object.assign(this, proto);
         if (initfn) initfn.call(this, ...args);
       }
