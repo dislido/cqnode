@@ -1,6 +1,5 @@
 import CQEventType from '../connector-oicq/event-type';
-import { CQNodeEventContext } from './event-context';
-import EventProcessor, { EventProcessorOptions } from './event-processor';
+import EventProcessor, { CQEventListener, EventProcessorOptions } from './event-processor';
 
 export interface CQNodeModuleMeta {
   /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，`/`会被替换为`.` */
@@ -15,7 +14,7 @@ export interface CQNodeModuleMeta {
 }
 
 interface FunctionModuleCtx {
-  on<T extends CQEventType>(eventName: T, listener: (c: CQNodeEventContext<T>) => void | Promise<void>, options?: EventProcessorOptions): void;
+  on<T extends CQEventType>(eventName: T, listener: CQEventListener<T>, options?: EventProcessorOptions): void;
   setMeta(inf: CQNodeModuleMeta): void;
 }
 

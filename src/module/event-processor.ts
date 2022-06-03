@@ -6,16 +6,21 @@ export interface EventProcessorOptions {
   atme?: boolean;
 }
 
+/**
+ * 事件监听函数
+ */
+export type CQEventListener<T extends CQEventType = any> = (ctx: CQNodeEventContext<T>) => any;
+
 export default class EventProcessor {
-  #processorMap: Map<CQEventType, Array<[(ctx: CQNodeEventContext<CQEventType>) => void | Promise<void>, EventProcessorOptions]>> = new Map();
+  #processorMap: Map<CQEventType, Array<[CQEventListener, EventProcessorOptions]>> = new Map();
 
   /**
    * 监听指定事件；同时监听父事件时，会先执行完子事件的事件处理器；重复监听同事件时，会按监听顺序执行事件处理器；
    * @param eventName 事件名
-   * @param process 事件处理器
+   * @param process 事件处理器，返回值的Boolean值为true代表本事件处理器已处理此事件，不再传递到后续处理器（等同ctx.end置true）
    * @param options 额外选项
    */
-  on<T extends CQEventType>(eventName: CQEventType, process: (ctx: CQNodeEventContext<T>) => void | Promise<void>, options: EventProcessorOptions = {}) {
+  on<T extends CQEventType>(eventName: CQEventType, process: CQEventListener<T>, options: EventProcessorOptions = {}) {
     const opt = {
       atme: true,
       ...options,
@@ -30,22 +35,20 @@ export default class EventProcessor {
    * 接收事件
    * @param eventName 事件名
    * @param data 事件数据
+   * @returns 是否结束事件处理
    */
   async emit<T extends CQEventType>(eventName: T, ctx: CQNodeEventContext<T>) {
     const evChain = eventName.split('.');
-    let stop = false;
     while (evChain.length) {
       const evName = evChain.join('.') as CQEventType;
       const processors = this.#processorMap.get(evName) ?? [];
       for (const [proc, options] of processors) {
         if (options.atme && !(ctx as CQNodeEventContext<CQEventType.message>).atme) continue;
-        if (proc(ctx)) {
-          stop = true;
-          break;
-        }
+        const end = await proc(ctx);
+        if (end) return true;
       }
       evChain.pop();
     }
-    return stop;
+    return false;
   }
 }
