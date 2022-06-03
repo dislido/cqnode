@@ -15,7 +15,7 @@ export interface CQNodeModuleMeta {
 }
 
 interface FunctionModuleCtx {
-  on<T extends CQEventType>(eventName: T, listener: (c: CQNodeEventContext<T>) => void | boolean, options?: EventProcessorOptions): void;
+  on<T extends CQEventType>(eventName: T, listener: (c: CQNodeEventContext<T>) => void | Promise<void>, options?: EventProcessorOptions): void;
   setMeta(inf: CQNodeModuleMeta): void;
 }
 
