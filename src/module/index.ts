@@ -20,7 +20,7 @@ interface FunctionModuleCtx {
 }
 
 export interface FunctionModule {
-  (ctx: FunctionModuleCtx): void;
+  (ctx: FunctionModuleCtx, config?: any): void;
 }
 
 export interface FunctionModuleInit {
@@ -29,7 +29,7 @@ export interface FunctionModuleInit {
   meta: CQNodeModuleMeta;
 }
 
-export function moduleInit(fn: FunctionModule): FunctionModuleInit {
+export function moduleInit(fn: FunctionModule, config?: any): FunctionModuleInit {
   const ep = new EventProcessor();
   const meta: CQNodeModuleMeta = {
     name: fn.name,
@@ -46,7 +46,7 @@ export function moduleInit(fn: FunctionModule): FunctionModuleInit {
     },
   };
 
-  fn(ctx);
+  fn(ctx, config);
 
   return {
     eventProcessor: ep,

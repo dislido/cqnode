@@ -6,33 +6,11 @@ import { FunctionModule, FunctionModuleInit, moduleInit } from './module';
 import EventContextBuilderMap, { CQNodeEventContext, EventContextBuilder } from './module/event-context';
 import CQEventType, { CQEvent } from './connector-oicq/event-type';
 
-export interface ConfigObject {
-  /**
-   * 管理员
-   */
-  admin?: number | number[];
-  /** 加载的模块 */
-  modules?: Array<FunctionModule>;
-  /** 加载的插件 */
-  plugins?: any[];
-  /** 数据文件夹 */
-  workpath?: string;
-  /** 连接配置 */
-  connector?: OicqConfig;
-  /**
-   * atme判断字符串
-   * 以该字符串开头的信息会被任务at了本机器人
-   * 默认使用QQ的at
-   * 空字符串表示将任何消息当作at了本机器人
-   */
-  atmeTrigger?: string | true | Array<string | true>;
-}
-
 export interface CQNodeConfig {
-  /** 管理员 */
-  admin: number[];
+  /** 管理员 @todo 后续用权限系统代替 */
+  admin: number | number[];
   /** 加载的模块 */
-  modules: FunctionModule[];
+  modules: Array<FunctionModule | [FunctionModule, any?]>;
   /** 加载的插件 */
   plugins: any[];
   /** 数据文件夹 */
@@ -77,7 +55,7 @@ export default class CQNodeRobot {
 
   api: any; // typeof CQAPI;
 
-  constructor(config: ConfigObject) {
+  constructor(config: CQNodeConfig) {
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath);
     // this.pluginManager = new PluginManager(this);
@@ -94,7 +72,10 @@ export default class CQNodeRobot {
 
     // this.config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
 
-    this.modules = this.config.modules.map(mod => moduleInit(mod));
+    this.modules = this.config.modules.map(mod => {
+      const m = Array.isArray(mod) ? mod : [mod];
+      return moduleInit(m[0], m[1]);
+    });
 
     this.connect.on('event', async <T extends CQEventType>(data: { eventName: T, event: CQEvent<T> }) => {
       for (const mod of this.modules) {

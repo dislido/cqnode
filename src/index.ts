@@ -1,9 +1,9 @@
-import CQNodeRobot, { ConfigObject } from './cqnode-robot';
+import CQNodeRobot, { CQNodeConfig } from './cqnode-robot';
 // import Plugin from './robot-plugin';
 import * as eventType from './connector-oicq/event-type';
 import { CQCode } from './util';
 
-export function createRobot(config: ConfigObject) {
+export function createRobot(config: CQNodeConfig) {
   return new CQNodeRobot(config);
 }
 // export { default as Plugin } from './robot-plugin';
@@ -13,9 +13,7 @@ export const util = {
 };
 
 const CQNode = {
-  createRobot(config: ConfigObject) {
-    return new CQNodeRobot(config);
-  },
+  createRobot,
   // Plugin,
   util: {
     CQCode,
