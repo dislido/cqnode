@@ -1,18 +1,21 @@
+import CQEventType, { CQEvent } from 'src/connector-oicq/event-type';
+import { CQNodeEventContext } from './event-context';
+
 export interface EventProcessorOptions {
   /** 是否需要atme标识来触发，处理群/讨论组消息用（非群/讨论组消息的atme标识固定为true） */
   atme?: boolean;
 }
 
 export default class EventProcessor {
-  #processorMap: Map<string, Array<[(ctx: any) => void | boolean, EventProcessorOptions]>>;
-  
+  #processorMap: Map<CQEventType, Array<[(ctx: CQNodeEventContext<CQEventType>) => void | boolean, EventProcessorOptions]>> = new Map();
+
   /**
    * 监听指定事件；同时监听父事件时，会先执行完子事件的事件处理器；重复监听同事件时，会按监听顺序执行事件处理器；
    * @param eventName 事件名
    * @param process 事件处理器
    * @param options 额外选项
    */
-  on(eventName: string, process: (ctx: any) => void | boolean, options: EventProcessorOptions = {}) {
+  on<T extends CQEventType>(eventName: CQEventType, process: (ctx: CQNodeEventContext<T>) => void | boolean, options: EventProcessorOptions = {}) {
     if (!this.#processorMap.has(eventName)) this.#processorMap.set(eventName, []);
     const processorList = this.#processorMap.get(eventName);
     processorList?.push([process, options]);
@@ -24,17 +27,21 @@ export default class EventProcessor {
    * @param eventName 事件名
    * @param data 事件数据
    */
-  async emit(eventName: string, ctx: any) {
+  async emit<T extends CQEventType>(eventName: T, ctx: CQNodeEventContext<T>) {
     const evChain = eventName.split('.');
-
-    while(evChain.length) {
-      const evName = evChain.join('.');
+    let stop = false;
+    while (evChain.length) {
+      const evName = evChain.join('.') as CQEventType;
       const processors = this.#processorMap.get(evName) ?? [];
       for (const [proc, options] of processors) {
-        if (options.atme && !ctx.atme) continue;
-        if (proc(ctx)) break;
+        if (options.atme && !(ctx as CQNodeEventContext<CQEventType.message>).atme) continue;
+        if (proc(ctx)) {
+          stop = true;
+          break;
+        }
       }
       evChain.pop();
     }
+    return stop;
   }
 }

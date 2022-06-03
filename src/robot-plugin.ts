@@ -1,94 +1,106 @@
-import Robot from './cqnode-robot';
-import { EventName } from './connector-oicq/event-type';
-import { ServerResponse } from 'http';
-import CQNodeModule from './robot-module';
-import { CQAPI, CQEvent } from '../types/connector';
+// import { ServerResponse } from 'http';
+// import CQNodeRobot from './cqnode-robot';
+// import { CQEventType } from './connector-oicq/event-type';
+// import CQNodeModule from './robot-module';
+// import { CQAPI, CQEvent } from '../types/connector';
 
-export type HookName = Exclude<keyof CQNodePlugin, 'onRegister' | 'cqnode'>;
+// interface onEventReceivedHookData {
+//   /** 事件名 */
+//   eventName: CQEventType;
+//   /** 事件Event对象 */
+//   event: CQEvent.Event;
+// }
+// interface onResponseHookData {
+//   event: CQEvent.Event;
+//   /** 原始ServerResponse对象 */
+//   originalResponse: ServerResponse;
+//   /** 将要进行响应的responseBody内容 */
+//   body: {
+//     [field: string]: any;
+//   };
+//   /** 处理此消息的Module,若为空则没有模块处理此消息 */
+//   handlerModule?: CQNodeModule;
+// }
+// interface onRequestAPIHookData {
+//   /** 请求API的Module */
+//   caller: CQNodeModule;
+//   apiName: keyof CQAPI;
+//   params: Parameters<CQAPI[keyof CQAPI]>;
+//   function?(): any;
+// }
 
-interface onEventReceivedHookData {
-  /** 事件名 */
-  eventName: EventName;
-  /** 事件Event对象 */
-  event: CQEvent.Event;
-}
-interface onResponseHookData {
-  event: CQEvent.Event;
-  /** 原始ServerResponse对象 */
-  originalResponse: ServerResponse;
-  /** 将要进行响应的responseBody内容 */
-  body: {
-    [field: string]: any;
-  };
-  /** 处理此消息的Module,若为空则没有模块处理此消息 */
-  handlerModule?: CQNodeModule;
-}
-interface onRequestAPIHookData {
-  /** 请求API的Module */
-  caller: CQNodeModule;
-  apiName: keyof CQAPI;
-  params: Parameters<CQAPI[keyof CQAPI]>;
-  function?(): any;
-}
+// export default abstract class CQNodePlugin {
+//   static Factory: typeof PluginFactory;
 
-export default abstract class CQNodePlugin {
-  static Factory: typeof PluginFactory;
-  cqnode: Robot;
+//   cqnode: CQNodeRobot;
 
-  /** 在接收到事件时触发 */
-  onEventReceived(data: onEventReceivedHookData): boolean | onEventReceivedHookData | void { return true; }
-  /** 无论返回什么，response.end()都会被调用，handlerModule存在时，返回false会阻止cqnode返回任何数据，即无视body内容 */
-  onResponse(data: onResponseHookData): boolean | onResponseHookData | void { return true; }
-  /** 拦截Module对API的调用，不影响Plugin的API调用 */
-  onRequestAPI(data: onRequestAPIHookData): boolean | onRequestAPIHookData | void { return true; }
-  /** CQNode初始化完毕时触发 */
-  onReady(data: any): boolean | object | void { return true; }
+//   /** 在接收到事件时触发 */
+//   onEventReceived(data: onEventReceivedHookData): boolean | onEventReceivedHookData | void { return true; }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onRegister() {}
-}
+//   /** 无论返回什么，response.end()都会被调用，handlerModule存在时，返回false会阻止cqnode返回任何数据，即无视body内容 */
+//   onResponse(data: onResponseHookData): boolean | onResponseHookData | void { return true; }
 
-export class PluginFactory {
-  proto: any = {};
-  noDuplicate: boolean;
-  constructor({ noDuplicate = true } = {}) {
-    this.noDuplicate = noDuplicate;
-  }
-  private duplicateError(name: string) {
-    throw new Error(`PluginFactoryError: duplicate ${name}`);
-  }
-  createConstructor(initfn?: (...args: any) => void): typeof CQNodePlugin {
-    if (initfn instanceof Function && initfn.prototype === undefined) throw new Error('PluginFactoryError: createConstructor的init函数不能为箭头函数');
-    const proto = this.proto;
-    const pluginConstructor = [class extends CQNodePlugin {
-      constructor(...args: any) {
-        super();
-        Object.assign(this, proto);
-        if (initfn) initfn.call(this, ...args);
-      }
-    }][0];
-    return pluginConstructor;
-  }
-  onEventReceived(fn: (data: onEventReceivedHookData) => boolean | onEventReceivedHookData | void) {
-    if (this.noDuplicate && this.proto.onEventReceived) this.duplicateError('onEventReceived');
-    this.proto.onEventReceived = fn;
-    return this;
-  }
-  onResponse(fn: (data: onResponseHookData) => boolean | onResponseHookData | void) {
-    if (this.noDuplicate && this.proto.onResponse) this.duplicateError('onResponse');
-    this.proto.onResponse = fn;
-    return this;
-  }
-  onRequestAPI(fn: (data: onRequestAPIHookData) => boolean | onRequestAPIHookData | void) {
-    if (this.noDuplicate && this.proto.onRequestAPI) this.duplicateError('onRequestAPI');
-    this.proto.onRequestAPI = fn;
-    return this;
-  }
-  onRegister(fn: () => void) {
-    if (this.noDuplicate && this.proto.onRegister) this.duplicateError('onRegister');
-    this.proto.onRegister = fn;
-    return this;
-  }
-}
+//   /** 拦截Module对API的调用，不影响Plugin的API调用 */
+//   onRequestAPI(data: onRequestAPIHookData): boolean | onRequestAPIHookData | void { return true; }
 
-CQNodePlugin.Factory = PluginFactory;
+//   /** CQNode初始化完毕时触发 */
+//   onReady(data: any): boolean | object | void { return true; }
+
+//   // eslint-disable-next-line @typescript-eslint/no-empty-function
+//   onRegister() {}
+// }
+
+// export class PluginFactory {
+//   proto: any = {};
+
+//   noDuplicate: boolean;
+
+//   constructor({ noDuplicate = true } = {}) {
+//     this.noDuplicate = noDuplicate;
+//   }
+
+//   private duplicateError(name: string) {
+//     throw new Error(`PluginFactoryError: duplicate ${name}`);
+//   }
+
+//   createConstructor(initfn?: (...args: any) => void): typeof CQNodePlugin {
+//     if (initfn instanceof Function && initfn.prototype === undefined) throw new Error('PluginFactoryError: createConstructor的init函数不能为箭头函数');
+//     const { proto } = this;
+//     const pluginConstructor = [class extends CQNodePlugin {
+//       constructor(...args: any) {
+//         super();
+//         Object.assign(this, proto);
+//         if (initfn) initfn.call(this, ...args);
+//       }
+//     }][0];
+//     return pluginConstructor;
+//   }
+
+//   onEventReceived(fn: (data: onEventReceivedHookData) => boolean | onEventReceivedHookData | void) {
+//     if (this.noDuplicate && this.proto.onEventReceived) this.duplicateError('onEventReceived');
+//     this.proto.onEventReceived = fn;
+//     return this;
+//   }
+
+//   onResponse(fn: (data: onResponseHookData) => boolean | onResponseHookData | void) {
+//     if (this.noDuplicate && this.proto.onResponse) this.duplicateError('onResponse');
+//     this.proto.onResponse = fn;
+//     return this;
+//   }
+
+//   onRequestAPI(fn: (data: onRequestAPIHookData) => boolean | onRequestAPIHookData | void) {
+//     if (this.noDuplicate && this.proto.onRequestAPI) this.duplicateError('onRequestAPI');
+//     this.proto.onRequestAPI = fn;
+//     return this;
+//   }
+
+//   onRegister(fn: () => void) {
+//     if (this.noDuplicate && this.proto.onRegister) this.duplicateError('onRegister');
+//     this.proto.onRegister = fn;
+//     return this;
+//   }
+// }
+
+// CQNodePlugin.Factory = PluginFactory;
+
+// export type HookName = Exclude<keyof CQNodePlugin, 'onRegister' | 'cqnode'>;

@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import util from 'util';
-import CQNodeModule from './robot-module';
+import { FunctionModuleInit } from './module';
+// import CQNodeModule from './robot-module';
 
 const exists = util.promisify(fs.exists);
 
 class CQNodeWorkpathError extends Error {}
-
 
 interface WorkpathCache {
   groupModuleCfg: {
@@ -16,7 +16,9 @@ interface WorkpathCache {
 
 export default class WorkpathManager {
   workpath: string;
+
   cache: WorkpathCache;
+
   constructor(workpath: string) {
     this.workpath = path.resolve(workpath);
     this.cache = Object.assign(Object.create(null), {
@@ -51,11 +53,10 @@ export default class WorkpathManager {
     }
     let currPath = paths[0];
     if (paths.length > 1) {
-      for(let index = 1; index < paths.length; index ++) {
+      for (let index = 1; index < paths.length; index++) {
         currPath = path.resolve(currPath + path.sep, paths[index]);
         if (!await exists(currPath)) {
-          
-          await fs.promises.mkdir(currPath)
+          await fs.promises.mkdir(currPath);
         } else if (!(await fs.promises.stat(currPath)).isDirectory()) {
           throw new CQNodeWorkpathError(`${currPath}已存在且不是目录`);
         }
@@ -74,40 +75,41 @@ export default class WorkpathManager {
 
   /**
    * 以JSON格式读取文件，若文件不存在则创建文件并写入默认内容
-   * @param path 路径
+   * @param jsonPath 路径
    * @param defaultData 文件不存在时写入默认JSON对象，默认为`{}`
    */
-  async readJson(path: string, defaultData: any = {}) {
-    await this.ensurePath(path);
-    const fileBuf = await fs.promises.readFile(path);
+  async readJson(jsonPath: string, defaultData: any = {}) {
+    await this.ensurePath(jsonPath);
+    const fileBuf = await fs.promises.readFile(jsonPath);
     const data = fileBuf.toString();
     return JSON.parse(data || JSON.stringify(defaultData));
   }
-  
+
   /**
    * 以JSON格式写入文件
-   * @param path 路径
+   * @param jsonPath 路径
    * @param data 写入的JSON对象
    */
-  async writeJson(path: string, data: any) {
-    await this.ensurePath(path);
-    return fs.promises.writeFile(path, JSON.stringify(data));
+  async writeJson(jsonPath: string, data: any) {
+    await this.ensurePath(jsonPath);
+    return fs.promises.writeFile(jsonPath, JSON.stringify(data));
   }
+
   /**
    * 获取指定群，指定模块的设置信息
    * @deprecated 不稳定的API，未来可能会改变或删除
    * @param {string} group 群号码
    * @param {object} module 模块引用
    */
-  async getGroupModuleConfig(group: string, module: CQNodeModule) {
+  async getGroupModuleConfig(group: string, module: FunctionModuleInit) {
     if (!this.cache.groupModuleCfg[group]) {
-      const cfg = this.readJson(path.resolve(this.workpath, `group/${group}/config.json`))
+      const cfg = this.readJson(path.resolve(this.workpath, `group/${group}/config.json`));
       this.cache.groupModuleCfg[group] = cfg;
     }
     const groupFieldCfg = this.cache.groupModuleCfg[group];
-    if (!module.inf.packageName) throw new Error('无法在匿名模块中使用此功能，添加inf.packageName以启用此功能');
-    if (!groupFieldCfg[module.inf.packageName]) groupFieldCfg[module.inf.packageName] = {};
-    return groupFieldCfg[module.inf.packageName];
+    if (!module.meta.packageName) throw new Error('无法在匿名模块中使用此功能，添加inf.packageName以启用此功能');
+    if (!groupFieldCfg[module.meta.packageName]) groupFieldCfg[module.meta.packageName] = {};
+    return groupFieldCfg[module.meta.packageName];
   }
 
   async saveGroupModuleConfig(group: string) {
@@ -116,7 +118,7 @@ export default class WorkpathManager {
       JSON.parse(this.cache.groupModuleCfg[group]),
     );
   }
-};
+}
 
 /*
 .cqnode {

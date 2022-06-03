@@ -1,12 +1,11 @@
-
 /** CQHTTP上报事件 */
 export namespace CQEvent {
   /** CQHTTP上报事件 */
   interface Event {
-    /** 上报类型  
-     * message: 收到消息  
-     * notice: 群、讨论组变动等通知类事件  
-     * request: 加好友请求、加群请求／邀请  
+    /** 上报类型
+     * message: 收到消息
+     * notice: 群、讨论组变动等通知类事件
+     * request: 加好友请求、加群请求／邀请
      * meta_event: 元事件
      */
     postType: 'message' | 'notice' | 'request' | 'meta_event';
@@ -24,9 +23,9 @@ export namespace CQEvent {
   /** 消息类事件 */
   interface Message extends Event {
     postType: 'message';
-    /** 消息类型  
-     * group: 群消息  
-     * private: 私聊消息  
+    /** 消息类型
+     * group: 群消息
+     * private: 私聊消息
      * discuss: 讨论组消息
      */
     messageType: 'group' | 'private' | 'discuss';
@@ -58,10 +57,10 @@ export namespace CQEvent {
   /** 私聊消息事件 */
   interface PrivateMessage extends Message {
     messageType: 'private';
-    /** 消息子类型，表示私聊的来源  
-     * friend: 好友  
+    /** 消息子类型，表示私聊的来源
+     * friend: 好友
      * group: 群临时会话
-     * discuss: 讨论组临时会话  
+     * discuss: 讨论组临时会话
      * other: 其他
      */
     subType: 'friend' | 'group' | 'discuss' | 'other';
@@ -81,9 +80,9 @@ export namespace CQEvent {
   /** 群消息事件 */
   interface GroupMessage extends Message {
     messageType: 'group';
-    /** 消息子类型  
-     * normal: 正常消息  
-     * anonymous: 匿名消息  
+    /** 消息子类型
+     * normal: 正常消息
+     * anonymous: 匿名消息
      * notice: 系统提示
      */
     subType: 'normal' | 'anonymous' | 'notice';
@@ -112,9 +111,9 @@ export namespace CQEvent {
       level: string;
       /** 昵称 */
       nickname: string;
-      /** 角色  
-       * owner: 群主  
-       * admin: 管理员  
+      /** 角色
+       * owner: 群主
+       * admin: 管理员
        * member: 群成员
        */
       role: 'owner' | 'admin' | 'member';
@@ -146,11 +145,11 @@ export namespace CQEvent {
   /** 通知类事件 */
   interface Notice extends Event {
     postType: 'notice';
-    /** 通知类型  
-     * group_upload: 群文件上传  
-     * group_admin: 群管理员变动  
-     * group_decrease: 群成员减少  
-     * group_increase: 群成员增加  
+    /** 通知类型
+     * group_upload: 群文件上传
+     * group_admin: 群管理员变动
+     * group_decrease: 群成员减少
+     * group_increase: 群成员增加
      * friend_add: 好友添加
      */
     noticeType: 'group_upload' | 'group_admin' | 'group_decrease' | 'group_increase' | 'friend_add';
@@ -179,8 +178,8 @@ export namespace CQEvent {
   /** 群管理员变动 */
   interface GroupAdminNotice extends Notice {
     noticeType: 'group_admin';
-    /** 子类型  
-     * set: 设置管理员  
+    /** 子类型
+     * set: 设置管理员
      * unset: 取消管理员
      */
     subType: 'set' | 'unset';
@@ -233,8 +232,8 @@ export namespace CQEvent {
   /** 请求类事件 */
   interface Request extends Event {
     postType: 'request';
-    /** 请求类型  
-     * friend: 加好友请求  
+    /** 请求类型
+     * friend: 加好友请求
      * group: 加群请求/邀请
      */
     requestType: 'friend' | 'group';
@@ -254,8 +253,8 @@ export namespace CQEvent {
   /** 加群请求 */
   interface GroupRequest extends Request {
     requestType: 'group';
-    /** 子类型  
-     * add: 请求加群  
+    /** 子类型
+     * add: 请求加群
      * invite: 邀请本账号入群
      */
     subType: 'add' | 'invite';
@@ -272,8 +271,8 @@ export namespace CQEvent {
   /** 元事件 */
   interface Meta extends Event {
     postType: 'meta_event';
-    /** 元事件类型  
-     * lifecycle: 生命周期  
+    /** 元事件类型
+     * lifecycle: 生命周期
      * heartbeat: 心跳
      */
     metaEventType: 'lifecycle' | 'heartbeat';
@@ -282,13 +281,13 @@ export namespace CQEvent {
   /** 生命周期 */
   interface LifecycleMeta extends Meta {
     metaEventType: 'lifecycle';
-    /** 子类型  
-     * enable: 插件启用  
+    /** 子类型
+     * enable: 插件启用
      * disable: 插件停用
      */
     subType: 'enable' | 'disable';
   }
-  
+
   /** 心跳 */
   interface HeartbeatMeta extends Meta {
     metaEventType: 'heartbeat';

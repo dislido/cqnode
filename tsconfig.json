@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "lib",
     "module": "commonjs",
-    "target": "ES2017",
+    "target": "ES2020",
     "allowJs": true,
     "esModuleInterop": true,
     "newLine": "lf",
@@ -12,16 +12,10 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "skipLibCheck": true,
-    "baseUrl": ""
+    "baseUrl": "",
+    "declaration": true
   },
   "include": [
-    "src/**/*",
-    "index.d.ts",
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "types": [
-    "typePatches"
+    "src/**/*"
   ]
 }

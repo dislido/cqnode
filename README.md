@@ -1,10 +1,8 @@
-# ___酷Q即将停止服务，本框架可能会迁移到其他平台，时间点和迁移平台待定___
-
 # 简介
 
 
-CQNode是一个基于[酷Q](https://cqp.cc/)与[CoolQ HTTP API 插件](https://cqhttp.cc/)的Node.js的QQ机器人开发框架  
-- `HTTP API 4.11.0`
+CQNode是一个基于[OICQ](https://github.com/takayama-lily/oicq)的Node.js的QQ机器人开发框架  
+
 ### [文档与教程](https://dislido.github.io/cqnode/)
 
 ### 安装  

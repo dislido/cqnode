@@ -9,7 +9,7 @@ export default {
     return { discussId, message, autoEscape };
   },
   sendMsg(messageType: 'private' | 'group' | 'discuss', id: number, message: string, autoEscape = false) {
-    const body: any = { messageType, message , autoEscape };
+    const body: any = { messageType, message, autoEscape };
     if (messageType === 'private') body.user_id = id;
     else if (messageType === 'group') body.group_id = id;
     else if (messageType === 'discuss') body.discuss_id = id;
@@ -46,7 +46,9 @@ export default {
     return { groupId, isDismiss };
   },
   setGroupSpecialTitle(groupId: number, userId: number, specialTitle = '', duration = -1) {
-    return { groupId, userId, specialTitle, duration };
+    return {
+      groupId, userId, specialTitle, duration,
+    };
   },
   setDiscussLeave(discussId: number) {
     return { discussId };
@@ -55,7 +57,9 @@ export default {
     return { flag, approve, remark };
   },
   setGroupAddRequest(flag: string, subType: 'add' | 'invite', approve = true, reason = '') {
-    return { flag, subType, approve, reason };
+    return {
+      flag, subType, approve, reason,
+    };
   },
   getLoginInfo() {
     return {};
@@ -108,4 +112,4 @@ export default {
   cleanPluginLog() {
     return {};
   },
-};
+} as const;

@@ -1,6 +1,7 @@
-import Robot, { CQNodeConfig, ConfigObject } from "./cqnode-robot";
-import CQNodeModule from "./robot-module";
-import CQNodePlugin from "./robot-plugin";
+import CQNodeRobot, { CQNodeConfig, ConfigObject } from './cqnode-robot';
+import { FunctionModule } from './module';
+// import CQNodeModule from './robot-module';
+// import CQNodePlugin from './robot-plugin';
 
 function isArray(o: any): o is Array<any> {
   return o instanceof Array;
@@ -12,8 +13,8 @@ function isArray(o: any): o is Array<any> {
 export function checkConfig(config: ConfigObject) {
   const cfg = {
     admin: [] as number[],
-    modules: [] as CQNodeModule[],
-    plugins: [] as CQNodePlugin[],
+    modules: [] as FunctionModule[],
+    plugins: [] as any[],
     atmeTrigger: [true] as Array<string | true>,
     workpath: '.cqnode',
     connector: {
@@ -25,19 +26,19 @@ export function checkConfig(config: ConfigObject) {
   };
   if (!isArray(cfg.admin)) cfg.admin = [cfg.admin];
   if (cfg.admin.some((it: any) => typeof it !== 'number')) {
-    throw new Error(`config.admin 的类型必须是 number 或 number[]`);
+    throw new Error('config.admin 的类型必须是 number 或 number[]');
   }
 
-  if (false === cfg.modules instanceof Array) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
+  if (cfg.modules instanceof Array === false) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
   // if (cfg.modules.some((it: any) => false === it instanceof CQNode.Module)) throw new Error('config.modules 的类型必须是 CQNode.Module[]');
 
   if (!isArray(cfg.atmeTrigger)) cfg.atmeTrigger = [cfg.atmeTrigger];
-  cfg.atmeTrigger = cfg.atmeTrigger.map(it => it === true ? it : `${it}`);
+  cfg.atmeTrigger = cfg.atmeTrigger.map(it => (it === true ? it : `${it}`));
 
   cfg.workpath = `${cfg.workpath}`;
 
   if (typeof cfg.connector !== 'object') throw new Error('config.connector 必须是对象');
-  
+
   return cfg as CQNodeConfig;
 }
 
@@ -49,8 +50,8 @@ export function decodeHtml(str: string) {
 export const nullCQNode = new Proxy({}, {
   get() {
     throw new Error('CQNode Error: 模块/插件未运行，不能使用CQNode');
-  }
-}) as Robot;
+  },
+}) as CQNodeRobot;
 
 type CQCodeData = {
   type: string;
@@ -59,22 +60,27 @@ type CQCodeData = {
   }
 };
 
+/**
+ * 生成CQ码
+ * @deprecated
+ * @todo 改用oicq提供
+ */
+export function CQCode(type: string, data: { [key:string]: string | number | boolean } = {}) {
+  const dataEntries = Object.entries(data);
+  return new CQCode.String(`[CQ:${type}${dataEntries.length > 0 ? ',' : ''}${dataEntries.map(it => it.join('=')).join(',')}]`);
+}
+
 class CQCodeString extends String {
   parse(this: string) {
     return CQCode.parseCQCodeString(this);
   }
 }
 
-export function CQCode(type: string, data: { [key:string]: string | number | boolean } = {}) {
-  const dataEntries = Object.entries(data);
-  return new CQCodeString(`[CQ:${type}${dataEntries.length > 0 ? ',':''}${dataEntries.map(it => it.join('=')).join(',')}]`);
-}
-
 CQCode.String = CQCodeString;
 
 CQCode.parseCQCodeString = (code: string) => {
   const ret = /\[CQ:([^,]+)(.*)\]/.exec(code);
-  if (!ret) return;
+  if (!ret) return null;
   const result: CQCodeData = {
     type: ret[1],
     data: {},
@@ -91,7 +97,6 @@ CQCode.parseCQCodeString = (code: string) => {
   return result;
 };
 /*
-https://d.cqp.me/Pro/CQ%E7%A0%81
 [
   "[CQ:face,id={1}]",
   "[CQ:emoji,id={1}]",
@@ -118,7 +123,7 @@ CQCode.record = (file: string, magic?: boolean) => new CQCodeString(`[CQ:record,
 CQCode.at = (qq: number) => new CQCodeString(`[CQ:at,qq=${qq}]`);
 CQCode.rps = (type?: 1 | 2 | 3) => new CQCodeString(`[CQ:rps${type ? `,type=${type}` : ''}]`);
 CQCode.dice = (type?: 1 | 2 | 3 | 4 | 5 | 6) => new CQCodeString(`[CQ:dice${type ? `,type=${type}` : ''}]`);
-CQCode.shake = () => new CQCodeString(`[CQ:shake]`);
+CQCode.shake = () => new CQCodeString('[CQ:shake]');
 CQCode.anonymous = (ignore?: boolean) => new CQCodeString(`[CQ:anonymous${ignore ? `,ignore=${ignore}` : ''}]`);
 CQCode.music = (type: string, ...args: [number] | [string, string, string, string?, string?]) => {
   if (type === 'custom') {
@@ -128,5 +133,4 @@ ${content ? `,content=${content}` : ''}${image ? `,image=${image}` : ''}]`);
   }
   return new CQCodeString(`[CQ:music,type=${type},id=${args[0]}]`);
 };
-CQCode.share = (url: string, title: string, content?: string, image?: string) =>
-  new CQCodeString(`[CQ:share,url={1},title={2}${content ? `,content=${content}` : ''}${image ? `,image=${image}` : ''}]`);
+CQCode.share = (url: string, title: string, content?: string, image?: string) => new CQCodeString(`[CQ:share,url={1},title={2}${content ? `,content=${content}` : ''}${image ? `,image=${image}` : ''}]`);
