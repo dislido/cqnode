@@ -16,9 +16,13 @@ export default class EventProcessor {
    * @param options 额外选项
    */
   on<T extends CQEventType>(eventName: CQEventType, process: (ctx: CQNodeEventContext<T>) => void | boolean, options: EventProcessorOptions = {}) {
+    const opt = {
+      atme: true,
+      ...options,
+    };
     if (!this.#processorMap.has(eventName)) this.#processorMap.set(eventName, []);
     const processorList = this.#processorMap.get(eventName);
-    processorList?.push([process, options]);
+    processorList?.push([process, opt]);
     return this;
   }
 

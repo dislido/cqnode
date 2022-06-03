@@ -79,10 +79,10 @@ export default class CQNodeRobot {
 
     this.connect.on('event', async <T extends CQEventType>(data: { eventName: T, event: CQEvent<T> }) => {
       for (const mod of this.modules) {
-        const ctxBuilder: <ET extends CQEventType>(ev: CQEvent<ET>, cqnode: CQNodeRobot) => CQNodeEventContext<ET> = data.eventName in EventContextBuilderMap ? EventContextBuilderMap[data.eventName] as EventContextBuilder : (() => ({ event: data.event }));
+        const ctxBuilder: <ET extends CQEventType>(ev: CQEvent<ET>, cqnode: CQNodeRobot) => CQNodeEventContext<ET> = data.eventName in EventContextBuilderMap ? EventContextBuilderMap[data.eventName] as EventContextBuilder : (() => ({ event: data.event, end: false }));
         const ctx = ctxBuilder<T>(data.event, this);
         const result = await mod.eventProcessor.emit(data.eventName, ctx as CQNodeEventContext<T>);
-        if (result) return;
+        if (result || ctx.end) return;
       }
     });
     // this.pluginManager.emit('onReady', {});
