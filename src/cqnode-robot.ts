@@ -7,22 +7,22 @@ import EventContextBuilderMap, { CQNodeEventContext, EventContextBuilder } from 
 import CQEventType, { CQEvent } from './connector-oicq/event-type';
 
 export interface CQNodeConfig {
+  connector: OicqConfig;
   /** 管理员 @todo 后续用权限系统代替 */
-  admin: number | number[];
+  admin?: number | number[];
   /** 加载的模块 */
-  modules: Array<FunctionModule | [FunctionModule, any?]>;
+  modules?: Array<FunctionModule | [FunctionModule, any?]>;
   /** 加载的插件 */
-  plugins: any[];
+  plugins?: any[];
   /** 数据文件夹 */
-  workpath: string;
+  workpath?: string;
   /**
    * atme判断字符串
    * 以该字符串开头的信息会被认为at了本机器人，并在消息中添加atme=true标识
    * 默认使用QQ的at
    * 空字符串表示将任何消息当作at了本机器人
    */
-  atmeTrigger: Array<string | true>;
-  connector: OicqConfig;
+  atmeTrigger?: Array<string | true>;
 }
 
 /** CQNode运行时信息 */
@@ -57,7 +57,7 @@ export default class CQNodeRobot {
 
   constructor(config: CQNodeConfig) {
     this.config = checkConfig(config);
-    this.workpathManager = new WorkpathManager(this.config.workpath);
+    this.workpathManager = new WorkpathManager(this.config.workpath || '.cqnode');
     // this.pluginManager = new PluginManager(this);
     this.connect = new OicqConnector(this, this.config.connector);
     this.api = this.connect.api;
@@ -72,12 +72,12 @@ export default class CQNodeRobot {
 
     // this.config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
 
-    this.modules = this.config.modules.map(mod => {
+    this.modules = this.config.modules?.map(mod => {
       const m = Array.isArray(mod) ? mod : [mod];
       return moduleInit(m[0], m[1]);
-    });
+    }) || [];
 
-    this.connect.on('event', async <T extends CQEventType>(data: { eventName: T, event: CQEvent<T> }) => {
+    this.connect.on('event', async <T extends CQEventType>(data: { eventName: T; event: CQEvent<T> }) => {
       for (const mod of this.modules) {
         const ctxBuilder: <ET extends CQEventType>(ev: CQEvent<ET>, cqnode: CQNodeRobot) => CQNodeEventContext<ET> = data.eventName in EventContextBuilderMap ? EventContextBuilderMap[data.eventName] as EventContextBuilder : (() => ({ event: data.event, end: false }));
         const ctx = ctxBuilder<T>(data.event, this);

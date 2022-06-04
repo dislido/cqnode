@@ -1,8 +1,8 @@
 import CQEventType, { CQEvent } from '../connector-oicq/event-type';
 
 /** @todo 支持所有event类型，非message返回true */
-export function checkAtme(event: CQEvent<CQEventType.message>, atmeTrigger: Array<string | true>, uin: number) {
-  return atmeTrigger.some(p => {
+export function checkAtme(event: CQEvent<CQEventType.message>, atmeTrigger: Array<string | true> | undefined, uin: number) {
+  return (atmeTrigger ?? [true]).some(p => {
     if (event.message_type === 'private') return true;
     if (p === true && event.message.some(it => it.type === 'at' && it.qq === uin)) {
       return true;

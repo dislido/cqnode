@@ -1,4 +1,4 @@
-import CQEventType from 'src/connector-oicq/event-type';
+import CQEventType from '../connector-oicq/event-type';
 import { CQNodeEventContext } from './event-context';
 
 export interface EventProcessorOptions {

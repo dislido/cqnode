@@ -1,7 +1,9 @@
-import CQNodeRobot, { CQNodeConfig } from './cqnode-robot';
-import { FunctionModule } from './module';
+import CQNodeRobot, { CQNodeConfig } from '../cqnode-robot';
+import { FunctionModule } from '../module';
 // import CQNodeModule from './robot-module';
 // import CQNodePlugin from './robot-plugin';
+
+export { segment } from 'oicq';
 
 /**
  * 检查配置项
@@ -48,7 +50,7 @@ type CQCodeData = {
   type: string;
   data: {
     [key: string]: string;
-  }
+  };
 };
 
 /**
