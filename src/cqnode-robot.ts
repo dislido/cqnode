@@ -74,7 +74,7 @@ export default class CQNodeRobot {
 
     this.modules = this.config.modules?.map(mod => {
       const m = Array.isArray(mod) ? mod : [mod];
-      return moduleInit(m[0], m[1]);
+      return moduleInit(m[0], m[1], this);
     }) || [];
 
     this.connect.on('event', async <T extends CQEventType>(data: { eventName: T; event: CQEvent<T> }) => {

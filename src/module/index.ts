@@ -1,3 +1,4 @@
+import CQNodeRobot from 'src/cqnode-robot';
 import CQEventType from '../connector-oicq/event-type';
 import EventProcessor, { CQEventListener, EventProcessorOptions } from './event-processor';
 
@@ -14,8 +15,25 @@ export interface CQNodeModuleMeta {
 }
 
 interface FunctionModuleCtx {
+  /**
+   * 监听事件
+   * @param eventName 事件类型
+   * @param listener 事件处理器
+   * @param options 监听选项
+   */
   on<T extends CQEventType>(eventName: T, listener: CQEventListener<T>, options?: EventProcessorOptions): void;
+  /**
+   * 设置模块信息
+   * @param inf 模块消息
+   */
   setMeta(inf: CQNodeModuleMeta): void;
+  /**
+   * 模块停止回调，多次设置会互相覆盖
+   * @param cb 回调函数
+   */
+  onStop(cb: () => void): void;
+  /** cqnode引用 */
+  cqnode: CQNodeRobot;
 }
 
 export interface FunctionModule {
@@ -26,9 +44,10 @@ export interface FunctionModuleInit {
   eventProcessor: EventProcessor;
   ctx: FunctionModuleCtx;
   meta: CQNodeModuleMeta;
+  onStop?(): void;
 }
 
-export function moduleInit(fn: FunctionModule, config?: any): FunctionModuleInit {
+export function moduleInit(fn: FunctionModule, config: any, cqnode: CQNodeRobot): FunctionModuleInit {
   const ep = new EventProcessor();
   const meta: CQNodeModuleMeta = {
     name: fn.name,
@@ -36,20 +55,25 @@ export function moduleInit(fn: FunctionModule, config?: any): FunctionModuleInit
     description: '无简介',
   };
 
-  const ctx: FunctionModuleCtx = {
+  const init: Partial<FunctionModuleInit> = {
+    eventProcessor: ep,
+    meta,
+  };
+
+  init.ctx = {
     on(eventName, listener, options) {
       return ep.on(eventName, listener, options);
     },
     setMeta(inf: CQNodeModuleMeta) {
       Object.assign(meta, inf);
     },
+    onStop(cb) {
+      init.onStop = cb;
+    },
+    cqnode,
   };
 
-  fn(ctx, config);
+  fn(init.ctx, config);
 
-  return {
-    eventProcessor: ep,
-    ctx,
-    meta,
-  };
+  return init as FunctionModuleInit;
 }

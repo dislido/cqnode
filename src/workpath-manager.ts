@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import util from 'util';
 import { FunctionModuleInit } from './module';
-// import CQNodeModule from './robot-module';
 
 const exists = util.promisify(fs.exists);
 
@@ -11,7 +10,7 @@ class CQNodeWorkpathError extends Error {}
 interface WorkpathCache {
   groupModuleCfg: {
     [key: string]: any;
-  }
+  };
 }
 
 export default class WorkpathManager {
@@ -107,7 +106,7 @@ export default class WorkpathManager {
       this.cache.groupModuleCfg[group] = cfg;
     }
     const groupFieldCfg = this.cache.groupModuleCfg[group];
-    if (!module.meta.packageName) throw new Error('无法在匿名模块中使用此功能，添加inf.packageName以启用此功能');
+    if (!module.meta.packageName) throw new Error('无法在匿名模块中使用此功能，添加setMeta({ packageName })以启用此功能');
     if (!groupFieldCfg[module.meta.packageName]) groupFieldCfg[module.meta.packageName] = {};
     return groupFieldCfg[module.meta.packageName];
   }
