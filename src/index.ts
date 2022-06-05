@@ -24,3 +24,4 @@ export default CQNode;
 
 export { CQEventType, CQEvent } from './connector-oicq/event-type';
 export type { FunctionModule } from './module';
+export { MessageElem } from 'oicq';

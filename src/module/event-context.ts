@@ -101,12 +101,12 @@ export const EventContextBuilderMap: {
   [CQEventType.request](event: CQEvent<CQEventType.request>, cqnode: CQNodeRobot) { return { ...commonEventContextBuilder<CQEventType.request>(event, cqnode) }; }, // 全部请求
   [CQEventType.messageGroup](event: CQEvent<CQEventType.messageGroup>, cqnode: CQNodeRobot) {
     return {
-      ...this[CQEventType.message](event, cqnode),
+      ...EventContextBuilderMap[CQEventType.message](event, cqnode),
       event,
     };
   }, // 群消息
-  [CQEventType.messagePrivate](event: CQEvent<CQEventType.messagePrivate>, cqnode: CQNodeRobot) { return { ...this[CQEventType.message](event, cqnode), event, atme: true }; }, // 私聊消息
-  [CQEventType.messageDiscuss](event: CQEvent<CQEventType.messageDiscuss>, cqnode: CQNodeRobot) { return { ...this[CQEventType.message](event, cqnode), event }; }, // 讨论组消息
+  [CQEventType.messagePrivate](event: CQEvent<CQEventType.messagePrivate>, cqnode: CQNodeRobot) { return { ...EventContextBuilderMap[CQEventType.message](event, cqnode), event, atme: true }; }, // 私聊消息
+  [CQEventType.messageDiscuss](event: CQEvent<CQEventType.messageDiscuss>, cqnode: CQNodeRobot) { return { ...EventContextBuilderMap[CQEventType.message](event, cqnode), event }; }, // 讨论组消息
   [CQEventType.message](event: CQEvent<CQEventType.message>, cqnode: CQNodeRobot) {
     const ctx = {
       ...commonEventContextBuilder<CQEventType.message>(event, cqnode),
