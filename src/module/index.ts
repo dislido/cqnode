@@ -36,13 +36,13 @@ interface FunctionModuleCtx {
    * 获取本地存储
    * @param key 存储key，默认'default'
    */
-  getStorage<T = any>(key: string): Promise<T | null>;
+  getStorage<T = any>(key?: string): Promise<T | null>;
   /**
    * 保存到本地存储
    * @param data 存储数据
    * @param key 存储key，默认'default'
    */
-  setStorage(data: any, key: string): void;
+  setStorage(data: any, key?: string): void;
   /** cqnode引用 */
   cqnode: CQNodeRobot;
 }
