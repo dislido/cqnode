@@ -126,8 +126,8 @@ export default class WorkpathManager {
       modulecfg.json
     }
   }
-  module {
-    [packageName.replace(/\//g, '.')] {
+  moduleStorage {
+    [packageName.replace(/\//g, '__')] {
 
     }
   }

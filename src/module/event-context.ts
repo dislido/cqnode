@@ -143,7 +143,6 @@ export const EventContextBuilderMap: {
   [CQEventType.guildMessage](event: CQEvent<CQEventType.guildMessage>, cqnode: CQNodeRobot) { return { ...commonEventContextBuilder<CQEventType.guildMessage>(event, cqnode) }; }, // 频道消息
 } as const;
 
-export type EventContextBuilder<T extends CQEventType = any> = (typeof EventContextBuilderMap)[T];
-export type CQNodeEventContext<T extends CQEventType = any> = CQNodeEventContextMap[T];
+export type CQNodeEventContext<T extends CQEventType = CQEventType> = CQNodeEventContextMap[T];
 
 export default EventContextBuilderMap;

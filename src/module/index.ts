@@ -1,4 +1,4 @@
-import CQNodeRobot from 'src/cqnode-robot';
+import CQNodeRobot from '../cqnode-robot';
 import CQEventType from '../connector-oicq/event-type';
 import EventProcessor, { CQEventListener, EventProcessorOptions } from './event-processor';
 
@@ -32,12 +32,23 @@ interface FunctionModuleCtx {
    * @param cb 回调函数
    */
   onStop(cb: () => void): void;
+  /**
+   * 获取本地存储
+   * @param key 存储key，默认'default'
+   */
+  getStorage<T = any>(key: string): Promise<T | null>;
+  /**
+   * 保存到本地存储
+   * @param data 存储数据
+   * @param key 存储key，默认'default'
+   */
+  setStorage(data: any, key: string): void;
   /** cqnode引用 */
   cqnode: CQNodeRobot;
 }
 
 export interface FunctionModule {
-  (ctx: FunctionModuleCtx, config?: any): void;
+  (mod: FunctionModuleCtx, config?: any): void;
 }
 
 export interface FunctionModuleInit {
@@ -47,7 +58,11 @@ export interface FunctionModuleInit {
   onStop?(): void;
 }
 
-export function moduleInit(fn: FunctionModule, config: any, cqnode: CQNodeRobot): FunctionModuleInit {
+function getPackagePath(packageName: string) {
+  return packageName.replace(/\//g, '__');
+}
+
+export async function moduleInit(fn: FunctionModule, config: any, cqnode: CQNodeRobot): Promise<FunctionModuleInit> {
   const ep = new EventProcessor();
   const meta: CQNodeModuleMeta = {
     name: fn.name,
@@ -71,9 +86,17 @@ export function moduleInit(fn: FunctionModule, config: any, cqnode: CQNodeRobot)
       init.onStop = cb;
     },
     cqnode,
+    getStorage(key = 'default') {
+      if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
+      return cqnode.workpathManager.readJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, null);
+    },
+    setStorage(data: any, key = 'default') {
+      if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
+      return cqnode.workpathManager.writeJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, JSON.stringify(data));
+    },
   };
 
-  fn(init.ctx, config);
+  fn(init.ctx!, config);
 
   return init as FunctionModuleInit;
 }

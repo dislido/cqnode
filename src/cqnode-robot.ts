@@ -3,7 +3,7 @@ import WorkpathManager from './workpath-manager';
 import { checkConfig } from './util';
 import OicqConnector, { OicqConfig } from './connector-oicq';
 import { FunctionModule, FunctionModuleInit, moduleInit } from './module';
-import EventContextBuilderMap, { CQNodeEventContext, EventContextBuilder } from './module/event-context';
+import EventContextBuilderMap, { CQNodeEventContext } from './module/event-context';
 import CQEventType, { CQEvent } from './connector-oicq/event-type';
 
 export interface CQNodeConfig {
@@ -72,15 +72,15 @@ export default class CQNodeRobot {
 
     // this.config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
 
-    this.modules = this.config.modules?.map(mod => {
+    this.modules = await Promise.all(this.config.modules?.map(mod => {
       const m = Array.isArray(mod) ? mod : [mod];
       return moduleInit(m[0], m[1], this);
-    }) || [];
+    }) || []);
 
     this.connect.on('event', async <T extends CQEventType>(data: { eventName: T; event: CQEvent<T> }) => {
       for (const mod of this.modules) {
-        const ctxBuilder: <ET extends CQEventType>(ev: CQEvent<ET>, cqnode: CQNodeRobot) => CQNodeEventContext<ET> = data.eventName in EventContextBuilderMap ? EventContextBuilderMap[data.eventName] as EventContextBuilder : (() => ({ event: data.event, end: false }));
-        const ctx = ctxBuilder<T>(data.event, this);
+        const ctxBuilder: (ev: CQEvent<T>, cqnode: CQNodeRobot) => CQNodeEventContext<T> = EventContextBuilderMap[data.eventName];
+        const ctx = ctxBuilder(data.event, this);
         const end = await mod.eventProcessor.emit(data.eventName, ctx as CQNodeEventContext<T>);
         if (end) ctx.end = true;
         if (ctx.end) return;
