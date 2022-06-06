@@ -9,7 +9,7 @@ import CQEventType, { CQEvent } from './connector-oicq/event-type';
 export interface CQNodeConfig {
   connector: OicqConfig;
   /** 管理员 @todo 后续用权限系统代替 */
-  admin?: number | number[];
+  admin?: number[];
   /** 加载的模块 */
   modules?: Array<FunctionModule | [FunctionModule, any?]>;
   /** 加载的插件 */

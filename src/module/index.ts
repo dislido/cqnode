@@ -35,8 +35,9 @@ interface FunctionModuleCtx {
   /**
    * 获取本地存储
    * @param key 存储key，默认'default'
+   * @param defaultData 没有存储内容时的默认数据
    */
-  getStorage<T = any>(key?: string): Promise<T | null>;
+  getStorage<T = any>(key?: string, defaultData?: string): Promise<T | null>;
   /**
    * 保存到本地存储
    * @param data 存储数据
@@ -86,9 +87,9 @@ export async function moduleInit(fn: FunctionModule, config: any, cqnode: CQNode
       init.onStop = cb;
     },
     cqnode,
-    getStorage(key = 'default') {
+    getStorage(key = 'default', defaultData = '') {
       if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
-      return cqnode.workpathManager.readJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, null);
+      return cqnode.workpathManager.readJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, defaultData);
     },
     setStorage(data: any, key = 'default') {
       if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');

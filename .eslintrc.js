@@ -35,7 +35,7 @@ module.exports = {
     'import/no-import-module-exports': 'off',
     '@typescript-eslint/member-delimiter-style': 'error',
     '@typescript-eslint/semi': ['error'],
-    '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-useless-constructor': ['error'],
     '@typescript-eslint/no-use-before-define': ['error'],
     '@typescript-eslint/default-param-last': ['error'],

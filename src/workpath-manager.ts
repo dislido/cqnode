@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import util from 'util';
-import { FunctionModuleInit } from './module';
 
 const exists = util.promisify(fs.exists);
 
@@ -78,7 +77,7 @@ export default class WorkpathManager {
    * @param defaultData 文件不存在时写入默认JSON对象，默认为`{}`
    */
   async readJson(jsonPath: string, defaultData: any = {}) {
-    await this.ensurePath(jsonPath);
+    await this.ensurePath(path.resolve(this.workpath, jsonPath), null, defaultData);
     const fileBuf = await fs.promises.readFile(jsonPath);
     const data = fileBuf.toString();
     return JSON.parse(data || JSON.stringify(defaultData));
@@ -90,32 +89,8 @@ export default class WorkpathManager {
    * @param data 写入的JSON对象
    */
   async writeJson(jsonPath: string, data: any) {
-    await this.ensurePath(jsonPath);
+    await this.ensurePath(path.resolve(this.workpath, jsonPath));
     return fs.promises.writeFile(jsonPath, JSON.stringify(data));
-  }
-
-  /**
-   * 获取指定群，指定模块的设置信息
-   * @deprecated 不稳定的API，未来可能会改变或删除
-   * @param {string} group 群号码
-   * @param {object} module 模块引用
-   */
-  async getGroupModuleConfig(group: string, module: FunctionModuleInit) {
-    if (!this.cache.groupModuleCfg[group]) {
-      const cfg = this.readJson(path.resolve(this.workpath, `group/${group}/config.json`));
-      this.cache.groupModuleCfg[group] = cfg;
-    }
-    const groupFieldCfg = this.cache.groupModuleCfg[group];
-    if (!module.meta.packageName) throw new Error('无法在匿名模块中使用此功能，添加setMeta({ packageName })以启用此功能');
-    if (!groupFieldCfg[module.meta.packageName]) groupFieldCfg[module.meta.packageName] = {};
-    return groupFieldCfg[module.meta.packageName];
-  }
-
-  async saveGroupModuleConfig(group: string) {
-    fs.writeFileSync(
-      path.resolve(this.workpath, `group/${group}/modulecfg.json`),
-      JSON.parse(this.cache.groupModuleCfg[group]),
-    );
   }
 }
 
@@ -123,7 +98,7 @@ export default class WorkpathManager {
 .cqnode {
   group {
     [groupid] {
-      modulecfg.json
+      config.json
     }
   }
   moduleStorage {
