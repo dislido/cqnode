@@ -77,7 +77,7 @@ export default class WorkpathManager {
    * @param defaultData 文件不存在时写入默认JSON对象，默认为`{}`
    */
   async readJson(jsonPath: string, defaultData: any = {}) {
-    await this.ensurePath(path.resolve(this.workpath, jsonPath), null, defaultData);
+    await this.ensurePath(path.resolve(this.workpath, jsonPath), '', defaultData);
     const fileBuf = await fs.promises.readFile(jsonPath);
     const data = fileBuf.toString();
     return JSON.parse(data || JSON.stringify(defaultData));
