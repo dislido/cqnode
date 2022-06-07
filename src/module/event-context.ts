@@ -33,6 +33,8 @@ export interface CQNodeEventContextMap {
   /** 全部消息 */
   [CQEventType.message]: commonEventContext<CQEventType.message> & {
     event: CQEvent<CQEventType.message>;
+    /** 文本内容 */
+    textMessage: string;
     /**
      * 回复消息并结束处理事件
      * @param message 回复内容
@@ -111,6 +113,7 @@ export const EventContextBuilderMap: {
     const ctx = {
       ...commonEventContextBuilder<CQEventType.message>(event, cqnode),
       event,
+      textMessage: event.message.map(it => it.type === 'text' ? it.text : '').join('').trim(),
       /** 回复消息并结束此事件 */
       reply: (message: Sendable, quote?: boolean) => {
         ctx.end = true;
