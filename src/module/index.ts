@@ -3,8 +3,8 @@ import CQEventType from '../connector-oicq/event-type';
 import EventProcessor, { CQEventListener, EventProcessorOptions } from './event-processor';
 
 export interface CQNodeModuleMeta {
-  /** 模块包名，应保证唯一，名称中不能包含无法作为文件名的字符，`/`会被替换为`.` */
-  packageName?: string;
+  /** 模块包名，名称中不能包含无法作为文件名的字符(/除外) */
+  packageName: string;
   /** 模块名 */
   name?: string;
   /** 模块帮助信息 */
@@ -66,16 +66,14 @@ function getPackagePath(packageName: string) {
 
 export async function moduleInit(fn: FunctionModule, config: any, cqnode: CQNodeRobot): Promise<FunctionModuleInstance> {
   const ep = new EventProcessor();
-  const meta: CQNodeModuleMeta = {
-    name: fn.name,
+  const meta = {
     help: '无帮助信息',
     description: '无简介',
-  };
+  } as CQNodeModuleMeta;
 
-  const init: Partial<FunctionModuleInstance> = {
+  const init = {
     eventProcessor: ep,
-    meta,
-  };
+  } as FunctionModuleInstance;
 
   init.ctx = {
     on(eventName, listener, options) {
@@ -89,19 +87,25 @@ export async function moduleInit(fn: FunctionModule, config: any, cqnode: CQNode
     },
     cqnode,
     getStorage(key = 'default', defaultData = {}) {
-      if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
-      return cqnode.workpathManager.readJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, defaultData);
+      return cqnode.workpathManager.readJson(`moduleStorage/${getPackagePath(init.meta.packageName)}/${key}.json`, defaultData);
     },
     setStorage(data: any, key = 'default') {
-      if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
-      return cqnode.workpathManager.writeJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, JSON.stringify(data));
+      return cqnode.workpathManager.writeJson(`moduleStorage/${getPackagePath(init.meta.packageName)}/${key}.json`, JSON.stringify(data));
     },
   };
 
   const modInit = await fn(init.ctx!, config);
   Object.assign(init, {
-    meta: modInit,
+    meta: {
+      ...meta,
+      name: meta.name || meta.packageName || modInit.packageName,
+      ...modInit,
+    },
   });
+
+  if (!init.meta.packageName) {
+    throw new Error('模块加载失败，未设置packageName (在FunctionModule返回值对象中设置)');
+  }
 
   return init as FunctionModuleInstance;
 }
