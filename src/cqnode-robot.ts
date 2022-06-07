@@ -2,7 +2,7 @@
 import WorkpathManager from './workpath-manager';
 import { checkConfig } from './util';
 import OicqConnector, { OicqConfig } from './connector-oicq';
-import { FunctionModule, FunctionModuleInit, moduleInit } from './module';
+import { FunctionModule, FunctionModuleInstance, moduleInit } from './module';
 import EventContextBuilderMap, { CQNodeEventContext } from './module/event-context';
 import CQEventType, { CQEvent } from './connector-oicq/event-type';
 
@@ -48,7 +48,7 @@ export default class CQNodeRobot {
 
   connect: OicqConnector;
 
-  modules: FunctionModuleInit[];
+  modules: FunctionModuleInstance[];
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   inf = { inited: false, CQNodeVersion: require('../package.json').version } as CQNodeInf;

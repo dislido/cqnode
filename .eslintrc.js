@@ -33,6 +33,7 @@ module.exports = {
     'import/no-unresolved': 'off',
     'import/prefer-default-export': 'off',
     'import/no-import-module-exports': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/member-delimiter-style': 'error',
     '@typescript-eslint/semi': ['error'],
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],

@@ -25,6 +25,7 @@ interface FunctionModuleCtx {
   /**
    * 设置模块信息
    * @param inf 模块消息
+   * @deprecated 使用FunctionModule的返回值来设置
    */
   setMeta(inf: CQNodeModuleMeta): void;
   /**
@@ -49,10 +50,10 @@ interface FunctionModuleCtx {
 }
 
 export interface FunctionModule {
-  (mod: FunctionModuleCtx, config?: any): void;
+  (mod: FunctionModuleCtx, config?: any): CQNodeModuleMeta;
 }
 
-export interface FunctionModuleInit {
+export interface FunctionModuleInstance {
   eventProcessor: EventProcessor;
   ctx: FunctionModuleCtx;
   meta: CQNodeModuleMeta;
@@ -63,7 +64,7 @@ function getPackagePath(packageName: string) {
   return packageName.replace(/\//g, '__');
 }
 
-export async function moduleInit(fn: FunctionModule, config: any, cqnode: CQNodeRobot): Promise<FunctionModuleInit> {
+export async function moduleInit(fn: FunctionModule, config: any, cqnode: CQNodeRobot): Promise<FunctionModuleInstance> {
   const ep = new EventProcessor();
   const meta: CQNodeModuleMeta = {
     name: fn.name,
@@ -71,7 +72,7 @@ export async function moduleInit(fn: FunctionModule, config: any, cqnode: CQNode
     description: '无简介',
   };
 
-  const init: Partial<FunctionModuleInit> = {
+  const init: Partial<FunctionModuleInstance> = {
     eventProcessor: ep,
     meta,
   };
@@ -97,7 +98,10 @@ export async function moduleInit(fn: FunctionModule, config: any, cqnode: CQNode
     },
   };
 
-  fn(init.ctx!, config);
+  const modInit = await fn(init.ctx!, config);
+  Object.assign(init, {
+    meta: modInit,
+  });
 
-  return init as FunctionModuleInit;
+  return init as FunctionModuleInstance;
 }
