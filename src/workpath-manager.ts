@@ -78,7 +78,7 @@ export default class WorkpathManager {
    */
   async readJson(jsonPath: string, defaultData: any = {}) {
     const fullPath = path.resolve(this.workpath, jsonPath);
-    await this.ensurePath(fullPath, '', defaultData);
+    await this.ensurePath(fullPath, '', JSON.stringify(defaultData));
     const fileBuf = await fs.promises.readFile(fullPath);
     const data = fileBuf.toString();
     return JSON.parse(data || JSON.stringify(defaultData));
