@@ -50,7 +50,7 @@ interface FunctionModuleCtx {
 }
 
 export interface FunctionModule {
-  (mod: FunctionModuleCtx, config?: any): CQNodeModuleMeta;
+  (mod: FunctionModuleCtx, config?: any): CQNodeModuleMeta | Promise<CQNodeModuleMeta>;
 }
 
 export interface FunctionModuleInstance {

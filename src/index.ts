@@ -22,6 +22,7 @@ CQNodeRobot.CQNode = CQNode;
 
 export default CQNode;
 
+export { default as MockClient } from './util/dev-connect/mock-client';
 export { CQEventType, CQEvent } from './connector-oicq/event-type';
 export type { FunctionModule } from './module';
 export type { CQNodeEventContext } from './module/event-context';

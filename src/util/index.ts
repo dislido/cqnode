@@ -1,7 +1,5 @@
 import CQNodeRobot, { CQNodeConfig } from '../cqnode-robot';
 import { FunctionModule } from '../module';
-// import CQNodeModule from './robot-module';
-// import CQNodePlugin from './robot-plugin';
 
 export { segment } from 'oicq';
 

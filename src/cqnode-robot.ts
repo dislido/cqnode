@@ -23,6 +23,8 @@ export interface CQNodeConfig {
    * 空字符串表示将任何消息当作at了本机器人
    */
   atmeTrigger?: Array<string | true>;
+
+  devConnect?: any;
 }
 
 /** CQNode运行时信息 */
@@ -53,14 +55,11 @@ export default class CQNodeRobot {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   inf = { inited: false, CQNodeVersion: require('../package.json').version } as CQNodeInf;
 
-  api: any; // typeof CQAPI;
-
   constructor(config: CQNodeConfig) {
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath || '.cqnode');
     // this.pluginManager = new PluginManager(this);
-    this.connect = new OicqConnector(this, this.config.connector);
-    this.api = this.connect.api;
+    this.connect = config.devConnect || new OicqConnector(this.config.connector);
 
     this.init();
   }

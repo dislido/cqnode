@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { createClient, Client } from 'oicq';
-import CQEventType, { allLeafEventNames, CQEvent } from './event-type';
+import CQEventType, { allLeafEventNames, CQEvent } from '../../connector-oicq/event-type';
 
 export interface OicqConfig {
   /** 登录qq号 */
@@ -13,18 +13,13 @@ export interface OicqConfig {
 export default class OicqConnector extends EventEmitter {
   client: Client;
 
-  /**
-   * oicq插件的连接器
-   * @param cqnode cqnode实例
-   * @param config CQHTTP设置
-   */
   constructor(private config: OicqConfig) {
     super();
     const { account } = config;
     this.client = createClient(account, { log_level: 'off' });
 
-    allLeafEventNames.forEach(en => {
-      this.client.on(en, (ev: any) => {
+    allLeafEventNames.forEach((en: CQEventType) => {
+      this.client.on(en, (ev: CQEvent) => {
         this.onEventReceived(en, ev);
       });
     });
@@ -51,7 +46,7 @@ export default class OicqConnector extends EventEmitter {
    * @param {Object} event 接收到的事件对象
    * @param {http.ServerResponse} resp 响应对象
    */
-  onEventReceived<T extends CQEventType>(eventName: T, event: CQEvent<T>) {
+  onEventReceived(eventName: CQEventType, event: CQEvent) {
     this.emit('event', ({ eventName, event }));
   }
 }
