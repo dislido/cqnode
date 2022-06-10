@@ -80,8 +80,12 @@ export default class CQNodeRobot {
       for (const mod of this.modules) {
         const ctxBuilder: (ev: CQEvent<T>, cqnode: CQNodeRobot) => CQNodeEventContext<T> = EventContextBuilderMap[data.eventName];
         const ctx = ctxBuilder(data.event, this);
-        const end = await mod.eventProcessor.emit(data.eventName, ctx as CQNodeEventContext<T>);
-        if (end) ctx.end = true;
+        try {
+          const end = await mod.eventProcessor.emit(data.eventName, ctx as CQNodeEventContext<T>);
+          if (end) ctx.end = true;
+        } catch (e) {
+          console.error(e);
+        }
         if (ctx.end) return;
       }
     });
