@@ -35,11 +35,6 @@ export function checkConfig(config: any) {
   return cfg as CQNodeConfig;
 }
 
-export function decodeHtml(str: string) {
-  const s = str.replace(/&#[\d]{2,4};/g, hex => String.fromCharCode(parseInt(hex.slice(2, -1), 10)));
-  return s.replace(/&amp;/g, '&');
-}
-
 export const nullCQNode = new Proxy({}, {
   get() {
     throw new Error('CQNode Error: 模块/插件未运行，不能使用CQNode');
