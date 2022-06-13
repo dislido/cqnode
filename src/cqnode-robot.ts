@@ -63,7 +63,14 @@ export default class CQNodeRobot {
 
   private async init() {
     console.log('CQNode: 初始化中......');
-    // this.pluginManager = new PluginManager(this);
+
+    await this.workpathManager.init();
+
+    this.plugins = await Promise.all(this.config.plugins?.map(plg => {
+      const m = Array.isArray(plg) ? plg : [plg];
+      return pluginInit(m[0], m[1], this);
+    }) || []);
+
     const connector = await this.emitHook(CQNodeHook.beforeInit, {
       connectorClass: OicqConnector,
       connectorConfig: this.config.connector,
@@ -77,17 +84,10 @@ export default class CQNodeRobot {
     this.connect = new connector.connectorClass(connector?.connectorConfig);
 
     await this.connect.init();
-    await this.workpathManager.init();
-
-    // this.config.plugins.forEach(plg => this.pluginManager.registerPlugin(plg));
 
     this.modules = await Promise.all(this.config.modules?.map(mod => {
       const m = Array.isArray(mod) ? mod : [mod];
       return moduleInit(m[0], m[1], this);
-    }) || []);
-    this.plugins = await Promise.all(this.config.plugins?.map(plg => {
-      const m = Array.isArray(plg) ? plg : [plg];
-      return pluginInit(m[0], m[1], this);
     }) || []);
 
     this.connect.on('event', async <T extends CQEventType>(data: { eventName: T; event: CQEvent<T> }) => {
