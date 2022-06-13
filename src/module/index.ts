@@ -11,6 +11,8 @@ export interface CQNodeModuleMeta {
   help?: string;
   /** 模块简介 */
   description?: string;
+  /** 模块导出，可通过cqnode.requireModule(packageName)获取 */
+  exports?: any;
   [key: string]: any;
 }
 

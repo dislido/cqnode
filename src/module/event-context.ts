@@ -2,6 +2,7 @@ import { MessageRet, Sendable } from 'oicq';
 import CQNodeRobot from '../cqnode-robot';
 import CQEventType, { CQEvent } from '../connector-oicq/event-type';
 import { checkAtme } from './utils';
+import { OICQAPI } from '../connector-oicq/proxy-oicq-api';
 
 /** @todo */
 export interface CQNodeEventContextMap {
@@ -67,6 +68,7 @@ interface commonEventContext<T extends CQEventType> {
   event: CQEvent<T>;
   end: boolean;
   cqnode: CQNodeRobot;
+  api: OICQAPI;
 }
 
 function commonEventContextBuilder<T extends CQEventType>(event: CQEvent<T>, cqnode: CQNodeRobot): commonEventContext<T> {
@@ -74,6 +76,7 @@ function commonEventContextBuilder<T extends CQEventType>(event: CQEvent<T>, cqn
     event,
     end: false,
     cqnode,
+    api: cqnode.connect.api,
   };
 }
 

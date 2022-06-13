@@ -5,6 +5,8 @@ import OicqConnector, { OicqConfig } from './connector-oicq';
 import { FunctionModule, FunctionModuleInstance, moduleInit } from './module';
 import EventContextBuilderMap, { CQNodeEventContext } from './module/event-context';
 import CQEventType, { CQEvent } from './connector-oicq/event-type';
+import pluginInit, { FunctionPluginInstance } from './plugin';
+import { CQNodeHook, CQNodeHookData } from './plugin/hook-processor';
 
 export interface CQNodeConfig {
   connector: OicqConfig;
@@ -29,8 +31,6 @@ export interface CQNodeConfig {
 
 /** CQNode运行时信息 */
 interface CQNodeInf {
-  /** inf是否已获取 */
-  inited: boolean;
   /** api.getLoginInfo, 当前登录号信息 */
   loginInfo: {
     nickname: string;
@@ -46,26 +46,36 @@ export default class CQNodeRobot {
 
   workpathManager: WorkpathManager;
 
-  // pluginManager: PluginManager;
-
   connect: OicqConnector;
 
   modules: FunctionModuleInstance[];
 
+  plugins: FunctionPluginInstance[];
+
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  inf = { inited: false, CQNodeVersion: require('../package.json').version } as CQNodeInf;
+  inf = { CQNodeVersion: require('../package.json').version } as CQNodeInf;
 
   constructor(config: CQNodeConfig) {
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath || '.cqnode');
-    // this.pluginManager = new PluginManager(this);
-    this.connect = config.devConnect || new OicqConnector(this.config.connector);
-
     this.init();
   }
 
   private async init() {
-    console.log('cqnode: 初始化中......');
+    console.log('CQNode: 初始化中......');
+    // this.pluginManager = new PluginManager(this);
+    const connector = await this.emitHook(CQNodeHook.beforeInit, {
+      connectorClass: OicqConnector,
+      connectorConfig: this.config.connector,
+    });
+
+    if (!connector?.connectorClass) {
+      throw new Error('CQNode初始化失败，无connector');
+    }
+
+    // eslint-disable-next-line new-cap
+    this.connect = new connector.connectorClass(connector?.connectorConfig);
+
     await this.connect.init();
     await this.workpathManager.init();
 
@@ -75,13 +85,30 @@ export default class CQNodeRobot {
       const m = Array.isArray(mod) ? mod : [mod];
       return moduleInit(m[0], m[1], this);
     }) || []);
+    this.plugins = await Promise.all(this.config.plugins?.map(plg => {
+      const m = Array.isArray(plg) ? plg : [plg];
+      return pluginInit(m[0], m[1], this);
+    }) || []);
 
     this.connect.on('event', async <T extends CQEventType>(data: { eventName: T; event: CQEvent<T> }) => {
+      const beforeEventProcessData = await this.emitHook(CQNodeHook.beforeEventProcess, {
+        ctxBuilder: EventContextBuilderMap[data.eventName],
+        eventType: data.eventName,
+      });
+      if (!beforeEventProcessData) return;
+      const evProcData = beforeEventProcessData;
+
       for (const mod of this.modules) {
-        const ctxBuilder: (ev: CQEvent<T>, cqnode: CQNodeRobot) => CQNodeEventContext<T> = EventContextBuilderMap[data.eventName];
-        const ctx = ctxBuilder(data.event, this);
+        const beforeModuleEventProcessData = await this.emitHook(CQNodeHook.beforeModuleEventProcess, {
+          ctx: evProcData.ctxBuilder(data.event, this),
+          eventType: evProcData.eventType,
+          mod,
+        });
+        if (!beforeModuleEventProcessData) continue;
+        const { ctx, eventType } = beforeModuleEventProcessData;
+
         try {
-          const end = await mod.eventProcessor.emit(data.eventName, ctx as CQNodeEventContext<T>);
+          const end = await mod.eventProcessor.emit(eventType, ctx as CQNodeEventContext<T>);
           if (end) ctx.end = true;
         } catch (e) {
           console.error(e);
@@ -91,5 +118,26 @@ export default class CQNodeRobot {
     });
     // this.pluginManager.emit('onReady', {});
     console.log('cqnode: 初始化完成');
+  }
+
+  async emitHook<T extends CQNodeHook>(hookName: T, data: CQNodeHookData[T]) {
+    let currData: CQNodeHookData[T] | null = data;
+    for (const plg of this.plugins) {
+      currData = await plg.hookProcessor.emit(hookName, data);
+      if (!currData) return null;
+    }
+    return currData;
+  }
+
+  requireModule(packageName: string) {
+    const mod = this.modules.find(it => it.meta.packageName === packageName);
+    if (!mod) throw new Error(`module ${packageName} not found`);
+    return mod.meta.exports;
+  }
+
+  requirePlugin(packageName: string) {
+    const plg = this.plugins.find(it => it.meta.packageName === packageName);
+    if (!plg) throw new Error(`plugin ${packageName} not found`);
+    return plg.meta.exports;
   }
 }
