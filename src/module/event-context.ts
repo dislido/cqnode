@@ -21,7 +21,7 @@ export interface CQNodeEventContextMap {
      * 处理请求并结束处理事件
      * @param approve 是否同意入群
      */
-    reply(approve?: boolean): Promise<boolean>;
+    approve(approve?: boolean): Promise<boolean>;
   };
   [CQEventType.request]: commonEventContext<CQEventType.request>; // 全部请求
   /** 群消息 */
@@ -160,8 +160,7 @@ export const EventContextBuilderMap: {
     const ctx = {
       ...commonEventContextBuilder<CQEventType.requestGroupInvite>(event, mod, cqnode),
       event,
-      reply(approve = true) {
-        ctx.end = true;
+      async approve(approve = true) {
         return event.approve(approve);
       },
       eventType: CQEventType.requestGroupInvite as const,

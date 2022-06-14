@@ -47,13 +47,13 @@ export interface CQNodeHookData {
      * ctx.event.group.xxx/mod.api.pickGroup().xxx -> group.xxx
      * ctx.event.member.xxx/mod.api.pickMember().xxx -> member.xxx
      */
-    apiName: string;
+    readonly apiName: string;
     /** api调用参数 */
     params: any;
     /** ctx */
-    ctx?: CQNodeEventContext;
+    readonly ctx?: CQNodeEventContext;
     /** 调用者 */
-    mod: FunctionModuleInstance;
+    readonly mod: FunctionModuleInstance;
   };
 }
 
