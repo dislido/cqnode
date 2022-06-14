@@ -10,6 +10,8 @@ import CQEventType from '../connector-oicq/event-type';
 
 const proxyTag = Symbol('cqnodeProxyTag');
 
+/** @todo hook return null */
+
 export function proxyUser(user: User, ctx: CQNodeEventContext | undefined, mod: FunctionModuleInstance, cqnode: CQNodeRobot): User {
   if (Reflect.get(user, proxyTag)) return user;
   return new Proxy(user, {
@@ -31,7 +33,7 @@ export function proxyUser(user: User, ctx: CQNodeEventContext | undefined, mod: 
           ctx,
           mod,
         });
-        return Reflect.get(target, p);
+        return (target as any)[p](...args);
       };
     },
   });
@@ -58,7 +60,7 @@ export function proxyFriend(friend: Friend, ctx: CQNodeEventContext | undefined,
           ctx,
           mod,
         });
-        return Reflect.get(target, p);
+        return (target as any)[p](...args);
       };
     },
   });
@@ -84,7 +86,7 @@ export function proxyMember(member: Member, ctx: CQNodeEventContext | undefined,
           ctx,
           mod,
         });
-        return Reflect.get(target, p);
+        return (target as any)[p](...args);
       };
     },
   });
@@ -104,7 +106,7 @@ export function proxyDiscuss(discuss: Discuss, ctx: CQNodeEventContext | undefin
           mod,
           ctx,
         });
-        return Reflect.get(target, p);
+        return (target as any)[p](...args);
       };
     },
   });
@@ -127,7 +129,7 @@ export function proxyGroup(group: Group, ctx: CQNodeEventContext | undefined, mo
           mod,
           ctx,
         });
-        return Reflect.get(target, p);
+        return (target as any)[p](...args);
       };
     },
   });
@@ -160,7 +162,7 @@ export function proxyApi(api: OICQAPI, mod: FunctionModuleInstance, cqnode: CQNo
           params: args,
           mod,
         });
-        return Reflect.get(target, p);
+        return (target as any)[p](...args);
       };
     },
   });
@@ -192,7 +194,7 @@ export function proxyCtxEvent(ctx: CQNodeEventContext, mod: FunctionModuleInstan
           ctx,
           mod,
         });
-        return Reflect.get(target, p);
+        return (target as any)[p](...args);
       };
     },
   }) as any;
