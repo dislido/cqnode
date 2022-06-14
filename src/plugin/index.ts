@@ -35,13 +35,14 @@ export interface FunctionPluginInstance {
   hookProcessor: HookProcessor;
   ctx: FunctionPluginCtx;
   meta: CQNodePluginMeta;
+  metaConfig: any;
 }
 
 export interface FunctionPlugin {
   (plg: FunctionPluginCtx, config?: any): void;
 }
 
-export default async function pluginInit(fn: FunctionPlugin, config: any, cqnode: CQNodeRobot): Promise<FunctionPluginInstance> {
+export default async function pluginInit(fn: FunctionPlugin, config: any, metaConfig: any, cqnode: CQNodeRobot): Promise<FunctionPluginInstance> {
   const hp = new HookProcessor();
   const meta = {
     name: fn.name,
@@ -59,9 +60,13 @@ export default async function pluginInit(fn: FunctionPlugin, config: any, cqnode
     },
   };
 
+  await fn(config);
+  if (!meta.packageName) throw new Error('必须指定插件的packageName，使用plg.setMeta({ packageName })设置');
+
   return {
     hookProcessor: hp,
     ctx,
     meta,
+    metaConfig,
   };
 }

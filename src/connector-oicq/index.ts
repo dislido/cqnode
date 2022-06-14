@@ -44,7 +44,7 @@ export default class OicqConnector extends EventEmitter {
       console.log('输入ticket：');
       process.stdin.once('data', ticket => this.client.submitSlider(String(ticket).trim()));
     }).once('system.login.device', e => {
-      console.log(`设备锁验证：${e.url}`);
+      console.log(`设备锁验证(验证完成后按回车登录)：${e.url}`);
       process.stdin.once('data', () => this.client.login());
     }).login(this.config.password);
     return new Promise(res => this.client.once('system.online', res));

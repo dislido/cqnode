@@ -58,6 +58,7 @@ export interface FunctionModuleInstance {
   eventProcessor: EventProcessor;
   ctx: FunctionModuleCtx;
   meta: CQNodeModuleMeta;
+  metaConfig: any;
   onStop?(): void;
 }
 
@@ -65,7 +66,7 @@ function getPackagePath(packageName: string) {
   return packageName.replace(/\//g, '__');
 }
 
-export async function moduleInit(fn: FunctionModule, config: any, cqnode: CQNodeRobot): Promise<FunctionModuleInstance> {
+export async function moduleInit(fn: FunctionModule, config: any, metaConfig: any, cqnode: CQNodeRobot): Promise<FunctionModuleInstance> {
   const ep = new EventProcessor();
   const meta = {
     name: fn.name,
@@ -76,6 +77,7 @@ export async function moduleInit(fn: FunctionModule, config: any, cqnode: CQNode
   const init = {
     eventProcessor: ep,
     meta,
+    metaConfig,
   } as FunctionModuleInstance;
 
   init.ctx = {

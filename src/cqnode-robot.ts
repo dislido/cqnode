@@ -5,17 +5,17 @@ import OicqConnector, { OicqConfig } from './connector-oicq';
 import { FunctionModule, FunctionModuleInstance, moduleInit } from './module';
 import EventContextBuilderMap, { CQNodeEventContext } from './module/event-context';
 import CQEventType, { CQEvent } from './connector-oicq/event-type';
-import pluginInit, { FunctionPluginInstance } from './plugin';
+import pluginInit, { FunctionPlugin, FunctionPluginInstance } from './plugin';
 import { CQNodeHook, CQNodeHookData } from './plugin/hook-processor';
 
 export interface CQNodeConfig {
   connector: OicqConfig;
   /** 管理员 @todo 后续用权限系统代替 */
   admin?: number[];
-  /** 加载的模块 */
-  modules?: Array<FunctionModule | [FunctionModule, any?]>;
-  /** 加载的插件 */
-  plugins?: any[];
+  /** 加载的模块, [FunctionModule，config, metaConfig] */
+  modules?: Array<FunctionModule | [FunctionModule, any?, any?]>;
+  /** 加载的插件, [FunctionPlugin，config, metaConfig] */
+  plugins?: Array<FunctionPlugin | [FunctionPlugin, any?, any?]>;
   /** 数据文件夹 */
   workpath?: string;
   /**
@@ -68,7 +68,7 @@ export default class CQNodeRobot {
 
     this.plugins = await Promise.all(this.config.plugins?.map(plg => {
       const m = Array.isArray(plg) ? plg : [plg];
-      return pluginInit(m[0], m[1], this);
+      return pluginInit(m[0], m[1], m[2], this);
     }) || []);
 
     const connector = await this.emitHook(CQNodeHook.beforeInit, {
@@ -87,18 +87,21 @@ export default class CQNodeRobot {
 
     this.modules = await Promise.all(this.config.modules?.map(mod => {
       const m = Array.isArray(mod) ? mod : [mod];
-      return moduleInit(m[0], m[1], this);
+      return moduleInit(m[0], m[1], m[2], this);
     }) || []);
 
     this.connect.on('event', async <T extends CQEventType>(data: { eventName: T; event: CQEvent<T> }) => {
+      const mods = [...this.modules];
+
       const beforeEventProcessData = await this.emitHook(CQNodeHook.beforeEventProcess, {
         ctxBuilder: EventContextBuilderMap[data.eventName],
+        mods,
         eventType: data.eventName,
       });
       if (!beforeEventProcessData) return;
       const evProcData = beforeEventProcessData;
 
-      for (const mod of this.modules) {
+      for (const mod of mods) {
         const beforeModuleEventProcessData = await this.emitHook(CQNodeHook.beforeModuleEventProcess, {
           ctx: evProcData.ctxBuilder(data.event, this),
           eventType: evProcData.eventType,
