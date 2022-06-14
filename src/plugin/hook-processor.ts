@@ -10,6 +10,8 @@ export enum CQNodeHook {
   beforeEventProcess,
   /** 事件流转到各模块开始处理前，返回null则跳过此模块对事件处理 */
   beforeModuleEventProcess,
+  /** 模块调用api前，包括通过ctx.api调用，ctx.reply等快捷调用操作，ctx.event.group.sendMsg等event下的方法调用，通过cqnode.connect.client的调用不会触发此hook */
+  beforeModuleAPICall,
 }
 
 export interface HookOptions {
@@ -24,13 +26,34 @@ export interface CQNodeHookData {
     connectorConfig: any;
   };
   [CQNodeHook.beforeEventProcess]: {
-    ctxBuilder(event: CQEvent, cqnode: CQNodeRobot): any;
+    /** 创建ctx，#替换可能会影响其他hook的触发 */
+    ctxBuilder(event: CQEvent, mod: FunctionModuleInstance, cqnode: CQNodeRobot): any;
+    /** 加载的模块 */
+    mods: FunctionModuleInstance[];
+    /** 事件类型 */
     eventType: CQEventType;
   };
   [CQNodeHook.beforeModuleEventProcess]: {
     readonly mod: FunctionModuleInstance;
+    /** ctx */
     ctx: CQNodeEventContext;
+    /** 事件类型 */
     eventType: CQEventType;
+  };
+  [CQNodeHook.beforeModuleAPICall]: {
+    /** api名称
+     * ctx.api.xxx -> xxx
+     * ctx.event.xxx/ctx.xxx -> ${ctx.eventType}.xxx
+     * ctx.event.group.xxx/mod.api.pickGroup().xxx -> group.xxx
+     * ctx.event.member.xxx/mod.api.pickMember().xxx -> member.xxx
+     */
+    apiName: string;
+    /** api调用参数 */
+    params: any;
+    /** ctx */
+    ctx?: CQNodeEventContext;
+    /** 调用者 */
+    mod: FunctionModuleInstance;
   };
 }
 

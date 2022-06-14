@@ -1,6 +1,8 @@
 import CQNodeRobot from '../cqnode-robot';
 import CQEventType from '../connector-oicq/event-type';
 import EventProcessor, { CQEventListener, EventProcessorOptions } from './event-processor';
+import { OICQAPI } from '../connector-oicq/proxy-oicq-api';
+import { proxyApi } from '../util/proxy';
 
 export interface CQNodeModuleMeta {
   /** 模块包名，名称中不能包含无法作为文件名的字符(/除外) */
@@ -48,6 +50,7 @@ interface FunctionModuleCtx {
   setStorage(data: any, key?: string): void;
   /** cqnode引用 */
   cqnode: CQNodeRobot;
+  api: OICQAPI;
 }
 
 export interface FunctionModule {
@@ -91,6 +94,7 @@ export async function moduleInit(fn: FunctionModule, config: any, metaConfig: an
       init.onStop = cb;
     },
     cqnode,
+    api: proxyApi(cqnode.connect.api, init, cqnode),
     getStorage(key = 'default', defaultData = {}) {
       if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
       return cqnode.workpathManager.readJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, defaultData);

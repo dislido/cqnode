@@ -7,6 +7,7 @@ import EventContextBuilderMap, { CQNodeEventContext } from './module/event-conte
 import CQEventType, { CQEvent } from './connector-oicq/event-type';
 import pluginInit, { FunctionPlugin, FunctionPluginInstance } from './plugin';
 import { CQNodeHook, CQNodeHookData } from './plugin/hook-processor';
+import { proxyCtx } from './util/proxy';
 
 export interface CQNodeConfig {
   connector: OicqConfig;
@@ -103,12 +104,14 @@ export default class CQNodeRobot {
 
       for (const mod of mods) {
         const beforeModuleEventProcessData = await this.emitHook(CQNodeHook.beforeModuleEventProcess, {
-          ctx: evProcData.ctxBuilder(data.event, this),
+          ctx: evProcData.ctxBuilder(data.event, mod, this),
           eventType: evProcData.eventType,
           mod,
         });
         if (!beforeModuleEventProcessData) continue;
         const { ctx, eventType } = beforeModuleEventProcessData;
+
+        proxyCtx(ctx, mod, this);
 
         try {
           const end = await mod.eventProcessor.emit(eventType, ctx as CQNodeEventContext<T>);
