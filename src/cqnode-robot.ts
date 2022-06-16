@@ -11,7 +11,7 @@ import { proxyCtx } from './util/proxy';
 
 export interface CQNodeConfig {
   connector: OicqConfig;
-  /** 管理员 @todo 后续用权限系统代替 */
+  /** 机器人管理员, 此列表中的用户获得auth plugin的superAdmin权限 */
   admin?: number[];
   /** 加载的模块, [FunctionModule，config, metaConfig] */
   modules?: Array<FunctionModule | [FunctionModule, any?, any?]>;
@@ -130,6 +130,16 @@ export default class CQNodeRobot {
     let currData: CQNodeHookData[T] | null = data;
     for (const plg of this.plugins) {
       currData = await plg.hookProcessor.emit(hookName, data);
+      if (!currData) return null;
+    }
+    return currData;
+  }
+
+  emitSyncHook<T extends CQNodeHook>(hookName: T, data: CQNodeHookData[T]) {
+    let currData: CQNodeHookData[T] | null = data;
+    for (const plg of this.plugins) {
+      currData = plg.hookProcessor.emitSync(hookName, data);
+      if (currData instanceof Promise) throw new Error(`plugin error: ${hookName} 不支持异步hook`);
       if (!currData) return null;
     }
     return currData;

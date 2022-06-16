@@ -18,7 +18,7 @@ export interface CQNodeEventContextMap {
   [CQEventType.requestGroupInvite]: commonEventContext<CQEventType.requestGroupInvite> & {
     event: CQEvent<CQEventType.requestGroupInvite>;
     /**
-     * 处理请求并结束处理事件
+     * 处理请求 = event.approve
      * @param approve 是否同意入群
      */
     approve(approve?: boolean): Promise<boolean>;
@@ -46,7 +46,7 @@ export interface CQNodeEventContextMap {
     /** 文本内容 */
     textMessage: string;
     /**
-     * 回复消息并结束处理事件
+     * 回复消息 = event.reply
      * @param message 回复内容
      * @param quote 是否引用
      */
@@ -200,17 +200,9 @@ export const EventContextBuilderMap: {
       ...commonEventContextBuilder<CQEventType.message>(event, mod, cqnode),
       event,
       textMessage: event.message.map(it => it.type === 'text' ? it.text : '').join('').trim(),
-      /** 回复消息并结束此事件 */
-      reply: (message: Sendable, quote?: boolean) => {
-        ctx.end = true;
-        return event.reply(message, quote);
-      },
+      reply: (message: Sendable, quote?: boolean) => event.reply(message, quote),
       atme: checkAtme(event, cqnode.config.atmeTrigger, cqnode.connect.client.uin),
       eventType: CQEventType.message as const,
-      /** @todo CQCode格式的string类型message */
-      // msg,
-      /** @todo 是否是简单文字消息（移除atmeTrigger后） */
-      // isSimpleMessage,
     };
     return ctx;
   }, // 全部消息

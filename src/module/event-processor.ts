@@ -2,7 +2,7 @@ import CQEventType from '../connector-oicq/event-type';
 import { CQNodeEventContext } from './event-context';
 
 export interface EventProcessorOptions {
-  /** 是否需要atme标识来触发，处理群/讨论组消息用（非群/讨论组消息的ctx.atme固定为true） @todo 只有需要的事件有此option，待assertEventType()完成 */
+  /** 是否需要atme标识来触发，处理群/讨论组消息用（非群/讨论组消息的ctx.atme固定为true） @todo 只有需要的事件有此option */
   atme?: boolean;
 }
 
@@ -43,7 +43,11 @@ export default class EventProcessor {
       const evName = evChain.join('.') as CQEventType;
       const processors = this.#processorMap.get(evName) ?? [];
       for (const [proc, options] of processors) {
-        if (options.atme && !(ctx as CQNodeEventContext<CQEventType.message>).atme) continue;
+        if (
+          ctx.eventType.startsWith(CQEventType.message)
+          && options.atme
+          && !(ctx as CQNodeEventContext<CQEventType.message>).atme
+        ) continue;
         const end = await proc(ctx);
         if (end) return true;
       }

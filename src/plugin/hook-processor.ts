@@ -10,7 +10,17 @@ export enum CQNodeHook {
   beforeEventProcess,
   /** 事件流转到各模块开始处理前，返回null则跳过此模块对事件处理 */
   beforeModuleEventProcess,
-  /** 模块调用api前，包括通过ctx.api调用，ctx.reply等快捷调用操作，ctx.event.group.sendMsg等event下的方法调用，通过cqnode.connect.client的调用不会触发此hook */
+  /**
+   * 模块调用api前
+   *
+   * 包括通过ctx.api调用，ctx.reply等快捷调用操作，ctx.event.group.sendMsg等event下的方法调用
+   *
+   * 通过cqnode.connect.client的调用不会触发此hook
+   *
+   * 返回null会使调用的api返回null，可通过替换target和prop（即Proxy get的前两个参数）来替换调用的function返回特定内容
+   *
+   * 只有async的api，才能使用async的hook函数
+   */
   beforeModuleAPICall,
 }
 
@@ -48,12 +58,16 @@ export interface CQNodeHookData {
      * ctx.event.member.xxx/mod.api.pickMember().xxx -> member.xxx
      */
     readonly apiName: string;
-    /** api调用参数 */
-    params: any;
     /** ctx */
     readonly ctx?: CQNodeEventContext;
     /** 调用者 */
     readonly mod: FunctionModuleInstance;
+    /** api调用参数 */
+    params: any;
+    /** proxy target */
+    target: any;
+    /** proxy prop */
+    prop: any;
   };
 }
 
@@ -91,6 +105,22 @@ export default class HookProcessor {
     let currEventData = eventData;
     for (const [proc] of processors) {
       currEventData = await proc(currEventData);
+      if (!currEventData) return null;
+    }
+    return currEventData;
+  }
+
+  /**
+   * 接收事件
+   * @param hookName 事件名
+   * @param eventData 事件数据
+   * @returns 返回事件数据，返回null则阻止事件
+   */
+  emitSync<T extends CQNodeHook>(hookName: T, eventData: CQNodeHookData[T]) {
+    const processors = this.#processorMap.get(hookName) as [HookCallback<T>, HookOptions][] ?? [];
+    let currEventData = eventData;
+    for (const [proc] of processors) {
+      currEventData = proc(currEventData);
       if (!currEventData) return null;
     }
     return currEventData;
