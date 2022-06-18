@@ -129,7 +129,7 @@ export default class CQNodeRobot {
         }
       }
     });
-    // @todo this.pluginManager.emit('afterInit', {});
+    this.emitHook(CQNodeHook.afterInit, {});
     console.log('cqnode: 初始化完成');
   }
 

@@ -26,6 +26,8 @@ export enum CQNodeHook {
    * 事件处理结束
    */
   afterEventProcess,
+  /** 初始化完成，所有插件和模块已加载完毕 */
+  afterInit,
 }
 
 export interface HookOptions {
@@ -79,6 +81,7 @@ export interface CQNodeHookData {
     /** 处理此次事件的模块，若此事件没有任何模块处理则为空 */
     readonly processMod?: FunctionModuleInstance;
   };
+  [CQNodeHook.afterInit]: Record<string, never>;
 }
 
 export interface HookCallback<T extends CQNodeHook = CQNodeHook> {
