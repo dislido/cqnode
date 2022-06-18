@@ -73,12 +73,13 @@ export interface CQNodeEventContextMap {
   [CQEventType.guildMessage]: commonEventContext<CQEventType.guildMessage>; // 频道消息
 }
 
-interface commonEventContext<T extends CQEventType> {
+interface commonEventContext<T extends CQEventType = CQEventType> {
   event: CQEvent<T>;
   end: boolean;
   cqnode: CQNodeRobot;
   mod: FunctionModuleInstance;
   eventType: T;
+  [key: string]: any;
 }
 
 function commonEventContextBuilder<T extends CQEventType>(event: CQEvent<T>, mod: FunctionModuleInstance, cqnode: CQNodeRobot): commonEventContext<T> {
