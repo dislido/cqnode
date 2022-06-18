@@ -102,7 +102,8 @@ export default class CQNodeRobot {
       if (!beforeEventProcessData) return;
       const evProcData = beforeEventProcessData;
 
-      for (const mod of mods) {
+      for (let i = 0; i < mods.length; i++) {
+        const mod = mods[i];
         const beforeModuleEventProcessData = await this.emitHook(CQNodeHook.beforeModuleEventProcess, {
           ctx: evProcData.ctxBuilder(data.event, mod, this),
           eventType: evProcData.eventType,
@@ -111,18 +112,24 @@ export default class CQNodeRobot {
         if (!beforeModuleEventProcessData) continue;
         const { ctx, eventType } = beforeModuleEventProcessData;
 
-        proxyCtx(ctx, mod, this);
+        const ctxProxy = proxyCtx(ctx, mod, this);
 
         try {
-          const end = await mod.eventProcessor.emit(eventType, ctx as CQNodeEventContext<T>);
+          const end = await mod.eventProcessor.emit(eventType, ctxProxy as CQNodeEventContext<T>);
           if (end) ctx.end = true;
         } catch (e) {
           console.error(e);
         }
-        if (ctx.end) return;
+        if (ctx.end || i === mods.length - 1) {
+          this.emitHook(CQNodeHook.afterEventProcess, {
+            ctx,
+            processMod: ctx.end ? mod : undefined,
+          });
+          break;
+        }
       }
     });
-    // this.pluginManager.emit('onReady', {});
+    // @todo this.pluginManager.emit('afterInit', {});
     console.log('cqnode: 初始化完成');
   }
 

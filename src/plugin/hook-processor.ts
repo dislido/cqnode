@@ -22,6 +22,10 @@ export enum CQNodeHook {
    * 只有async的api，才能使用async的hook函数
    */
   beforeModuleAPICall,
+  /**
+   * 事件处理结束
+   */
+  afterEventProcess,
 }
 
 export interface HookOptions {
@@ -68,6 +72,12 @@ export interface CQNodeHookData {
     target: any;
     /** proxy prop */
     prop: any;
+  };
+  [CQNodeHook.afterEventProcess]: {
+    /** 事件ctx */
+    ctx: CQNodeEventContext;
+    /** 处理此次事件的模块，若此事件没有任何模块处理则为空 */
+    readonly processMod?: FunctionModuleInstance;
   };
 }
 

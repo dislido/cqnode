@@ -83,7 +83,7 @@ export function proxyUser(user: User, ctx: CQNodeEventContext | undefined, mod: 
     get(target, prop: string | typeof proxyTag) {
       if (prop === proxyTag) return true;
       const val = Reflect.get(target, prop);
-      if (!val || typeof val !== 'function') return val;
+      if (typeof val !== 'function') return val;
       if (prop === 'asFriend') {
         return resolveApiHook({
           ctx,
@@ -132,7 +132,7 @@ export function proxyFriend(friend: Friend, ctx: CQNodeEventContext | undefined,
     get(target, prop: string | typeof proxyTag) {
       if (prop === proxyTag) return true;
       const val = Reflect.get(target, prop);
-      if (!val || typeof val !== 'function') return val;
+      if (typeof val !== 'function') return val;
       if (prop === 'asFriend') {
         return resolveApiHook({
           ctx,
@@ -183,7 +183,7 @@ export function proxyMember(member: Member, ctx: CQNodeEventContext | undefined,
     get(target, prop: string | typeof proxyTag) {
       if (prop === proxyTag) return true;
       const val = Reflect.get(target, prop);
-      if (!val || typeof val !== 'function') return val;
+      if (typeof val !== 'function') return val;
       if (prop === 'asFriend') {
         return resolveApiHook({
           ctx,
@@ -227,7 +227,7 @@ export function proxyDiscuss(discuss: Discuss, ctx: CQNodeEventContext | undefin
     get(target, prop: string | typeof proxyTag) {
       if (prop === proxyTag) return true;
       const val = Reflect.get(target, prop);
-      if (!val || typeof val !== 'function') return val;
+      if (typeof val !== 'function') return val;
 
       return resolveApiHook({
         ctx, mod, target, prop, checkAsync: discussAsyncApiNames, nameSpace: 'discuss', cqnode,
@@ -270,7 +270,7 @@ export function proxyGroup(group: Group, ctx: CQNodeEventContext | undefined, mo
     get(target, prop: string | typeof proxyTag) {
       if (prop === proxyTag) return true;
       const val = Reflect.get(target, prop);
-      if (!val || typeof val !== 'function') return val;
+      if (typeof val !== 'function') return val;
       if (prop === 'pickMember') {
         return resolveApiHook({
           ctx,
@@ -291,12 +291,70 @@ export function proxyGroup(group: Group, ctx: CQNodeEventContext | undefined, mo
   });
 }
 
+const OICQClientAsyncApiNames = [
+  'login',
+  'setOnlineStatus',
+  'setNickname',
+  'setGender',
+  'setBirthday',
+  'setDescription',
+  'setSignature',
+  'setAvatar',
+  'getRoamingStamp',
+  'deleteStamp',
+  'getSystemMsg',
+  'addClass',
+  'deleteClass',
+  'renameClass',
+  'reloadFriendList',
+  'reloadStrangerList',
+  'reloadGroupList',
+  'reloadBlackList',
+  'getVideoUrl',
+  'getForwardMsg',
+  'makeForwardMsg',
+  'getStrangerInfo',
+  'getGroupInfo',
+  'getGroupMemberList',
+  'getGroupMemberInfo',
+  'sendPrivateMsg',
+  'sendGroupMsg',
+  'sendDiscussMsg',
+  'sendTempMsg',
+  'deleteMsg',
+  'reportReaded',
+  'getMsg',
+  'getChatHistory',
+  'setGroupAnonymousBan',
+  'setGroupAnonymous',
+  'setGroupWholeBan',
+  'setGroupName',
+  'sendGroupNotice',
+  'setGroupAdmin',
+  'setGroupSpecialTitle',
+  'setGroupCard',
+  'setGroupKick',
+  'setGroupBan',
+  'setGroupLeave',
+  'sendGroupPoke',
+  'addFriend',
+  'deleteFriend',
+  'inviteFriend',
+  'sendLike',
+  'setPortrait',
+  'setGroupPortrait',
+  'setFriendAddRequest',
+  'setGroupAddRequest',
+  'sendOidb',
+] as const;
+
 export function proxyApi(api: OICQAPI, mod: FunctionModuleInstance, cqnode: CQNodeRobot) {
   if (Reflect.get(api, proxyTag)) return api;
   return new Proxy(api, {
     get(target, prop: string | typeof proxyTag) {
       if (prop === proxyTag) return true;
-      if (!Reflect.get(target, prop)) return undefined;
+      const val = Reflect.get(target, prop);
+      if (typeof val !== 'function') return val;
       if (prop === 'pickGroup') {
         return resolveApiHook({
           mod,
@@ -347,27 +405,21 @@ export function proxyApi(api: OICQAPI, mod: FunctionModuleInstance, cqnode: CQNo
           proxyResult: proxyDiscuss,
         });
       }
-      return (...args: any[]) => {
-        cqnode.emitHook(CQNodeHook.beforeModuleAPICall, {
-          apiName: prop,
-          params: args,
-          mod,
-          target,
-          prop,
-        });
-        return (target as any)[prop](...args);
-      };
+
+      return resolveApiHook({
+        mod, target, prop, checkAsync: OICQClientAsyncApiNames, cqnode,
+      });
     },
   });
 }
 
-export function proxyCtxEvent(ctx: CQNodeEventContext, mod: FunctionModuleInstance, cqnode: CQNodeRobot) {
+function proxyCtxEvent(ctx: CQNodeEventContext, mod: FunctionModuleInstance, cqnode: CQNodeRobot) {
   if (!ctx.event || Reflect.get(ctx.event, proxyTag)) return;
   ctx.event = ctx.event && new Proxy(ctx.event, {
     get(target, prop: string | typeof proxyTag) {
       if (prop === proxyTag) return true;
       const val = Reflect.get(target, prop);
-      if (!val || typeof val !== 'function') return val;
+      if (typeof val !== 'function') return val;
       if ('group' in ctx.event) {
         ctx.event.group = proxyGroup(ctx.event.group, ctx, mod, cqnode);
       }
