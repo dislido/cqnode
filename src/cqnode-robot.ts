@@ -26,8 +26,6 @@ export interface CQNodeConfig {
    * 空字符串表示将任何消息当作at了本机器人
    */
   atmeTrigger?: Array<string | true>;
-
-  devConnect?: any;
 }
 
 /** CQNode运行时信息 */

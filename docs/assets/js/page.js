@@ -9,7 +9,7 @@
     }
   };
   scr();
-  backtotop.addEventListener('click', () => document.documentElement.scrollTo({ top: 210 }))
+  backtotop.addEventListener('click', () => document.documentElement.scrollTo({ top: 210 }));
   document.addEventListener('scroll', scr);
 }
 
@@ -21,5 +21,5 @@
     const id = target.getAttribute('id');
     if (!id) return;
     location.hash = id;
-  })
+  });
 }

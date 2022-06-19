@@ -1,14 +1,11 @@
 import CQNodeRobot, { CQNodeConfig } from './cqnode-robot';
-import * as eventType from './connector-oicq/event-type';
-import { CQCode, segment } from './util';
+import { segment } from './util';
 
 export function createRobot(config: CQNodeConfig) {
   return new CQNodeRobot(config);
 }
 
 export const util = {
-  eventType,
-  CQCode,
   segment,
 };
 
