@@ -13,25 +13,29 @@ class MyModule extends CQNode.Module {
       description: '模块描述信息',
     });
   }
+
   onRun() {
-    console.log(this.cqnode.inf.groupList)
+    console.log(this.cqnode.inf.groupList);
   }
+
   /**
    * 添加这些类型声明可以获得代码提示，如果你使用TypeScript会更加方便
-   * @param {CQNode.CQEvent.Event} data 
-   * @param {CQNode.CQResponse.Message} resp 
+   * @param {CQNode.CQEvent.Event} data
+   * @param {CQNode.CQResponse.Message} resp
    */
   onMessage(data, resp) {
     return resp.reply(`received: ${data.msg}`);
   }
+
   onEvent(data) {
     if (CQNode.util.eventType.isMessage(data)) {
-      data.msg
+      console.log(data.msg);
     }
   }
+
   /**
-   * @param {CQNode.CQEvent.GroupMessage} data 
-   * @param {CQNode.CQResponse.GroupMessage} resp 
+   * @param {CQNode.CQEvent.GroupMessage} data
+   * @param {CQNode.CQResponse.GroupMessage} resp
    */
   onGroupMessage(data, resp) {
     console.log('received groupMessage');
@@ -42,8 +46,8 @@ class MyModule extends CQNode.Module {
 CQNode.createRobot({
   modules: [new MyModule()],
   connector: {
-    LISTEN_PORT: 8080
-  }
+    LISTEN_PORT: 8080,
+  },
 });
 
 /**
@@ -52,7 +56,7 @@ CQNode.createRobot({
  * user < aaa >
  * log: received groupMessage
  * robot < @user received: aaa >
- * 
+ *
  * [私聊]
  * user < aaa >
  * robot < received: aaa >

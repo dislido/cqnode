@@ -1,6 +1,5 @@
 node_modules
-dist
+lib
+dev
 .cqnode
-/.*
-!/.gitignore
-!/.npmignore
+.DS_Store

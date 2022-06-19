@@ -1,4 +1,4 @@
-import { EventName, CQEvent } from './cq-http';
+import { EventName, CQEvent } from './connector';
 /**
  * 工具库
  */

@@ -1,21 +1,25 @@
-import Robot from './cqnode-robot';
-import Module from './robot-module';
-import Plugin from './robot-plugin';
-import * as eventType from './connector-cqhttp/event-type';
-import { ConfigObject } from './cqnode-robot';
-import { CQCode } from './util';
+import CQNodeRobot, { CQNodeConfig } from './cqnode-robot';
+import { segment } from './util';
+
+export function createRobot(config: CQNodeConfig) {
+  return new CQNodeRobot(config);
+}
+
+export const util = {
+  segment,
+};
 
 const CQNode = {
-  createRobot(config: ConfigObject) {
-    return new Robot(config);
-  },
-  Module,
-  Plugin,
-  util: {
-    eventType,
-    CQCode,
-  },
+  createRobot,
+  util,
 };
-Robot.CQNode = CQNode;
+CQNodeRobot.CQNode = CQNode;
 
-export default module.exports = CQNode;
+export default CQNode;
+
+export { CQEventType, CQEvent } from './connector-oicq/event-type';
+export { CQNodeHook } from './plugin/hook-processor';
+
+export type { FunctionModule } from './module';
+export type { FunctionPlugin } from './plugin';
+export type { CQNodeEventContext } from './module/event-context';
