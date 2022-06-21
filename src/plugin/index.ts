@@ -24,7 +24,7 @@ export interface FunctionPluginCtx {
    * @param options 监听选项
    * @returns 取消监听函数
    */
-  on<T extends CQNodeHook>(eventName: T, listener: HookCallback<T>, options?: HookOptions): void;
+  on<T extends CQNodeHook>(eventName: T, listener: HookCallback<T>, options?: HookOptions): () => void;
   /**
    * 设置模块信息
    * @param inf 模块消息

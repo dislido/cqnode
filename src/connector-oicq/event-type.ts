@@ -104,6 +104,6 @@ export const allLeafEventNames = [
 ];
 
 /** CQEventType到oicq Event的映射 */
-export type CQEvent<EventName extends CQEventType = any> = Parameters<EventMap[EventName]>[0];
+export type CQEvent<EventName extends CQEventType = CQEventType> = Parameters<EventMap[EventName]>[0];
 
 export default CQEventType;
