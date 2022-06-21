@@ -24,6 +24,7 @@ interface FunctionModuleCtx {
    * @param eventName 事件类型
    * @param listener 事件处理器
    * @param options 监听选项
+   * @returns 取消监听函数
    */
   on<T extends CQEventType>(eventName: T, listener: CQEventListener<T>, options?: EventProcessorOptions): void;
   /**

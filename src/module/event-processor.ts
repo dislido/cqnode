@@ -19,6 +19,7 @@ export default class EventProcessor {
    * @param eventName 事件名
    * @param process 事件处理器，返回值的Boolean值为true代表本事件处理器已处理此事件，不再传递到后续处理器（等同ctx.end置true）
    * @param options 额外选项
+   * @returns 取消监听函数
    */
   on<T extends CQEventType>(eventName: CQEventType, process: CQEventListener<T>, options: EventProcessorOptions = {}) {
     const opt = {
@@ -26,9 +27,13 @@ export default class EventProcessor {
       ...options,
     };
     if (!this.#processorMap.has(eventName)) this.#processorMap.set(eventName, []);
-    const processorList = this.#processorMap.get(eventName);
-    processorList?.push([process, opt]);
-    return this;
+    const processorList = this.#processorMap.get(eventName)!;
+    const processorItem: [CQEventListener, EventProcessorOptions] = [process, opt];
+    processorList.push(processorItem);
+    return () => {
+      const index = processorList.findIndex(it => it === processorItem);
+      processorList.splice(index, 1);
+    };
   }
 
   /**
