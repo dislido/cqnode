@@ -61,7 +61,7 @@ export default async function pluginInit(fn: FunctionPlugin, config: any, metaCo
     },
   };
 
-  await fn(config);
+  await fn(ctx, config);
   if (!meta.packageName) throw new Error('必须指定插件的packageName，使用plg.setMeta({ packageName })设置');
 
   return {
