@@ -9,8 +9,6 @@ export interface OicqConfig {
   /** qq密码，不传则使用扫码登录 */
   password?: string;
   timeout?: number;
-  /** 群聊和频道中过滤自己的消息(默认true) */
-  ignoreSelf?: boolean;
 }
 
 export default class OicqConnector extends EventEmitter {
@@ -26,7 +24,7 @@ export default class OicqConnector extends EventEmitter {
   constructor(private config: OicqConfig) {
     super();
     const { account } = config;
-    this.client = createClient(account, { log_level: 'off', ignore_self: config.ignoreSelf });
+    this.client = createClient(account, { log_level: 'off' });
     this.api = proxyOicqApi(this.client);
 
     allLeafEventNames.forEach(en => {
