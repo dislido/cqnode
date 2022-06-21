@@ -77,7 +77,7 @@ export type OICQAPI = Pick<Client, OICQAPINames>;
 export default function proxyOicqApi(client: Client): OICQAPI {
   return new Proxy(client, {
     get(target, p: OICQAPINames) {
-      return OICQAPINameList.includes(p) ? target[p] : undefined;
+      return OICQAPINameList.includes(p) ? target[p].bind(target) : undefined;
     },
   });
 }

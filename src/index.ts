@@ -20,6 +20,7 @@ export default CQNode;
 export { CQEventType, CQEvent } from './connector-oicq/event-type';
 export { CQNodeHook } from './plugin/hook-processor';
 
+export type { CQNodeConfig };
 export type { FunctionModule } from './module';
 export type { FunctionPlugin } from './plugin';
 export type { CQNodeEventContext } from './module/event-context';
