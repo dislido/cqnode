@@ -48,6 +48,7 @@ export interface CQNodeHookData {
     mods: FunctionModuleInstance[];
     /** 事件类型 */
     eventType: CQEventType;
+    event: CQEvent;
   };
   [CQNodeHook.beforeModuleEventProcess]: {
     readonly mod: FunctionModuleInstance;

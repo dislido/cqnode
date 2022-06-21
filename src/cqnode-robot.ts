@@ -96,6 +96,7 @@ export default class CQNodeRobot {
         ctxBuilder: EventContextBuilderMap[data.eventName],
         mods,
         eventType: data.eventName,
+        event: data.event,
       });
       if (!beforeEventProcessData) return;
       const evProcData = beforeEventProcessData;
