@@ -24,7 +24,7 @@ export default class OicqConnector extends EventEmitter {
   constructor(private config: OicqConfig) {
     super();
     const { account } = config;
-    this.client = createClient(account, { log_level: 'off' });
+    this.client = createClient(account, { log_level: 'off', ignore_self: false });
     this.api = proxyOicqApi(this.client);
 
     allLeafEventNames.forEach(en => {

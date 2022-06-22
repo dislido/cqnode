@@ -26,6 +26,7 @@ export default class EventProcessor {
   on<T extends CQEventType>(eventName: CQEventType, process: CQEventListener<T>, options: EventProcessorOptions = {}) {
     const opt = {
       atme: true,
+      ignoreSelf: true,
       ...options,
     };
     if (!this.#processorMap.has(eventName)) this.#processorMap.set(eventName, []);
