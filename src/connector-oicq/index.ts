@@ -1,14 +1,13 @@
 import { EventEmitter } from 'events';
-import { createClient, Client } from 'oicq';
+import { createClient, Client, Config } from 'oicq';
 import CQEventType, { allLeafEventNames, CQEvent } from './event-type';
 import proxyOicqApi, { OICQAPI } from './proxy-oicq-api';
 
-export interface OicqConfig {
+export interface OicqConfig extends Config {
   /** 登录qq号 */
   account: number;
   /** qq密码，不传则使用扫码登录 */
   password?: string;
-  timeout?: number;
 }
 
 export default class OicqConnector extends EventEmitter {
@@ -23,8 +22,12 @@ export default class OicqConnector extends EventEmitter {
    */
   constructor(private config: OicqConfig) {
     super();
-    const { account } = config;
-    this.client = createClient(account, { log_level: 'off', ignore_self: false });
+    const { account, password, ...oicq } = config;
+    this.client = createClient(account, {
+      log_level: 'off',
+      ignore_self: false,
+      ...oicq,
+    });
     this.api = proxyOicqApi(this.client);
 
     allLeafEventNames.forEach(en => {
