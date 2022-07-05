@@ -1,3 +1,4 @@
+import { getPackagePath } from '../util/get-package-path';
 import CQNodeRobot from '../cqnode-robot';
 import HookProcessor, { CQNodeHook, HookCallback, HookOptions } from './hook-processor';
 
@@ -30,6 +31,18 @@ export interface FunctionPluginCtx {
    * @param inf 模块消息
    */
   setMeta(inf: CQNodePluginMeta): void;
+  /**
+   * 获取本地存储
+   * @param key 存储key，默认'default'
+   * @param defaultData 没有存储内容时的默认数据
+   */
+  getStorage<T = any>(key?: string, defaultData?: any): Promise<T | null>;
+  /**
+   * 保存到本地存储
+   * @param data 存储数据
+   * @param key 存储key，默认'default'
+   */
+  setStorage(data: any, key?: string): void;
 }
 
 export interface FunctionPluginInstance {
@@ -58,6 +71,14 @@ export default async function pluginInit(fn: FunctionPlugin, config: any, metaCo
     },
     setMeta(inf: CQNodePluginMeta) {
       Object.assign(meta, inf);
+    },
+    getStorage(key = 'default', defaultData = {}) {
+      if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
+      return cqnode.workpathManager.readJson(`pluginStorage/${getPackagePath(meta.packageName)}/${key}.json`, defaultData);
+    },
+    setStorage(data: any, key = 'default') {
+      if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
+      return cqnode.workpathManager.writeJson(`pluginStorage/${getPackagePath(meta.packageName)}/${key}.json`, JSON.stringify(data));
     },
   };
 

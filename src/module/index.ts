@@ -3,6 +3,7 @@ import CQEventType from '../connector-oicq/event-type';
 import EventProcessor, { CQEventListener, EventProcessorOptions } from './event-processor';
 import { OICQAPI } from '../connector-oicq/proxy-oicq-api';
 import { proxyApi } from '../util/proxy';
+import { getPackagePath } from '../util/get-package-path';
 
 export interface CQNodeModuleMeta {
   /** 模块包名，名称中不能包含无法作为文件名的字符(/除外) */
@@ -64,10 +65,6 @@ export interface FunctionModuleInstance {
   meta: CQNodeModuleMeta;
   metaConfig: any;
   onStop?(): void;
-}
-
-function getPackagePath(packageName: string) {
-  return packageName.replace(/\//g, '__');
 }
 
 export async function moduleInit(fn: FunctionModule, config: any, metaConfig: any, cqnode: CQNodeRobot): Promise<FunctionModuleInstance> {
