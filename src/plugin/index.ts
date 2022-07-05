@@ -2,6 +2,8 @@ import { getPackagePath } from '../util/get-package-path';
 import CQNodeRobot from '../cqnode-robot';
 import HookProcessor, { CQNodeHook, HookCallback, HookOptions } from './hook-processor';
 
+export { CQNodeHookDataMap as CQNodeHookData } from './hook-processor';
+
 interface CQNodePluginMeta {
   /** 插件包名，名称中不能包含无法作为文件名的字符(/除外) */
   packageName: string;

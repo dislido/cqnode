@@ -1,12 +1,12 @@
 import path from 'path';
 import WorkpathManager from './workpath-manager';
-import { checkConfig } from './util';
+import checkConfig from './util/check-config';
 import OicqConnector, { OicqConfig } from './connector-oicq';
 import { FunctionModule, FunctionModuleInstance, moduleInit } from './module';
 import EventContextBuilderMap, { CQNodeEventContext } from './module/event-context';
 import CQEventType, { CQEvent } from './connector-oicq/event-type';
 import pluginInit, { FunctionPlugin, FunctionPluginInstance } from './plugin';
-import { CQNodeHook, CQNodeHookData } from './plugin/hook-processor';
+import { CQNodeHook, CQNodeHookDataMap } from './plugin/hook-processor';
 import { proxyCtx } from './util/proxy';
 
 export interface CQNodeConfig {
@@ -135,8 +135,8 @@ export default class CQNodeRobot {
     console.log('cqnode: 初始化完成');
   }
 
-  async emitHook<T extends CQNodeHook>(hookName: T, data: CQNodeHookData[T]) {
-    let currData: CQNodeHookData[T] | null = data;
+  async emitHook<T extends CQNodeHook>(hookName: T, data: CQNodeHookDataMap[T]) {
+    let currData: CQNodeHookDataMap[T] | null = data;
     for (const plg of this.plugins) {
       currData = await plg.hookProcessor.emit(hookName, data);
       if (!currData) return null;
@@ -144,8 +144,8 @@ export default class CQNodeRobot {
     return currData;
   }
 
-  emitSyncHook<T extends CQNodeHook>(hookName: T, data: CQNodeHookData[T]) {
-    let currData: CQNodeHookData[T] | null = data;
+  emitSyncHook<T extends CQNodeHook>(hookName: T, data: CQNodeHookDataMap[T]) {
+    let currData: CQNodeHookDataMap[T] | null = data;
     for (const plg of this.plugins) {
       currData = plg.hookProcessor.emitSync(hookName, data);
       if (currData instanceof Promise) throw new Error(`plugin error: ${hookName} 不支持异步hook`);

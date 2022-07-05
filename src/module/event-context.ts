@@ -3,6 +3,7 @@ import CQNodeRobot from '../cqnode-robot';
 import CQEventType, { CQEvent } from '../connector-oicq/event-type';
 import { checkAtme } from './utils';
 import { FunctionModuleInstance } from '.';
+import { getTextMessage } from '../util';
 
 export interface CQNodeEventContextMap {
   [CQEventType.systemLoginQrcode]: commonEventContext<CQEventType.systemLoginQrcode>; // 收到二维码
@@ -200,7 +201,7 @@ export const EventContextBuilderMap: {
     const ctx = {
       ...commonEventContextBuilder<CQEventType.message>(event, mod, cqnode),
       event,
-      textMessage: event.message.map(it => it.type === 'text' ? it.text : '').join('').trim(),
+      textMessage: getTextMessage(event.message),
       reply: (message: Sendable, quote?: boolean) => event.reply(message, quote),
       atme: checkAtme(event, cqnode.config.atmeTrigger, cqnode.connect.client.uin),
       eventType: CQEventType.message as const,

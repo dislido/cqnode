@@ -1,13 +1,11 @@
 import CQNodeRobot, { CQNodeConfig } from './cqnode-robot';
-import { segment } from './util';
+import * as ut from './util';
 
 export function createRobot(config: CQNodeConfig) {
   return new CQNodeRobot(config);
 }
 
-export const util = {
-  segment,
-};
+export const util = ut;
 
 const CQNode = {
   createRobot,
@@ -21,6 +19,5 @@ export { CQEventType, CQEvent } from './connector-oicq/event-type';
 export { CQNodeHook } from './plugin/hook-processor';
 
 export type { CQNodeConfig };
-export type { FunctionModule } from './module';
-export type { FunctionPlugin } from './plugin';
-export type { CQNodeEventContext } from './module/event-context';
+export type { FunctionModule, CQNodeEventContext } from './module';
+export type { FunctionPlugin, CQNodeHookData } from './plugin';

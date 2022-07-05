@@ -34,7 +34,7 @@ export interface HookOptions {
 
 }
 
-export interface CQNodeHookData {
+export interface CQNodeHookDataMap {
   [CQNodeHook.beforeInit]: {
     /** connector class @todo types */
     connectorClass: any;
@@ -86,7 +86,7 @@ export interface CQNodeHookData {
 }
 
 export interface HookCallback<T extends CQNodeHook = CQNodeHook> {
-  (data: CQNodeHookData[T]): CQNodeHookData[T];
+  (data: CQNodeHookDataMap[T]): CQNodeHookDataMap[T] | null;
 }
 
 export default class HookProcessor {
@@ -119,9 +119,9 @@ export default class HookProcessor {
    * @param eventData 事件数据
    * @returns 返回事件数据，返回null则阻止事件
    */
-  async emit<T extends CQNodeHook>(hookName: T, eventData: CQNodeHookData[T]) {
+  async emit<T extends CQNodeHook>(hookName: T, eventData: CQNodeHookDataMap[T]) {
     const processors = this.#processorMap.get(hookName) as [HookCallback<T>, HookOptions][] ?? [];
-    let currEventData = eventData;
+    let currEventData: CQNodeHookDataMap[T] | null = eventData;
     for (const [proc] of processors) {
       currEventData = await proc(currEventData);
       if (!currEventData) return null;
@@ -135,9 +135,9 @@ export default class HookProcessor {
    * @param eventData 事件数据
    * @returns 返回事件数据，返回null则阻止事件
    */
-  emitSync<T extends CQNodeHook>(hookName: T, eventData: CQNodeHookData[T]) {
+  emitSync<T extends CQNodeHook>(hookName: T, eventData: CQNodeHookDataMap[T]) {
     const processors = this.#processorMap.get(hookName) as [HookCallback<T>, HookOptions][] ?? [];
-    let currEventData = eventData;
+    let currEventData: CQNodeHookDataMap[T] | null = eventData;
     for (const [proc] of processors) {
       currEventData = proc(currEventData);
       if (!currEventData) return null;
@@ -145,3 +145,5 @@ export default class HookProcessor {
     return currEventData;
   }
 }
+
+export type CQNodeHookData<T extends CQNodeHook = CQNodeHook> = CQNodeHookDataMap[T];
