@@ -67,7 +67,7 @@ export enum CQEventType {
   guildMessage = 'guild.message'
 }
 
-/** 所有事件名称，不包含父事件 */
+/** 所有叶子事件名称，不包含父事件 */
 export const allLeafEventNames = [
   CQEventType.systemLoginQrcode, // 收到二维码
   CQEventType.systemLoginSlider, // 滑动验证码
@@ -103,7 +103,7 @@ export const allLeafEventNames = [
   CQEventType.guildMessage, // 频道消息
 ];
 
-/** CQEventType到oicq Event的映射 */
+/** CQEventType到oicq Event的映射, 仅包含叶子事件 */
 export type CQEvent<EventName extends CQEventType = CQEventType> = Parameters<EventMap[EventName]>[0];
 
 export default CQEventType;

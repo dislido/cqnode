@@ -59,6 +59,8 @@ export default class OicqConnector extends EventEmitter {
    * @param {http.ServerResponse} resp 响应对象
    */
   onEventReceived<T extends CQEventType>(eventName: T, event: CQEvent<T>) {
-    this.emit('event', ({ eventName, event }));
+    const ev = event || {} as any;
+    Reflect.set(ev, 'eventType', eventName);
+    this.emit('event', ({ eventName, event: ev }));
   }
 }
