@@ -1,4 +1,4 @@
-// import PluginManager from './plugin-manager';
+import path from 'path';
 import WorkpathManager from './workpath-manager';
 import { checkConfig } from './util';
 import OicqConnector, { OicqConfig } from './connector-oicq';
@@ -72,7 +72,10 @@ export default class CQNodeRobot {
 
     const connector = await this.emitHook(CQNodeHook.beforeInit, {
       connectorClass: OicqConnector,
-      connectorConfig: this.config.connector,
+      connectorConfig: {
+        data_dir: path.resolve(this.config.workpath || '.cqnode', 'oicq'),
+        ...this.config.connector,
+      },
     });
 
     if (!connector?.connectorClass) {
