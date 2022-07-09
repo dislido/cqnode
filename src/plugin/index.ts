@@ -38,7 +38,7 @@ export interface FunctionPluginCtx {
    * @param key 存储key，默认'default'
    * @param defaultData 没有存储内容时的默认数据
    */
-  getStorage<T = any>(key?: string, defaultData?: any): Promise<T | null>;
+  getStorage<T = any>(key?: string, defaultData?: T): Promise<T>;
   /**
    * 保存到本地存储
    * @param data 存储数据
@@ -74,7 +74,7 @@ export default async function pluginInit(fn: FunctionPlugin, config: any, metaCo
     setMeta(inf: CQNodePluginMeta) {
       Object.assign(meta, inf);
     },
-    getStorage(key = 'default', defaultData = {}) {
+    getStorage(key = 'default', defaultData = undefined) {
       if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
       return cqnode.workpathManager.readJson(`pluginStorage/${getPackagePath(meta.packageName)}/${key}.json`, defaultData);
     },
