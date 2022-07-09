@@ -101,7 +101,7 @@ export async function moduleInit(fn: FunctionModule, config: any, metaConfig: an
     },
     setStorage(data: any, key = 'default') {
       if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
-      return cqnode.workpathManager.writeJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, JSON.stringify(data));
+      return cqnode.workpathManager.writeJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, data);
     },
   };
 
