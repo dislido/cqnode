@@ -1,6 +1,8 @@
 import CQNodeRobot, { CQNodeConfig } from './cqnode-robot';
 import * as ut from './util';
 
+export * as oicq from 'oicq';
+
 export function createRobot(config: CQNodeConfig) {
   return new CQNodeRobot(config);
 }
