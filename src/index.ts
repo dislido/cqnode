@@ -23,3 +23,4 @@ export { CQNodeHook } from './plugin/hook-processor';
 export type { CQNodeConfig };
 export type { FunctionModule, CQNodeEventContext } from './module';
 export type { FunctionPlugin, CQNodeHookData } from './plugin';
+export type { OICQAPI } from './connector-oicq/proxy-oicq-api';
