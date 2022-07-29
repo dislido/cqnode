@@ -1,6 +1,6 @@
 {
   "name": "@dislido/cqnode",
-  "version": "3.0.8",
+  "version": "3.0.9",
   "description": "no description",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

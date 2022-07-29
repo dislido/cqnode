@@ -85,7 +85,10 @@ export default async function pluginInit(fn: FunctionPlugin, config: any, metaCo
       if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
       return cqnode.workpathManager.writeJson(`pluginStorage/${getPackagePath(meta.packageName)}/${key}.json`, data);
     },
-    storagePath: path.resolve(cqnode.workpathManager.workpath, `pluginStorage/${getPackagePath(meta.packageName)}`),
+    get storagePath() {
+      if (!meta.packageName) throw new Error('必须先指定模块的packageName，使用mod.setMeta({ packageName })设置');
+      return path.resolve(cqnode.workpathManager.workpath, `pluginStorage/${getPackagePath(meta.packageName)}`);
+    },
   };
 
   await fn(ctx, config);

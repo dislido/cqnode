@@ -99,14 +99,17 @@ export async function moduleInit(fn: FunctionModule, config: any, metaConfig: an
     cqnode,
     api: proxyApi(cqnode.connect.api, init, cqnode),
     getStorage(key = 'default', defaultData = undefined) {
-      if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
+      if (!meta.packageName) throw new Error('必须先指定模块的packageName，使用mod.setMeta({ packageName })设置');
       return cqnode.workpathManager.readJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, defaultData);
     },
     setStorage(data: any, key = 'default') {
-      if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
+      if (!meta.packageName) throw new Error('必须先指定模块的packageName，使用mod.setMeta({ packageName })设置');
       return cqnode.workpathManager.writeJson(`moduleStorage/${getPackagePath(meta.packageName)}/${key}.json`, data);
     },
-    storagePath: path.resolve(cqnode.workpathManager.workpath, `moduleStorage/${getPackagePath(meta.packageName)}`),
+    get storagePath() {
+      if (!meta.packageName) throw new Error('必须先指定模块的packageName，使用mod.setMeta({ packageName })设置');
+      return path.resolve(cqnode.workpathManager.workpath, `moduleStorage/${getPackagePath(meta.packageName)}`);
+    },
   };
 
   await fn(init.ctx!, config);
