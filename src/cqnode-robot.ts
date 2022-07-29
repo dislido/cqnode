@@ -57,10 +57,9 @@ export default class CQNodeRobot {
   constructor(config: CQNodeConfig) {
     this.config = checkConfig(config);
     this.workpathManager = new WorkpathManager(this.config.workpath || '.cqnode');
-    this.init();
   }
 
-  private async init() {
+  async init() {
     console.log('CQNode: 初始化中......');
 
     await this.workpathManager.init();

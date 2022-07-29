@@ -1,3 +1,4 @@
+import path from 'path';
 import { getPackagePath } from '../util/get-package-path';
 import CQNodeRobot from '../cqnode-robot';
 import HookProcessor, { CQNodeHook, HookCallback, HookOptions } from './hook-processor';
@@ -20,6 +21,8 @@ interface CQNodePluginMeta {
 
 export interface FunctionPluginCtx {
   cqnode: CQNodeRobot;
+  /** 本地存储文件夹目录 */
+  storagePath: string;
   /**
    * 监听事件
    * @param eventName 事件类型
@@ -82,6 +85,7 @@ export default async function pluginInit(fn: FunctionPlugin, config: any, metaCo
       if (!meta.packageName) throw new Error('必须指定模块的packageName，使用mod.setMeta({ packageName })设置');
       return cqnode.workpathManager.writeJson(`pluginStorage/${getPackagePath(meta.packageName)}/${key}.json`, data);
     },
+    storagePath: path.resolve(cqnode.workpathManager.workpath, `pluginStorage/${getPackagePath(meta.packageName)}`),
   };
 
   await fn(ctx, config);
