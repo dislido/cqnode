@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { createClient, Client, Config } from 'oicq';
 import CQEventType, { allLeafEventNames, CQEvent } from './event-type';
-import proxyOicqApi, { OICQAPI } from './proxy-oicq-api';
+import pickOicqApi, { OICQAPI } from './proxy-oicq-api';
 
 export interface OicqConfig extends Config {
   /** 登录qq号 */
@@ -18,7 +18,7 @@ export default class OicqConnector extends EventEmitter {
   api: OICQAPI;
 
   /**
-   * oicq插件的连接器
+   * oicq
    * @param cqnode cqnode实例
    * @param config CQHTTP设置
    */
@@ -32,7 +32,7 @@ export default class OicqConnector extends EventEmitter {
       ignore_self: false,
       ...oicq,
     });
-    this.api = proxyOicqApi(this.client);
+    this.api = pickOicqApi(this.client);
 
     allLeafEventNames.forEach(en => {
       this.client.on(en, (ev: any) => {

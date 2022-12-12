@@ -74,10 +74,10 @@ const OICQAPINameList = [
 export type OICQAPINames = (typeof OICQAPINameList)[number];
 export type OICQAPI = Pick<Client, OICQAPINames>;
 
-export default function proxyOicqApi(client: Client): OICQAPI {
-  return new Proxy(client, {
-    get(target, p: OICQAPINames) {
-      return OICQAPINameList.includes(p) ? target[p].bind(target) : undefined;
-    },
+export default function pickOicqApi(client: Client): OICQAPI {
+  const api = {} as any;
+  OICQAPINameList.forEach(name => {
+    api[name] = (...args: any[]) => (client[name] as any)(...args);
   });
+  return api;
 }

@@ -2,6 +2,7 @@ import path from 'path';
 import { getPackagePath } from '../util/get-package-path';
 import CQNodeRobot from '../cqnode-robot';
 import HookProcessor, { CQNodeHook, HookCallback, HookOptions } from './hook-processor';
+import { OICQAPI } from '../connector-oicq/proxy-oicq-api';
 
 export { CQNodeHookDataMap as CQNodeHookData } from './hook-processor';
 
@@ -21,6 +22,8 @@ interface CQNodePluginMeta {
 
 export interface FunctionPluginCtx {
   cqnode: CQNodeRobot;
+  /** oicq API, 即cqnode.connect.client.api, 与module不同，plugin的api调用不会触发hook */
+  api: OICQAPI;
   /** 本地存储文件夹目录 */
   storagePath: string;
   /**
@@ -71,6 +74,7 @@ export default async function pluginInit(fn: FunctionPlugin, config: any, metaCo
 
   const ctx: FunctionPluginCtx = {
     cqnode,
+    api: cqnode.connect.api,
     on(eventName, listener, options) {
       return hp.on(eventName, listener, options);
     },

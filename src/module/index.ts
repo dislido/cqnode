@@ -57,6 +57,7 @@ interface FunctionModuleCtx {
   storagePath: string;
   /** cqnode引用 */
   cqnode: CQNodeRobot;
+  /** oicq api */
   api: OICQAPI;
 }
 

@@ -27,6 +27,7 @@ module.exports = {
     'no-use-before-define': 'off',
     'no-useless-constructor': 'off',
     'no-unused-vars': 'off',
+    'prefer-spread': 'off',
     semi: 'off',
     indent: 'off',
     'arrow-parens': ['error', 'as-needed'],
