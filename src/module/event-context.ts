@@ -75,10 +75,15 @@ export interface CQNodeEventContextMap {
 }
 
 interface commonEventContext<T extends CQEventType = CQEventType> {
+  /** 事件的原始event对象 */
   event: CQEvent<T>;
+  /** 该事件是否已处理结束 */
   end: boolean;
+  /** 当前cqnode实例 */
   cqnode: CQNodeRobot;
+  /** 正在处理此事件的模块 */
   mod: FunctionModuleInstance;
+  /** 事件类型 */
   eventType: T;
   [key: string]: any;
 }

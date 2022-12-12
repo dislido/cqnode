@@ -4,7 +4,7 @@ import { CQNodeEventContext } from './event-context';
 export interface EventProcessorOptions {
   /** 处理群/讨论组消息是否需要atme标识来触发(默认true)， @todo 只有需要的事件有此option */
   atme?: boolean;
-  /** 群聊和频道中过滤自己的消息(默认true) */
+  /** 忽略自己发送的消息(默认true) */
   ignoreSelf?: boolean;
 }
 
