@@ -74,7 +74,12 @@ export default async function pluginInit(fn: FunctionPlugin, config: any, metaCo
 
   const ctx: FunctionPluginCtx = {
     cqnode,
-    api: cqnode.connect.api,
+    get api() {
+      if (!cqnode.connect?.api) {
+        throw new Error(`CQNode Error: 在CQNodeHook.beforeInit完成后才能访问FunctionPluginCtx.api - plugin packageName: ${meta.packageName}`);
+      }
+      return cqnode.connect.api;
+    },
     on(eventName, listener, options) {
       return hp.on(eventName, listener, options);
     },
