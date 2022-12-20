@@ -43,17 +43,23 @@ export default class OicqConnector extends EventEmitter {
 
   init() {
     const { onLogin } = this.config;
-    this.client.once('system.login.qrcode', data => {
+    this.client.on('system.login.qrcode', data => {
       // 扫码后按回车登录
       console.log('扫码成功后请按回车');
       onLogin?.({ type: 'qrcode', data }, () => this.client.login());
       if (!onLogin) process.stdin.once('data', () => this.client.login());
-    }).once('system.login.slider', e => {
+    }).on('system.login.slider', e => {
       console.log(`滑动验证： ${e.url}`);
       console.log('输入ticket：');
       onLogin?.({ type: 'slider', data: e }, () => this.client.login());
-      if (!onLogin) process.stdin.once('data', ticket => this.client.submitSlider(String(ticket).trim()));
-    }).once('system.login.device', e => {
+      if (!onLogin) {
+        process.stdin.once('data', ticket => {
+          const ticketStr = String(ticket).trim();
+          console.log(`已输入<${ticketStr}>`);
+          this.client.submitSlider(ticketStr);
+        });
+      }
+    }).on('system.login.device', e => {
       console.log(`设备锁验证(验证完成后按回车登录)：${e.url}`);
       onLogin?.({ type: 'device', data: e }, () => this.client.login());
       if (!onLogin) process.stdin.once('data', () => this.client.login());
