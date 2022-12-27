@@ -1,6 +1,6 @@
 {
   "name": "@dislido/cqnode",
-  "version": "3.0.11-beta.3",
+  "version": "3.0.11",
   "description": "no description",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -11,6 +11,7 @@
     "dev": "tsc --watch",
     "release": "npm i&&tsc&&npm publish"
   },
+  "keywords": ["qq", "oicq"],
   "engines": {
     "node": ">=14.0.0"
   },
